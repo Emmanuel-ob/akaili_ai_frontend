@@ -73,3 +73,40 @@ bun run preview
 ```
 
 Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+
+```
+akili_ai_frontend
+├─ app
+│  ├─ app.vue
+│  ├─ assets
+│  │  └─ css
+│  │     └─ main.css
+│  ├─ components
+│  │  ├─ CustomerSatisfaction.vue
+│  │  ├─ DashboardHeader.vue
+│  │  ├─ DashboardSidebar.vue
+│  │  ├─ OnboardingProgress.vue
+│  │  ├─ RecentConversations.vue
+│  │  └─ StatsCard.vue
+│  └─ pages
+│     ├─ dashboard.vue
+│     ├─ index.vue
+│     ├─ login.vue
+│     ├─ onboarding.vue
+│     └─ signup.vue
+├─ eslint.config.mjs
+├─ middleware
+│  └─ auth.js
+├─ nuxt.config.ts
+├─ package-lock.json
+├─ package.json
+├─ public
+│  ├─ favicon.ico
+│  └─ robots.txt
+├─ README.md
+├─ stores
+│  ├─ auth.js
+│  └─ onboarding.js
+└─ tsconfig.json
+
+```
