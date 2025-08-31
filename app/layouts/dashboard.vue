@@ -4,14 +4,14 @@
     <!-- Sidebar -->
     <div class="w-64 bg-white shadow-sm border-r border-gray-200 fixed h-full">
       <!-- Logo -->
-      <div class="p-6 border-b border-gray-200">
+         <NuxtLink to="/" class="p-6 border-b border-gray-200">
         <div class="flex items-center">
           <div class="w-8 h-8 bg-purple-600 rounded-lg flex items-center justify-center">
             <span class="text-white font-bold text-sm">A</span>
           </div>
           <span class="ml-3 text-xl font-bold text-gray-900">Akili AI</span>
         </div>
-      </div>
+      </NuxtLink>
 
       <!-- Navigation -->
       <nav class="mt-6 px-3">
@@ -41,9 +41,9 @@
           </NuxtLink>
 
           <NuxtLink
-            to="/database"
+            to="/dashboard/database"
             class="flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors"
-            :class="$route.path === '/database' ? 'bg-purple-50 text-purple-700' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'"
+            :class="$route.path === '/dashboard/database' ? 'bg-purple-50 text-purple-700' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'"
           >
             <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path>
@@ -119,10 +119,10 @@ const route = useRoute()
 const pageTitle = computed(() => {
   const titles = {
     '/dashboard': 'Dashboard',
-    '/database': 'Database Integration',
-    '/chatbot-setup': 'Chatbot Setup',
-    '/conversations': 'Conversations',
-    '/analytics': 'Analytics'
+    '/dashboard/database': 'Database Integration',
+    '/dashboard/chatbot-setup': 'Chatbot Setup',
+    '/dashboard/conversations': 'Conversations',
+    '/dashboard/analytics': 'Analytics'
   }
   return titles[route.path] || 'Dashboard'
 })
@@ -130,23 +130,23 @@ const pageTitle = computed(() => {
 const pageSubtitle = computed(() => {
   const subtitles = {
     '/dashboard': 'Manage your chatbots and monitor performance',
-    '/database': 'Manage multiple database connections for comprehensive AI responses',
-    '/chatbot-setup': 'Configure and customize your chatbots',
-    '/conversations': 'View and manage customer conversations',
-    '/analytics': 'Monitor performance and usage statistics'
+    '/dashboard/database': 'Manage multiple database connections for comprehensive AI responses',
+    '/dashboard/chatbot-setup': 'Configure and customize your chatbots',
+    '/dashboard/conversations': 'View and manage customer conversations',
+    '/dashboard/analytics': 'Monitor performance and usage statistics'
   }
   return subtitles[route.path]
 })
 
 const handleLogout = async () => {
   authStore.logout()
-  router.push('/login')
+  router.push('/dashboard/login')
 }
 
 // Ensure user is authenticated
 onMounted(() => {
   if (!authStore.isLoggedIn) {
-    router.push('/login')
+    router.push('/dashboard/login')
   }
 })
 </script>

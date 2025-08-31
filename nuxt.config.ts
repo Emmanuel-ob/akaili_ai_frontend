@@ -19,6 +19,7 @@ export default defineNuxtConfig({
     '@nuxt/ui',
     '@pinia/nuxt',
   ],
+  
   runtimeConfig: {
     public: {
       apiBase: process.env.API_BASE_URL || 'http://localhost:8000'
@@ -33,6 +34,11 @@ export default defineNuxtConfig({
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
         { name: 'description', content: 'Build intelligent chatbots with Akili AI' }
+      ],
+       link: [
+        { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
+        { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
+        { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap' }
       ]
     }
   }

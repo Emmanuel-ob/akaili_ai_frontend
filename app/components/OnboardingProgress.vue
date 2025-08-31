@@ -1,4 +1,4 @@
-<!-- components/OnboardingProgress.vue -->
+<!-- components/dashboard/onboardingProgress.vue -->
 <template>
   <div class="flex items-center justify-center space-x-4">
     <div class="flex items-center">

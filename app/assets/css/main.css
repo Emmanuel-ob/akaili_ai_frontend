@@ -1,5 +1,15 @@
 @import "tailwindcss";
 
+/* assets/css/main.css */
+:root {
+  --site-font: 'Geist', ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto;
+}
+
+html, body {
+  font-family: var(--site-font);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
 
 .btn-primary {
   @apply bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition-colors;
@@ -15,4 +25,17 @@
 
 .input-field {
   @apply w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent;
+}
+
+.nav_primary_btn {
+  @apply bg-[#7F56D9] hover:bg-purple-700;
+}
+.font_color {
+  @apply text-[#111827];
+}
+.main_header{
+  @apply md:text-4xl text-4xl font-bold text-[#111827];
+}
+.main_subheader{
+  @apply mt-5 text-xl text-gray-500;
 }

@@ -9,6 +9,6 @@ export default function ({ redirect }) {
 
     // If not authenticated, redirect to login
     if (!authStore.isLoggedIn) {
-        return redirect('/login')
+        return redirect('/dashboard/login')
     }
 }

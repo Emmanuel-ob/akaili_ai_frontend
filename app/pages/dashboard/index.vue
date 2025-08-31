@@ -17,7 +17,7 @@
   <div class="p-6">
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       <QuickActionCard
-        to="/database"
+        to="/dashboard/database"
         title="Connect Database"
         description="Add your data sources"
         icon="database"
@@ -75,7 +75,7 @@
           icon="document">
           <template #action>
             <NuxtLink 
-            to="/database"
+            to="/dashboard/database"
               class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700">
               <svg class="mr-2 -ml-1 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -151,7 +151,7 @@ const fetchDashboardData = async () => {
 onMounted(async () => {
   console.log(authStore.token)
   if (!authStore.isLoggedIn) {
-    return navigateTo('/login')
+    return navigateTo('/dashboard/login')
   }
 
   loading.value = true

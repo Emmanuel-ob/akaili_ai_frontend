@@ -1,6 +1,6 @@
 <!-- pages/register.vue -->
 <template>
-  <div class="min-h-screen bg-white flex items-center justify-center p-6">
+  <div class="min-h-screen pt-[30vh] sm:pt-[40vh] lg:pt-[6rem] bg-white flex items-center justify-center p-6">
     <div class="max-w-md w-full">
       <!-- Logo -->
 
@@ -122,7 +122,7 @@ const handleSocialAuth = async (provider) => {
     // If user is new (no business_id), go to onboarding
     // If user exists, go to dashboard
     if (result.isNewUser) {
-      router.push('/onboarding')
+      router.push('/dashboard/onboarding')
     } else {
       router.push('/dashboard')
     }

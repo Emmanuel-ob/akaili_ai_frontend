@@ -1,0 +1,57 @@
+    <script setup>
+    import PricingCard from '../components/homepage/PricingCard.vue'
+    import CtaBanner from '~/components/homepage/CtaBanner.vue';
+    </script>
+<template>
+
+<section class="relative">
+    <div class="py-16">
+
+        <div class="max-w-6xl  mx-auto mt-[4rem] px-6">
+        <div class="text-center mb-10">
+        <h2 class="main_header">Simple, Transparent Pricing</h2>
+        <p class="main_subheader">Choose the plan that best fits your needs. No hidden fees, cancel anytime.</p>
+        </div>
+        
+        
+        <!-- decorative background circle top-right -->
+        <div aria-hidden class="pointer-events-none absolute right-0 -top-20 w-60 h-60 rounded-full bg-gradient-to-br from-purple-50 to-white opacity-80"></div>
+        
+        
+        <div class="grid gap-6 md:grid-cols-3 items-stretch">
+        <PricingCard
+        title="Starter"
+        subtitle="Perfect for small businesses"
+        price-text="Free"
+        price-suffix="/month"
+        :features="['Up to 1,000 conversations/month', '1 chatbot', 'Basic analytics', 'Email support']"
+        cta="Get Started"
+        />
+        
+        
+        <PricingCard
+        title="Professional"
+        subtitle="For growing companies"
+        price-text="$99"
+        price-suffix="/month"
+        :features="['Up to 10,000 conversations/month', '5 chatbots', 'Advanced analytics', 'Priority support', 'Database integration']"
+        cta="Get Started"
+        :featured="true"
+        />
+        
+        
+        <PricingCard
+        title="Enterprise"
+        subtitle="For large organizations"
+        price-text="$299"
+        price-suffix="/month"
+        :features="['Unlimited conversations', 'Unlimited chatbots', 'Custom analytics', '24/7 phone support', 'Advanced security']"
+        cta="Contact Sales"
+        />
+        </div>
+        </div>
+    </div>
+<CtaBanner />
+</section>
+</template>
+

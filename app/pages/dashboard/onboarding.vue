@@ -259,7 +259,7 @@ const chatbotTypeOptions = [
 onMounted(() => {
   authStore.initializeAuth()
   if (!authStore.isLoggedIn) {
-    router.push('/login')
+    router.push('/dashboard/login')
     return
   }
 })
@@ -329,7 +329,7 @@ onMounted(async () => {
   } catch (err) {
     console.error('Failed to get onboarding status:', err)
     // If there's an error, redirect to login
-    router.push('/login')
+    router.push('/dashboard/login')
   } finally {
     loading.value = false
   }

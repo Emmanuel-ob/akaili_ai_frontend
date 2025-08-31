@@ -34,7 +34,7 @@
         <h2 class="text-2xl font-semibold text-gray-800 mb-2">Verification Failed</h2>
         <p class="text-gray-600 mb-6">{{ error }}</p>
         <NuxtLink 
-          to="/login" 
+          to="/dashboard/login" 
           class="inline-flex items-center px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
         >
           Back to Login
@@ -80,7 +80,7 @@ onMounted(async () => {
       countdown.value--
       if (countdown.value <= 0) {
         clearInterval(countdownInterval)
-        router.push('/onboarding')
+        router.push('/dashboard/onboarding')
       }
     }, 1000)
 

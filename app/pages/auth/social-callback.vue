@@ -32,11 +32,11 @@ onMounted(() => {
       
       // If this is email verification, go to onboarding
       if (route.query.verified === 'true') {
-        navigateTo('/onboarding')
+        navigateTo('/dashboard/onboarding')
       } else {
         // For social auth, check if user needs onboarding
         if (!user.business_id) {
-          navigateTo('/onboarding')
+          navigateTo('/dashboard/onboarding')
         } else {
           navigateTo('/dashboard')
         }
@@ -50,7 +50,7 @@ onMounted(() => {
       }, window.location.origin)
       window.close()
     } else {
-      navigateTo('/login?error=' + encodeURIComponent(route.query.error))
+      navigateTo('/dashboard/login?error=' + encodeURIComponent(route.query.error))
     }
   } else {
     // No valid callback data
@@ -61,7 +61,7 @@ onMounted(() => {
       }, window.location.origin)
       window.close()
     } else {
-      navigateTo('/login?error=auth_failed')
+      navigateTo('/dashboard/login?error=auth_failed')
     }
   }
 })

@@ -1,4 +1,4 @@
-<!-- pages/database.vue -->
+<!-- pages/dashboard/database.vue -->
 <template>
   <div>
     <!-- Add Database Button -->

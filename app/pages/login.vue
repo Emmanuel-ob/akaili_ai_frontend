@@ -1,6 +1,6 @@
-<!-- pages/login.vue -->
+<!-- page/login.vue -->
 <template>
-  <div class="min-h-screen bg-white flex items-center justify-center p-6">
+  <div class="min-h-screen pt-[30vh] sm:pt-[40vh] lg:pt-[6rem] bg-white flex items-center justify-center p-6">
     <div class="max-w-md w-full">
       <!-- Logo -->
       <div class="text-center mb-8">
