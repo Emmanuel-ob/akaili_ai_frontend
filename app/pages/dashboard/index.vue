@@ -1,7 +1,30 @@
 <template>
+  
   <div>
-   
-    <!-- Stats Cards -->
+     <header class="bg-white px-6 py-4">
+                <div class="flex justify-between items-center">
+                  <div>
+                        <h1 class="text-[#7F56D9] text-2xl font-bold">
+                            Dashboard Overview
+                        </h1>
+                        <p class="text-sm lg:text-base text-[#6B7280] ">
+                            Monitor your chatbot performance and engagement
+                        </p>
+                  </div>
+        
+                  <!-- Button -->
+                  <div class="flex items-center space-x-4">
+                        <button class=" px-5 py-4 nav_primary_btn text-sm lg: text-base flex items-center gap-2 text-white rounded-lg">
+                            <Plus class="w-5 h-5" />
+                           <span>Add Chatbot</span>
+                        </button>
+                  </div>
+                </div>
+              </header>
+
+      <!-- Page Content -->
+      <main class="p-6">
+           <!-- Stats Cards -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
       <StatCard title="Total Conversations" :value="stats.conversations" icon="chat" color="blue" />
       <StatCard title="Success Rate" :value="`${stats.successRate}%`" icon="check" color="green" />
@@ -29,7 +52,7 @@
         icon="settings"
       />
       <QuickActionCard
-        to="/conversations"
+        to="/live-monitoring"
         title="View Conversations"
         description="Monitor chat activity"
         icon="conversations"
@@ -86,18 +109,20 @@
         </EmptyState>
       </div>
     </div>
+      </main>
+
+
+ 
   </div>
 </template>
 
 <script setup>
 import StatCard from '~/components/StatCard.vue'
 import EmptyState from '~/components/EmptyState.vue'
+import { Plus } from 'lucide-vue-next'
 
 
 
-definePageMeta({
-  layout: 'dashboard'
-})
 
 
 const authStore = useAuthStore()
@@ -148,10 +173,17 @@ const fetchDashboardData = async () => {
   }
 }
 
+
+
+
+
+
+
+
 onMounted(async () => {
   console.log(authStore.token)
   if (!authStore.isLoggedIn) {
-    return navigateTo('/dashboard/login')
+    return navigateTo('/login')
   }
 
   loading.value = true

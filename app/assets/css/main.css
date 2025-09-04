@@ -39,3 +39,6 @@ html, body {
 .main_subheader{
   @apply mt-5 text-xl text-gray-500;
 }
+.active_chatbot_setup{
+  @apply bg-purple-100 text-[#7F56D9] rounded-xl hover:bg-purple-700;
+}

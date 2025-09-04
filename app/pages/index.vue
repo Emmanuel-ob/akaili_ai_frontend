@@ -10,6 +10,20 @@ import CtaBanner from '../components/homepage/CtaBanner.vue'
 definePageMeta({
   layout: "default",
 });
+
+
+useSeoMeta({
+  title: 'Akili Ai',
+  description: "Empower Your Website with 24/7 Smart Customer Support",
+  ogTitle: 'Akili Ai',
+  ogDescription:  "Empower Your Website with 24/7 Smart Customer Support",
+  ogImage: '/nuxt-course-hero.png',
+  ogUrl: 'Akili Ai',
+  twitterTitle: 'Akili Ai',
+  twitterDescription:  "Empower Your Website with 24/7 Smart Customer Support",
+  twitterImage: '[twitter:image]',
+  twitterCard: 'summary'
+})
 </script>
 
 
@@ -23,6 +37,5 @@ definePageMeta({
         <CtaBanner />
 
              
-
     </div>
 </template>

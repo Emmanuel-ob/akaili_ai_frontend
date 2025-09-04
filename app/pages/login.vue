@@ -1,3 +1,63 @@
+        
+        <script setup>
+       
+        const authStore = useAuthStore()
+        // const onboardingStore = useOnboardingStore()
+        const router = useRouter()
+        const route = useRoute()
+        
+        const form = ref({
+          email: '',
+          password: ''
+        })
+        
+        const loading = ref(false)
+        const error = ref('')
+        const success = ref('')
+        
+        const handleLogin = async () => {
+          loading.value = true
+          error.value = ''
+          success.value = ''
+        
+          try {
+            await authStore.login(form.value)
+            router.push('/dashboard')
+          } catch (err) {
+            error.value = err.message || 'Login failed'
+          } finally {
+            loading.value = false
+          }
+        }
+        
+        const handleSocialAuth = async (provider) => {
+          try {
+            await authStore.socialAuth(provider)
+            router.push('/dashboard')
+          } catch (err) {
+            error.value = err.message || 'Social login failed'
+          }
+        }
+        
+        // Check if already logged in and handle URL parameters
+        onMounted(() => {
+          authStore.initializeAuth()
+          
+          if (authStore.isLoggedIn) {
+            router.push('/dashboard')
+            return
+          }
+        
+          // Check for success/error messages in URL
+          if (route.query.success) {
+            success.value = decodeURIComponent(route.query.success)
+          }
+          
+          if (route.query.error) {
+            error.value = decodeURIComponent(route.query.error)
+          }
+        })
+        </script>
 <!-- page/login.vue -->
 <template>
   <div class="min-h-screen pt-[30vh] sm:pt-[40vh] lg:pt-[6rem] bg-white flex items-center justify-center p-6">
@@ -47,7 +107,7 @@
         <button
           type="submit"
           :disabled="loading"
-          class="w-full bg-purple-600 text-white py-3 px-4 rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          class="w-full bg-[#7F56D9] text-white py-3 px-4 rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
           {{ loading ? 'Signing in...' : 'Sign In' }}
         </button>
@@ -61,69 +121,10 @@
       <!-- Sign Up Link -->
       <p class="mt-6 text-center text-sm text-gray-600">
         Don't have an account?
-        <NuxtLink to="/register" class="font-medium text-purple-600 hover:text-purple-500">
+        <NuxtLink to="/register" class="font-medium text-[#7F56D9] hover:text-purple-500">
           Sign up
         </NuxtLink>
       </p>
     </div>
   </div>
 </template>
-
-<script setup>
-const authStore = useAuthStore()
-// const onboardingStore = useOnboardingStore()
-const router = useRouter()
-const route = useRoute()
-
-const form = ref({
-  email: '',
-  password: ''
-})
-
-const loading = ref(false)
-const error = ref('')
-const success = ref('')
-
-const handleLogin = async () => {
-  loading.value = true
-  error.value = ''
-  success.value = ''
-
-  try {
-    await authStore.login(form.value)
-    router.push('/dashboard')
-  } catch (err) {
-    error.value = err.message || 'Login failed'
-  } finally {
-    loading.value = false
-  }
-}
-
-const handleSocialAuth = async (provider) => {
-  try {
-    await authStore.socialAuth(provider)
-    router.push('/dashboard')
-  } catch (err) {
-    error.value = err.message || 'Social login failed'
-  }
-}
-
-// Check if already logged in and handle URL parameters
-onMounted(() => {
-  authStore.initializeAuth()
-  
-  if (authStore.isLoggedIn) {
-    router.push('/dashboard')
-    return
-  }
-
-  // Check for success/error messages in URL
-  if (route.query.success) {
-    success.value = decodeURIComponent(route.query.success)
-  }
-  
-  if (route.query.error) {
-    error.value = decodeURIComponent(route.query.error)
-  }
-})
-</script>

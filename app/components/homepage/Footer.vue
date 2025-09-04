@@ -7,8 +7,8 @@
             <h3 class=" text-white text-xl font-bold">Akili AI</h3>
         </div>
 
-        <p class="mt-5 text-sm font-semibold text-white/90">
-          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Itaque dolorum nulla incidunt facilis hic minima molestias veniam maxime cum ipsam.
+        <p class="mt-5 text-base font-semibold text-[#9CA3AF]">
+          Intelligent chatbots that connect to your data and provide exceptional customer experiences
         </p>
 
         <div class="flex items-center space-x-4 mt-6">
@@ -38,10 +38,10 @@
       <div class="space-y-5">
         <h3 class=" text-white text-xl font-bold">Product</h3>
         <nav class="flex flex-col space-y-2 text-sm">
-          <NuxtLink to="/features" class="text-white hover:text-gray-200">Features</NuxtLink>
-          <NuxtLink to="/pricing" class="text-white hover:text-gray-200">Pricing</NuxtLink>
-          <NuxtLink to="/interogations" class="text-white hover:text-gray-200">Interogations</NuxtLink>
-          <NuxtLink to="/api" class="text-white hover:text-gray-200">API</NuxtLink>
+          <NuxtLink to="/features" class="text-[#9CA3AF] hover:text-gray-200">Features</NuxtLink>
+          <NuxtLink to="/pricing" class="text-[#9CA3AF] hover:text-gray-200">Pricing</NuxtLink>
+          <NuxtLink to="/interogations" class="text-[#9CA3AF] hover:text-gray-200">Interogations</NuxtLink>
+          <NuxtLink to="/api" class="text-[#9CA3AF] hover:text-gray-200">API</NuxtLink>
           
         </nav>
       </div>
@@ -50,10 +50,10 @@
       <div class="space-y-5">
         <h3 class=" text-white text-xl font-bold">Company</h3>
         <nav class="flex flex-col space-y-2 text-sm">
-          <NuxtLink to="/about" class="text-white hover:text-gray-200">About</NuxtLink>
-          <NuxtLink to="/blog" class="text-white hover:text-gray-200">Blog</NuxtLink>
-          <NuxtLink to="/carrers" class="text-white hover:text-gray-200">Careers</NuxtLink>
-          <NuxtLink to="/press" class="text-white hover:text-gray-200">Press</NuxtLink>
+          <NuxtLink to="/about" class="text-[#9CA3AF] hover:text-gray-200">About</NuxtLink>
+          <NuxtLink to="/blog" class="text-[#9CA3AF] hover:text-gray-200">Blog</NuxtLink>
+          <NuxtLink to="/carrers" class="text-[#9CA3AF] hover:text-gray-200">Careers</NuxtLink>
+          <NuxtLink to="/press" class="text-[#9CA3AF] hover:text-gray-200">Press</NuxtLink>
         </nav>
       </div>
 
@@ -61,16 +61,16 @@
       <div class="space-y-5">
         <h3 class=" text-white text-xl font-bold">Support</h3>
         <nav class="flex flex-col space-y-2 text-sm">
-          <NuxtLink to="/help" class="text-white hover:text-gray-200">Help Center</NuxtLink>
-          <NuxtLink to="/contact" class="text-white hover:text-gray-200">Contact</NuxtLink>
-          <NuxtLink to="/privacy" class="text-white hover:text-gray-200">Privacy</NuxtLink>
-          <NuxtLink to="/terms" class="text-white hover:text-gray-200">Terms</NuxtLink>
+          <NuxtLink to="/help" class="text-[#9CA3AF] hover:text-gray-200">Help Center</NuxtLink>
+          <NuxtLink to="/contact" class="text-[#9CA3AF] hover:text-gray-200">Contact</NuxtLink>
+          <NuxtLink to="/privacy" class="text-[#9CA3AF] hover:text-gray-200">Privacy</NuxtLink>
+          <NuxtLink to="/terms" class="text-[#9CA3AF] hover:text-gray-200">Terms</NuxtLink>
         </nav>
       </div>
     </div>
 
     <!-- bottom -->
-    <div class="mt-8 w-95% mx-auto px-6 border-t border-white/10 pt-8 flex justify-center items-center j  text-sm">
+    <div class="mt-8 w-95% mx-auto px-6 border-t border-white/10 pt-8 flex justify-center items-center  text-sm">
       <p class=" md:w-auto text-center text-lg text-[#9CA3AF]">© 2024 Akili AI. All rights reserved.</p>
 
      
