@@ -117,7 +117,14 @@ export const useAuthStore = defineStore('auth', {
                 // Continue with logout even if API call fails
             }
 
-            this.clearAuth()
+            this.user = null
+            this.token = null
+            this.isLoggedIn = false
+
+            const tokenCookie = useCookie('auth_token')
+            const userCookie = useCookie('user')
+            tokenCookie.value = null
+            userCookie.value = null
         },
 
         clearAuth() {
