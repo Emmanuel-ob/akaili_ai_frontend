@@ -155,7 +155,7 @@ const selectTables = (connection) => {
 const updateTables = async () => {
   if (!selectedConnection.value) return
   
-  const result = await databaseStore.updateSelectedTables(selectedConnection.value._id, selectedTables.value)
+  const result = await databaseStore.updateSelectedTables(selectedConnection.value.id, selectedTables.value)
   if (result.success) {
     showTableModal.value = false
   }

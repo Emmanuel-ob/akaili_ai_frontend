@@ -23,7 +23,7 @@
               class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
               :class="connection.status === 'connected' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'"
             >
-              {{ connection.status === 'connected' ? 'Connected' : 'Disconnected' }}
+              {{ connection.status.toUpperCase() }}
             </span>
           </div>
           <p v-if="connection.last_sync" class="text-xs text-gray-500 mt-1">
@@ -37,8 +37,7 @@
             v-if="connection.selected_tables?.length"
             :disabled="syncing === connection.id"
             class="px-3 py-1 text-sm text-purple-600 hover:bg-purple-50 border border-purple-200 rounded-md transition-colors disabled:opacity-50"
-          >
-            @click="$emit('sync', connection.id)"
+            @click="$emit('sync', connection.id)">
             {{ syncing === connection.id ? 'Syncing...' : 'Sync Now' }}
           </button>
           
