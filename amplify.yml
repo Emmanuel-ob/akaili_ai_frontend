@@ -3,8 +3,9 @@ frontend:
   phases:
     install:
       commands:
-        - echo "Installing pnpm..."
-        - npm install -g pnpm
+        - echo "Installing pnpm via corepack..."
+        - corepack enable
+        - corepack prepare pnpm@latest --activate
         - pnpm install
     build:
       commands:
