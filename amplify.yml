@@ -2,19 +2,17 @@ version: 1
 frontend:
   phases:
     install:
-      commands:
-        - echo "Installing pnpm..."
-        - corepack enable
-        - corepack prepare pnpm@8.10.5 --activate
-        - rm -rf node_modules package-lock.json
-        - pnpm install
+      commands: []
     build:
       commands:
         - echo "Installing pnpm..."
         - corepack enable
         - corepack prepare pnpm@8.10.5 --activate
         - rm -rf node_modules package-lock.json
-        - pnpm install
+        - pnpm install --prefer-frozen-lockfile=false
+        - echo "Fixing oxc-parser native binding..."
+        - rm -rf node_modules/.pnpm/oxc-parser*/node_modules/oxc-parser/binding*
+        - pnpm rebuild oxc-parser
         - echo "Building Nuxt app..."
         - pnpm run build
   artifacts:
