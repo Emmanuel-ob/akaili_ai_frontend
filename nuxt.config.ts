@@ -8,6 +8,18 @@ export default defineNuxtConfig({
   css: ['~/assets/css/main.css'],
   vite: {
     plugins: [
+      // Polyfill Web Crypto API for AWS Amplify build environment
+      {
+        name: 'polyfill-webcrypto',
+        enforce: 'pre',
+        config() {
+          // This runs in the Vite build process (Node.js)
+          if (typeof globalThis.crypto === 'undefined' || !globalThis.crypto.subtle) {
+            // Import polyfill
+            require('@edge-runtime/polyfills');
+          }
+        }
+      },
       tailwindcss(),
     ]
   },
@@ -46,4 +58,4 @@ export default defineNuxtConfig({
       ]
     }
   }
-})
+});
