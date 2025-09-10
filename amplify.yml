@@ -9,6 +9,10 @@ frontend:
         - pnpm install
     build:
       commands:
+        - echo "Installing pnpm..."
+        - corepack enable
+        - corepack prepare pnpm@8.10.5 --activate
+        - pnpm install
         - echo "Building Nuxt app..."
         - pnpm run build
   artifacts:
