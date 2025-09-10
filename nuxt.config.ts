@@ -12,11 +12,14 @@ export default defineNuxtConfig({
       {
         name: 'polyfill-webcrypto',
         enforce: 'pre',
-        config() {
-          // This runs in the Vite build process (Node.js)
+        async config() {
           if (typeof globalThis.crypto === 'undefined' || !globalThis.crypto.subtle) {
-            // Import polyfill
-            require('@edge-runtime/polyfills');
+            try {
+              await import('@edge-runtime/polyfills');
+              console.log('Applied @edge-runtime/polyfills polyfill');
+            } catch (e) {
+              console.warn('@edge-runtime/polyfills is not installed');
+            }
           }
         }
       },
@@ -38,7 +41,6 @@ export default defineNuxtConfig({
     }
   },
 
-  // Global page meta
   app: {
     head: {
       title: 'Akili AI - Intelligent Chatbot Platform',
@@ -47,7 +49,7 @@ export default defineNuxtConfig({
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
         { name: 'description', content: 'Build intelligent chatbots with Akili AI' }
       ],
-       link: [
+      link: [
         { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
         { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
         { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap' },
