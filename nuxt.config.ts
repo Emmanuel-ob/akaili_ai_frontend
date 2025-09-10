@@ -8,17 +8,20 @@ export default defineNuxtConfig({
   css: ['~/assets/css/main.css'],
   vite: {
     plugins: [
-      // Polyfill Web Crypto API for AWS Amplify build environment
       {
-        name: 'polyfill-webcrypto',
+        name: 'polyfill-crypto-hash',
         enforce: 'pre',
         async config() {
-          if (typeof globalThis.crypto === 'undefined' || !globalThis.crypto.subtle) {
-            try {
-              await import('@edge-runtime/polyfills');
-              console.log('Applied @edge-runtime/polyfills polyfill');
-            } catch (e) {
-              console.warn('@edge-runtime/polyfills is not installed');
+          if (typeof globalThis.crypto === 'undefined' || !globalThis.crypto.hash) {
+            const { webcrypto } = await import('node:crypto');
+            if (!globalThis.crypto) {
+              globalThis.crypto = webcrypto;
+            }
+            if (!globalThis.crypto.hash) {
+              globalThis.crypto.hash = async (algorithm: string, data: BufferSource) => {
+                const digest = await webcrypto.subtle.digest(algorithm, data);
+                return new Uint8Array(digest);
+              };
             }
           }
         }
@@ -34,7 +37,7 @@ export default defineNuxtConfig({
     '@nuxt/ui',
     '@pinia/nuxt',
   ],
-  
+
   runtimeConfig: {
     public: {
       apiBase: process.env.API_BASE_URL || 'http://localhost:8000'
