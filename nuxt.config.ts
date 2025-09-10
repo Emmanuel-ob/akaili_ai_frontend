@@ -6,6 +6,7 @@ export default defineNuxtConfig({
 
   devtools: { enabled: true },
   css: ['~/assets/css/main.css'],
+
   vite: {
     plugins: [
       {
@@ -27,7 +28,10 @@ export default defineNuxtConfig({
         }
       },
       tailwindcss(),
-    ]
+    ],
+    define: {
+      'process.env': {},  // prevent some process errors
+    },
   },
   modules: [
     '@nuxt/eslint',
