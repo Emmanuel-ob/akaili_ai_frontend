@@ -1,29 +1,36 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import tailwindcss from "@tailwindcss/vite";
-import { createRequire } from 'module';
-const require = createRequire(import.meta.url);
-import { webcrypto } from 'node:crypto';
+import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfill';
 
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
 
   devtools: { enabled: true },
   css: ['~/assets/css/main.css'],
+
   vite: {
-    define: {
-      // Shim global crypto for Vite build
-      globalThis: `({ crypto: {
-        subtle: ${webcrypto.subtle},
-        getRandomValues: (arr) => crypto.randomFillSync(arr),
-        hash: async (alg, data) => {
-          const buffer = await webcrypto.subtle.digest(alg, data);
-          return new Uint8Array(buffer);
-        }
-      }})`
+    optimizeDeps: {
+      esbuildOptions: {
+        // Node.js global to browser globalThis
+        define: {
+          global: 'globalThis',
+        },
+        plugins: [
+          NodeGlobalsPolyfillPlugin({
+            buffer: true,
+            process: true,
+            crypto: true,
+          }),
+        ],
+      },
     },
+
     plugins: [
       tailwindcss(),
-    ]
+    ],
+    define: {
+      'process.env': {},  // prevent some process errors
+    },
   },
 
   modules: [
