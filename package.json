@@ -28,6 +28,7 @@
   },
   "pnpm": {
     "overrides": {
+      "vite": "6.1.8",
       "oxc-parser": "0.62.0"
     }
   },
