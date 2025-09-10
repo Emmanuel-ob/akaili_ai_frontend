@@ -9,29 +9,8 @@ frontend:
         - corepack enable
         - corepack prepare pnpm@8.10.5 --activate
 
-        - echo "Cleaning up old install..."
-        - rm -rf node_modules package-lock.json
-
-        - echo "Installing dependencies with pnpm..."
+        - echo "Installing dependencies..."
         - pnpm install
-
-        - echo "Rebuilding oxc-parser to fix native binding issue..."
-        - pnpm rebuild oxc-parser || true
-
-        - echo "Removing corrupted oxc-parser bindings..."
-        - rm -rf node_modules/.pnpm/oxc-parser@*/node_modules/oxc-parser/bindings* || true
-
-        - echo "Rebuilding all native modules (fallback)..."
-        - pnpm rebuild || true
-
-        # Optional: if `bindings.js` is missing, attempt to restore or create it
-        - |
-          echo "Checking if bindings.js exists..."
-          if ! find node_modules -path '*oxc-parser*/bindings.js' | grep -q bindings.js; then
-            echo "bindings.js is missing, creating dummy file to bypass error..."
-            mkdir -p node_modules/.pnpm/oxc-parser@*/node_modules/oxc-parser/bindings
-            echo "module.exports = {};" > node_modules/.pnpm/oxc-parser@*/node_modules/oxc-parser/bindings.js
-          fi
 
         - echo "Building Nuxt app..."
         - pnpm run build
