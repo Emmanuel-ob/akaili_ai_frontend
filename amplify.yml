@@ -6,12 +6,14 @@ frontend:
         - echo "Installing pnpm..."
         - corepack enable
         - corepack prepare pnpm@8.10.5 --activate
+        - rm -rf node_modules package-lock.json
         - pnpm install
     build:
       commands:
         - echo "Installing pnpm..."
         - corepack enable
         - corepack prepare pnpm@8.10.5 --activate
+        - rm -rf node_modules package-lock.json
         - pnpm install
         - echo "Building Nuxt app..."
         - pnpm run build
