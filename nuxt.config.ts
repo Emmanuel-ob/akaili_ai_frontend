@@ -1,5 +1,8 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import tailwindcss from "@tailwindcss/vite";
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+import { webcrypto } from 'node:crypto';
 
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
@@ -7,28 +10,22 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   css: ['~/assets/css/main.css'],
   vite: {
-    plugins: [
-      {
-        name: 'polyfill-crypto-hash',
-        enforce: 'pre',
-        async config() {
-          if (typeof globalThis.crypto === 'undefined' || !globalThis.crypto.hash) {
-            const { webcrypto } = await import('node:crypto');
-            if (!globalThis.crypto) {
-              globalThis.crypto = webcrypto;
-            }
-            if (!globalThis.crypto.hash) {
-              globalThis.crypto.hash = async (algorithm: string, data: BufferSource) => {
-                const digest = await webcrypto.subtle.digest(algorithm, data);
-                return new Uint8Array(digest);
-              };
-            }
-          }
+    define: {
+      // Shim global crypto for Vite build
+      globalThis: `({ crypto: {
+        subtle: ${webcrypto.subtle},
+        getRandomValues: (arr) => crypto.randomFillSync(arr),
+        hash: async (alg, data) => {
+          const buffer = await webcrypto.subtle.digest(alg, data);
+          return new Uint8Array(buffer);
         }
-      },
+      }})`
+    },
+    plugins: [
       tailwindcss(),
     ]
   },
+
   modules: [
     '@nuxt/eslint',
     '@nuxt/image',
@@ -40,8 +37,8 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      apiBase: process.env.API_BASE_URL || 'http://localhost:8000'
-    }
+      apiBase: process.env.API_BASE_URL || 'http://localhost:8000',
+    },
   },
 
   app: {
@@ -50,13 +47,16 @@ export default defineNuxtConfig({
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-        { name: 'description', content: 'Build intelligent chatbots with Akili AI' }
+        { name: 'description', content: 'Build intelligent chatbots with Akili AI' },
       ],
       link: [
         { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
         { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
-        { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap' }
-      ]
-    }
-  }
+        {
+          rel: 'stylesheet',
+          href: 'https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap',
+        },
+      ],
+    },
+  },
 });
