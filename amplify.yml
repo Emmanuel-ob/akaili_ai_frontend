@@ -5,14 +5,23 @@ frontend:
       commands: []
     build:
       commands:
-        - echo "Installing pnpm..."
+        - echo "Enabling corepack and installing pnpm..."
         - corepack enable
         - corepack prepare pnpm@8.10.5 --activate
+
+        - echo "Cleaning old installs..."
         - rm -rf node_modules package-lock.json
+
+        - echo "Installing dependencies..."
         - pnpm install --prefer-frozen-lockfile=false
-        - echo "Fixing oxc-parser native binding..."
-        - rm -rf node_modules/.pnpm/oxc-parser*/node_modules/oxc-parser/binding*
-        - pnpm rebuild oxc-parser
+
+        - echo "Rebuilding oxc-parser to fix native binding issue..."
+        - pnpm rebuild oxc-parser || true
+
+        # Optional safety: Manually remove potentially broken bindings
+        - rm -rf node_modules/.pnpm/oxc-parser*/node_modules/oxc-parser/bindings*
+        - pnpm rebuild || true
+
         - echo "Building Nuxt app..."
         - pnpm run build
   artifacts:
