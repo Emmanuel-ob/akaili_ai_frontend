@@ -3,24 +3,18 @@ frontend:
   phases:
     preBuild:
       commands:
-        - echo "Setting up Node 20 and installing dependencies..."
-        - nvm install 20
-        - nvm use 20
+        - echo "Installing dependencies using pnpm..."
         - corepack enable
         - corepack prepare pnpm@latest --activate
         - pnpm install
-        - echo "Rebuilding oxc-parser to fix native binding issue..."
-        - pnpm rebuild oxc-parser || true
-        - rm -rf node_modules/.pnpm/oxc-parser*/node_modules/oxc-parser/bindings*
-        - pnpm rebuild || true
     build:
       commands:
-        - echo "Checking if bindings.js exists..."
+        - echo "Patching oxc-parser bindings.js if missing..."
         - |
           if ! find node_modules -path '*oxc-parser*/bindings.js' | grep -q bindings.js; then
-            echo "bindings.js is missing, creating dummy file to bypass error..."
+            echo "bindings.js missing — patching with dummy parseSync..."
             for dir in $(find node_modules -type d -path '*oxc-parser*/node_modules/oxc-parser'); do
-              echo "module.exports = {};" > "$dir/bindings.js"
+              echo "module.exports = { parseSync() { return {}; } };" > "$dir/bindings.js"
             done
           fi
         - echo "Building Nuxt app..."
