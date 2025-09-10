@@ -7,7 +7,7 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "if [ \"$AWS_EXECUTION_ENV\" != \"AWS_ECS_FARGATE\" ]; then nuxt prepare; fi"
+    "postinstall": "if [ -z \"$AWS_EXECUTION_ENV\" ]; then nuxt prepare; fi"
   },
   "dependencies": {
     "@nuxt/eslint": "^1.7.1",
