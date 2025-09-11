@@ -25,6 +25,9 @@
     ]"
     role="region"
     :aria-labelledby="idTitle"
+    data-aos="fade-up"
+    :data-aos-delay="featured ? '0' : '100' "
+      
   >
     <!-- Ribbon -->
     <div

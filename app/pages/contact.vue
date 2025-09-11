@@ -1,6 +1,6 @@
 <template>
-  <section class="min-h-screen bg-[#0b1020] text-white pt-[30vh] sm:pt-[40vh] lg:pt-[5.6rem] py-16">
-    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+  <section class="min-h-screen bg-[#0b1020] text-white pt-30 md:pt-24 lg:pt-28">
+    <div class="max-w-7xl pt-19 mx-auto px-6 lg:px-8">
       <!-- Header -->
       <div class="text-center mb-12">
         <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight" style="background: linear-gradient(90deg,#7F56D9,#ffffff); -webkit-background-clip: text; background-clip: text; color: transparent;">

@@ -1,36 +1,13 @@
+// ~/utils/data.js (or wherever you export navLinks)
 export const navLinks = [
-    {
-        id: 1,
-        url: '/',
-        more: '',
-        label: 'Home'
-    },
-    {
-        id: 2,
-        url: '/products',
-        more: '/nav-chevron.png',
-        label: 'Products'
-    },
-    
-    {
-        id: 3,
-        url: '#',
-        more: '',
-        label: 'Testimonial'
-    },
-    {
-        id: 4,
-        url: '/pricing',
-        more: '',
-        label: 'Pricing'
-    },
-    {
-        id: 5,
-        url: '#',
-        more: '',
-        label: 'Contact'
-    },
+  { id: 1, url: '/',           more: '',                  label: 'Home' },
+  { id: 2, url: '/products',   more: '/nav-chevron.png',  label: 'Products' },
+  { id: 3, url: '/testimonial',more: '',                  label: 'Testimonial' },
+  { id: 4, url: '/pricing',    more: '',                  label: 'Pricing' },
+  { id: 5, url: '#',       more: '',                  label: 'Blog' },
+  { id: 6, url: '/contact',    more: '',                  label: 'Contact' },
 ]
+
 // ~/data/homepage/content.js
 export const features = [
   {
@@ -101,7 +78,31 @@ export const testimonials = [
     name: "Emily Rodriguez",
     role: "Marketing Director, GrowthCo",
     avatar: "/avatar_emily.png"
-  }
+  },
+  {
+    id: 4,
+    quote:
+      "Akili AI has revolutionized our customer support. We’ve seen a 60% reduction in response time and our customers love the instant help.",
+    name: "Sarah Johnson",
+    role: "CEO, TechStart, Inc",
+    avatar: "/avatar_sarah.png"
+  },
+  {
+    id: 5,
+    quote:
+      "The database integration feature is incredible. Our chatbot can access real-time inventory data and provide accurate information to customers.",
+    name: "Michael Chen",
+    role: "CTO, RetailPro",
+    avatar: "/avatar_michael.png"
+  },
+  {
+    id: 6,
+    quote:
+      "Setting up was incredibly easy. Within hours, we had a fully functional chatbot that understood our products and could help customers effectively.",
+    name: "Emily Rodriguez",
+    role: "Marketing Director, GrowthCo",
+    avatar: "/avatar_emily.png"
+  },
 ]
 
 export const cta = {

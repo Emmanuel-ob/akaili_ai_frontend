@@ -1,10 +1,32 @@
 
+
+
+<template>
+    <div class="overflow-hidden">
+      <Hero />
+      <ProductSuite />
+      <Features />    
+      <TestimonialCarousel />
+      <CtaBanner />
+      <GradualBlur
+  preset="footer"
+  target="page"
+  animated="scroll"
+  :z-index="9999"
+/>
+    </div>
+</template>
+
+
+
 <script setup>
 import Hero from '../components/homepage/Hero.vue'
 import ProductSuite from '../components/homepage/ProductSuite.vue'
 import Features from '../components/homepage/Features.vue'
-import Testimonials from '../components/homepage/Testimonials.vue'
+import TestimonialCarousel from '~/components/homepage/TestimonialCarousel.vue'
 import CtaBanner from '../components/homepage/CtaBanner.vue'
+import GradualBlur from '~/components/homepage/GradualBlur.vue'
+import { onMounted } from 'vue'
 
 
 definePageMeta({
@@ -24,18 +46,13 @@ useSeoMeta({
   twitterImage: '[twitter:image]',
   twitterCard: 'summary'
 })
+    onMounted(() => {
+  if (window.AOS) {
+    window.AOS.init({
+      duration: 1000,
+      once: true,
+    })
+  }
+})
+    
 </script>
-
-
-
-<template>
-    <div class="overflow-hidden">
-       <Hero />
-        <ProductSuite />
-        <Features />    
-        <Testimonials />
-        <CtaBanner />
-
-             
-    </div>
-</template>

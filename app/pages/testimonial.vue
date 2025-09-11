@@ -2,7 +2,7 @@
 
 
 <template>
-    <div class="overflow-hidden pt-[30vh] sm:pt-[40vh] lg:pt-[5rem]">
+    <div class="overflow-hidden  bg-[#0b1020] pt-30 md:pt-38 lg:pt-43">
       <Testimonials />
       <CtaBanner />
       <GradualBlur

@@ -1,6 +1,18 @@
     <script setup>
     import PricingCard from '../components/homepage/PricingCard.vue'
     import CtaBanner from '~/components/homepage/CtaBanner.vue';
+        import { onMounted } from 'vue'
+    
+    
+    
+        onMounted(() => {
+  if (window.AOS) {
+    window.AOS.init({
+      duration: 1000,
+      once: true,
+    })
+  }
+})
     </script>
 <template>
 
@@ -26,6 +38,7 @@
         price-suffix="/month"
         :features="['Up to 1,000 conversations/month', '1 chatbot', 'Basic analytics', 'Email support']"
         cta="Get Started"
+          
         />
         
         
