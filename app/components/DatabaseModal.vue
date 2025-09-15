@@ -41,6 +41,17 @@
         />
       </div>
 
+      <div v-if="form.type === 'postgresql'" class="p-3 bg-yellow-50 border border-yellow-200 rounded-md text-yellow-800 text-sm">
+       <FormInput
+        v-model="form.schema"
+        label="Schema Name"
+        placeholder="Schema (default is 'public')"
+        required
+      />
+
+
+      </div>
+
       <FormInput
         v-model="form.database"
         label="Database Name"
@@ -108,7 +119,8 @@ const form = reactive({
   port: '',
   database: '',
   username: '',
-  password: ''
+  password: '',
+  schema: '' // For PostgreSQL
 })
 
 const databaseTypes = [
@@ -154,7 +166,8 @@ watch(() => props.show, (show) => {
       port: '',
       database: '',
       username: '',
-      password: ''
+      password: '',
+      schema: ''
     })
   }
 })

@@ -9,12 +9,11 @@
             Manage your chatbot's data sources and connections
           </p>
         </div>
-        
+
         <div class="flex items-center space-x-4">
-          <button  
+          <button
             class="px-5 py-4 nav_primary_btn text-sm lg:text-base flex items-center gap-2 text-white rounded-lg transition-colors"
-            @click="showAddModal = true"
-          >
+            @click="showAddModal = true">
             <Plus class="w-5 h-5" />
             <span>Add Database</span>
           </button>
@@ -25,91 +24,62 @@
     <!-- Database Connections List -->
     <div class="space-y-4 px-6">
       <!-- Database Connections List -->
-<div class="space-y-4 px-6">
-  <DatabaseConnectionCard
-    v-for="connection in databaseStore.connections"
-    :key="connection._id"
-    :connection="connection"
-    :syncing="databaseStore.syncing"
-    @sync="syncConnection"
-    @edit="editConnection"
-    @delete="deleteConnection"
-    @select-tables="selectTables"
-  />
-</div>
+      <div class="space-y-4 px-6">
+        <DatabaseConnectionCard v-for="connection in databaseStore.connections" :key="connection._id"
+          :connection="connection" :syncing="databaseStore.syncing === connection.id" @sync="syncConnection"
+          @edit="editConnection" @delete="deleteConnection" @select-tables="selectTables" />
+      </div>
       <!-- Empty State -->
-      <EmptyState
-  v-if="!databaseStore.connections.length && !databaseStore.loading"
-  title="No databases connected"
-  description="Get started by connecting your first database."
-  icon="database"
-  variant="card"
->
-  <template #action>
-    <button
-      class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700"
-      @click="showAddModal = true"
-    >
-      Add Database
-    </button>
-  </template>
-</EmptyState>
+      <EmptyState v-if="!databaseStore.connections.length && !databaseStore.loading" title="No databases connected"
+        description="Get started by connecting your first database." icon="database" variant="card">
+        <template #action>
+          <button
+            class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700"
+            @click="showAddModal = true">
+            Add Database
+          </button>
+        </template>
+      </EmptyState>
     </div>
 
     <!-- Add Database Modal -->
-    <DatabaseModal
-      :show="showAddModal"
-      :chatbots="chatbotStore.chatbots"
-      :loading="databaseStore.adding"
-      :error="databaseStore.error"
-      @close="closeModal"
-      @submit="addConnection"
-    />
+    <DatabaseModal :show="showAddModal" :chatbots="chatbotStore.chatbots" :loading="databaseStore.adding"
+      :error="databaseStore.error" @close="closeModal" @submit="addConnection" />
 
     <!-- Table Selection Modal -->
-    <BaseModal
-      :show="showTableModal"
-      title="Select Tables"
-      @close="showTableModal = false"
-    >
+    <BaseModal :show="showTableModal" title="Select Tables" @close="showTableModal = false">
       <div class="space-y-2 max-h-60 overflow-y-auto">
-        <label
-          v-for="table in selectedConnection?.available_tables"
-          :key="table"
-          class="flex items-center p-2 border border-gray-200 rounded-md hover:bg-gray-50 cursor-pointer"
-        >
-          <input
-            v-model="selectedTables"
-            type="checkbox"
-            :value="table"
-            class="mr-3 text-purple-600 focus:ring-purple-500"
-          >
+        <label v-for="table in selectedConnection?.available_tables" :key="table"
+          class="flex items-center p-2 border border-gray-200 rounded-md hover:bg-gray-50 cursor-pointer">
+          <input v-model="selectedTables" type="checkbox" :value="table"
+            class="mr-3 text-purple-600 focus:ring-purple-500">
           <span class="text-sm text-gray-900">{{ table }}</span>
         </label>
       </div>
-      
+
       <div class="flex justify-end space-x-3 pt-4">
-        <button
-          class="px-4 py-2 text-sm text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50"
-          @click="showTableModal = false"
-        >
+        <button class="px-4 py-2 text-sm text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50"
+          @click="showTableModal = false">
           Cancel
         </button>
-        <button
-          :disabled="databaseStore.updating"
+        <button :disabled="databaseStore.updating"
           class="px-4 py-2 text-sm text-white bg-purple-600 hover:bg-purple-700 rounded-md disabled:opacity-50"
-          @click="updateTables"
-        >
+          @click="updateTables">
           {{ databaseStore.updating ? 'Updating...' : 'Update Tables' }}
         </button>
       </div>
     </BaseModal>
+
+    <!-- Sync Progress Modal -->
+    <SyncProgressModal :show="showSyncProgress" :connection-id="syncingConnectionId" @close="closeSyncProgress"
+      @retry="retrySyncConnection" @cancel="cancelSyncConnection" />
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
 import BaseModal from '~/components/BaseModal.vue'
+import SyncProgressModal from '~/components/sync/SyncProgressModal.vue'
 
 definePageMeta({
   layout: 'dashboard'
@@ -124,6 +94,8 @@ const showAddModal = ref(false)
 const showTableModal = ref(false)
 const selectedConnection = ref(null)
 const selectedTables = ref([])
+const showSyncProgress = ref(false)
+const syncingConnectionId = ref(null)
 
 // Helper functions
 const formatLastSync = (date) => {
@@ -131,7 +103,7 @@ const formatLastSync = (date) => {
   const now = new Date()
   const syncDate = new Date(date)
   const diffMinutes = Math.floor((now - syncDate) / (1000 * 60))
-  
+
   if (diffMinutes < 1) return 'Just now'
   if (diffMinutes < 60) return `${diffMinutes} mins ago`
   if (diffMinutes < 1440) return `${Math.floor(diffMinutes / 60)} hours ago`
@@ -154,7 +126,7 @@ const selectTables = (connection) => {
 
 const updateTables = async () => {
   if (!selectedConnection.value) return
-  
+
   const result = await databaseStore.updateSelectedTables(selectedConnection.value.id, selectedTables.value)
   if (result.success) {
     showTableModal.value = false
@@ -162,7 +134,45 @@ const updateTables = async () => {
 }
 
 const syncConnection = async (connectionId) => {
-  await databaseStore.syncConnection(connectionId)
+  try {
+    // Set the syncing connection and show progress modal
+    syncingConnectionId.value = connectionId
+    showSyncProgress.value = true
+
+    // Start the sync
+    const result = await databaseStore.syncConnection(connectionId)
+
+    if (!result.success) {
+      // If sync failed to start, close the modal and show error
+      showSyncProgress.value = false
+      // You might want to show a toast or alert here
+      console.error('Failed to start sync:', result.message)
+    }
+  } catch (error) {
+    showSyncProgress.value = false
+    console.error('Sync error:', error)
+  }
+}
+
+const closeSyncProgress = () => {
+  showSyncProgress.value = false
+  syncingConnectionId.value = null
+  // Refresh connections to get latest status
+  databaseStore.fetchConnections()
+}
+
+const retrySyncConnection = async () => {
+  if (syncingConnectionId.value) {
+    // Close current modal and restart sync
+    showSyncProgress.value = false
+    await syncConnection(syncingConnectionId.value)
+  }
+}
+
+const cancelSyncConnection = () => {
+  // The cancel logic is handled in the modal component
+  // Just refresh connections after cancel
+  databaseStore.fetchConnections()
 }
 
 const deleteConnection = async (connectionId) => {

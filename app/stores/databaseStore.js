@@ -93,14 +93,15 @@ export const useDatabaseStore = defineStore('database', {
             }
         },
 
-        async syncConnection(connectionId) {
+        async syncConnection(connectionId, force = false) {
             const config = useRuntimeConfig()
             const { token } = useAuthStore()
 
             this.syncing = connectionId
             try {
-                await $fetch(`${config.public.apiBase}/api/database/${connectionId}/sync`, {
+                await $fetch(`${config.public.apiBase}/api/sync/${connectionId}`, {
                     method: 'POST',
+                    body: { force },
                     headers: { Authorization: `Bearer ${token}` }
                 })
 

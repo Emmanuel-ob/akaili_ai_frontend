@@ -118,7 +118,9 @@ const currentChatbot = computed(() => chatbotStore.chatbots[0] || null)
 const loadChatbotData = () => {
     if (currentChatbot.value) {
         isEditing.value = true
-        currentChatbotId.value = currentChatbot.value._id
+        currentChatbotId.value = currentChatbot.value.id
+        console.log('Editing chatbot with ID:', currentChatbotId.value)
+
 
         // Populate form with existing data
         Object.keys(formData).forEach(key => {
