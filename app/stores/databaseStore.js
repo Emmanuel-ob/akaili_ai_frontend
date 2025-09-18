@@ -48,6 +48,21 @@ export const useDatabaseStore = defineStore('database', {
                 return { success: false, message: error.data?.message || 'Failed to fetch databases' }
             }
         },
+        async getAvailableSchemas(connectionData) {
+            const config = useRuntimeConfig()
+            const { token } = useAuthStore()
+
+            try {
+                const data = await $fetch(`${config.public.apiBase}/api/database/get-schemas`, {
+                    method: 'POST',
+                    body: connectionData,
+                    headers: { Authorization: `Bearer ${token}` }
+                })
+                return { success: true, schemas: data.schemas }
+            } catch (error) {
+                return { success: false, message: error.data?.message || 'Failed to fetch schemas' }
+            }
+        },
 
         async addConnection(connectionData) {
             const config = useRuntimeConfig()
@@ -93,14 +108,15 @@ export const useDatabaseStore = defineStore('database', {
             }
         },
 
-        async syncConnection(connectionId) {
+        async syncConnection(connectionId, force = false) {
             const config = useRuntimeConfig()
             const { token } = useAuthStore()
 
             this.syncing = connectionId
             try {
-                await $fetch(`${config.public.apiBase}/api/database/${connectionId}/sync`, {
+                await $fetch(`${config.public.apiBase}/api/sync/${connectionId}`, {
                     method: 'POST',
+                    body: { force },
                     headers: { Authorization: `Bearer ${token}` }
                 })
 
