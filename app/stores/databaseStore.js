@@ -48,6 +48,21 @@ export const useDatabaseStore = defineStore('database', {
                 return { success: false, message: error.data?.message || 'Failed to fetch databases' }
             }
         },
+        async getAvailableSchemas(connectionData) {
+            const config = useRuntimeConfig()
+            const { token } = useAuthStore()
+
+            try {
+                const data = await $fetch(`${config.public.apiBase}/api/database/get-schemas`, {
+                    method: 'POST',
+                    body: connectionData,
+                    headers: { Authorization: `Bearer ${token}` }
+                })
+                return { success: true, schemas: data.schemas }
+            } catch (error) {
+                return { success: false, message: error.data?.message || 'Failed to fetch schemas' }
+            }
+        },
 
         async addConnection(connectionData) {
             const config = useRuntimeConfig()
