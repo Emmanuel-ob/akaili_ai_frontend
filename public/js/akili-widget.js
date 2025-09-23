@@ -1,9 +1,36 @@
-// Akili AI Widget - Embeddable Chat Widget
+// Akili AI Widget - Simple Embeddable Chat Widget
 (function () {
     'use strict';
 
     // Prevent multiple initializations
     if (window.AkiliWidget) return;
+
+    // Get configuration from script tag
+    const getCurrentScript = () => {
+        return document.currentScript ||
+            document.querySelector('script[data-widget-token]') ||
+            (() => {
+                const scripts = document.getElementsByTagName('script');
+                return scripts[scripts.length - 1];
+            })();
+    };
+
+    const script = getCurrentScript();
+    if (!script) {
+        console.error('Akili Widget: Could not find script tag');
+        return;
+    }
+
+    const config = {
+        widgetToken: script.getAttribute('data-widget-token'),
+        apiBase: script.getAttribute('data-api-base'),
+        authEndpoint: script.getAttribute('data-auth-endpoint') // Optional auth endpoint
+    };
+
+    if (!config.widgetToken || !config.apiBase) {
+        console.error('Akili Widget: Missing required attributes (data-widget-token, data-api-base)');
+        return;
+    }
 
     class AkiliWidget {
         constructor(config) {
@@ -12,11 +39,17 @@
             this.sessionId = null;
             this.messages = [];
             this.isTyping = false;
+            this.customerData = null;
+            this.isAuthenticated = false;
+            this.authExpiry = null;
 
             this.init();
         }
 
         async init() {
+            // Get customer data from script attributes
+            this.getCustomerDataFromScript();
+
             // Load widget configuration from API
             await this.loadConfig();
 
@@ -32,11 +65,26 @@
             }, 2000);
         }
 
+        getCustomerDataFromScript() {
+            const data = {};
+
+            // Get user data directly from script attributes
+            const email = script.getAttribute('data-user-email');
+            const name = script.getAttribute('data-user-name');
+            const id = script.getAttribute('data-user-id');
+            const phone = script.getAttribute('data-user-phone');
+
+            if (email) data.email = email;
+            if (name) data.name = name;
+            if (id) data.id = id;
+            if (phone) data.phone = phone;
+
+            this.customerData = Object.keys(data).length ? data : null;
+        }
+
         async loadConfig() {
             try {
-                // Use Laravel backend for API calls, not the widget source
-                const apiUrl = this.config.apiBase.replace(':3000', ':8000'); // Switch to Laravel port
-                const response = await fetch(`${apiUrl}/api/widget/${this.config.widgetToken}/config`);
+                const response = await fetch(`${this.config.apiBase}/api/widget/${this.config.widgetToken}/config`);
                 const data = await response.json();
 
                 if (data.success) {
@@ -59,8 +107,97 @@
                 widget_position: 'bottom-right',
                 widget_size: 'medium',
                 enable_typing_indicator: true,
-                is_active: true
+                is_active: true,
+                auth_endpoint: null // Auth endpoint configured from dashboard
             };
+        }
+
+        async authenticateUser() {
+            // Get auth endpoint from widget config (set in dashboard)
+            const authEndpoint = this.widgetConfig.auth_endpoint;
+
+            if (!authEndpoint) {
+                return false; // No auth endpoint configured
+            }
+
+            // Check if authentication is still valid
+            if (this.isAuthenticated && this.authExpiry && Date.now() < this.authExpiry) {
+                return true;
+            }
+
+            try {
+                // Build full URL if endpoint is relative
+                const authUrl = authEndpoint.startsWith('http')
+                    ? authEndpoint
+                    : window.location.origin + authEndpoint;
+
+                const response = await fetch(authUrl, {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        customer_data: this.customerData,
+                        widget_token: this.config.widgetToken
+                    })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.success) {
+                        this.isAuthenticated = true;
+                        // Set auth expiry (default 30 minutes)
+                        this.authExpiry = Date.now() + (data.expires_in || 1800) * 1000;
+                        return true;
+                    }
+                }
+                return false;
+            } catch (error) {
+                console.error('Authentication failed:', error);
+                return false;
+            }
+        }
+
+        requiresAuth(action) {
+            // Define which actions require authentication
+            const authRequiredActions = ['sensitive_query', 'account_info', 'personal_data'];
+            return authRequiredActions.includes(action);
+        }
+
+        async promptForAuth() {
+            return new Promise((resolve) => {
+                // Create auth modal
+                const modal = document.createElement('div');
+                modal.className = 'akili-auth-modal';
+                modal.innerHTML = `
+                    <div class="akili-auth-content">
+                        <h3>Authentication Required</h3>
+                        <p>This action requires verification. Please confirm your identity.</p>
+                        <div class="akili-auth-buttons">
+                            <button class="akili-auth-btn akili-auth-verify">Verify</button>
+                            <button class="akili-auth-btn akili-auth-cancel">Cancel</button>
+                        </div>
+                    </div>
+                `;
+
+                document.body.appendChild(modal);
+
+                const verifyBtn = modal.querySelector('.akili-auth-verify');
+                const cancelBtn = modal.querySelector('.akili-auth-cancel');
+
+                verifyBtn.onclick = async () => {
+                    const success = await this.authenticateUser();
+                    document.body.removeChild(modal);
+                    resolve(success);
+                };
+
+                cancelBtn.onclick = () => {
+                    document.body.removeChild(modal);
+                    resolve(false);
+                };
+            });
         }
 
         createWidget() {
@@ -137,17 +274,6 @@
                     position: fixed;
                     bottom: 20px;
                     right: 20px;
-                }
-
-                .akili-chat-widget {
-                    position: fixed;
-                    bottom: 20px;
-                    right: 20px;
-                    display: none; /* hidden by default */
-                }   
-
-                
-                .akili-chat-bubble {
                     width: 60px;
                     height: 60px;
                     border-radius: 50%;
@@ -159,6 +285,11 @@
                     transition: all 0.3s ease;
                     color: white;
                 }
+
+                .akili-bottom-left {
+                    bottom: 20px;
+                    left: 20px;
+                }
                 
                 .akili-chat-bubble:hover {
                     transform: scale(1.1);
@@ -166,6 +297,9 @@
                 }
                 
                 .akili-chat-widget {
+                    position: fixed;
+                    bottom: 20px;
+                    right: 20px;
                     width: 350px;
                     height: 500px;
                     background: white;
@@ -174,16 +308,6 @@
                     display: none;
                     flex-direction: column;
                     overflow: hidden;
-                }
-                
-                .akili-bottom-right {
-                    bottom: 20px;
-                    right: 20px;
-                }
-                
-                .akili-bottom-left {
-                    bottom: 20px;
-                    left: 20px;
                 }
                 
                 .akili-header {
@@ -251,31 +375,6 @@
                     border-bottom-left-radius: 6px;
                 }
                 
-                .akili-typing {
-                    display: flex;
-                    gap: 4px;
-                    padding: 12px 16px;
-                }
-                
-                .akili-typing-dot {
-                    width: 8px;
-                    height: 8px;
-                    border-radius: 50%;
-                    background: #9ca3af;
-                    animation: akili-bounce 1.4s ease-in-out infinite both;
-                }
-                
-                .akili-typing-dot:nth-child(1) { animation-delay: -0.32s; }
-                .akili-typing-dot:nth-child(2) { animation-delay: -0.16s; }
-                
-                @keyframes akili-bounce {
-                    0%, 80%, 100% {
-                        transform: scale(0);
-                    } 40% {
-                        transform: scale(1);
-                    }
-                }
-                
                 .akili-input-container {
                     display: flex;
                     padding: 16px;
@@ -317,17 +416,63 @@
                     opacity: 0.5;
                     cursor: not-allowed;
                 }
-                
-                .akili-sources {
-                    margin-top: 8px;
-                    padding-top: 8px;
-                    border-top: 1px solid #e5e7eb;
+
+                /* Auth Modal Styles */
+                .akili-auth-modal {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0, 0, 0, 0.5);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    z-index: 10001;
                 }
-                
-                .akili-source {
-                    font-size: 11px;
+
+                .akili-auth-content {
+                    background: white;
+                    padding: 24px;
+                    border-radius: 12px;
+                    max-width: 300px;
+                    text-align: center;
+                }
+
+                .akili-auth-content h3 {
+                    margin: 0 0 12px 0;
+                    font-size: 18px;
+                    color: #374151;
+                }
+
+                .akili-auth-content p {
+                    margin: 0 0 20px 0;
                     color: #6b7280;
-                    opacity: 0.8;
+                    font-size: 14px;
+                }
+
+                .akili-auth-buttons {
+                    display: flex;
+                    gap: 12px;
+                }
+
+                .akili-auth-btn {
+                    flex: 1;
+                    padding: 8px 16px;
+                    border: none;
+                    border-radius: 6px;
+                    cursor: pointer;
+                    font-size: 14px;
+                }
+
+                .akili-auth-verify {
+                    background: #6366f1;
+                    color: white;
+                }
+
+                .akili-auth-cancel {
+                    background: #e5e7eb;
+                    color: #374151;
                 }
                 
                 @media (max-width: 480px) {
@@ -337,6 +482,12 @@
                         border-radius: 0;
                         bottom: 0 !important;
                         right: 0 !important;
+                        left: 0 !important;
+                    }
+                    
+                    .akili-chat-bubble {
+                        right: 20px !important;
+                        left: auto !important;
                     }
                 }
             `;
@@ -378,12 +529,22 @@
             // Add user message
             this.addMessage('user', message);
 
+            // Check if message requires authentication (only if auth is enabled)
+            const requiresAuth = this.widgetConfig.require_auth && this.checkRequiresAuth(message);
+
+            if (requiresAuth && this.widgetConfig.auth_endpoint) {
+                const authenticated = await this.promptForAuth();
+                if (!authenticated) {
+                    this.addMessage('assistant', 'Authentication is required to process this request. Please try again.');
+                    return;
+                }
+            }
+
             // Show typing indicator
             this.showTyping();
 
             try {
-                const apiUrl = this.config.apiBase.replace(':3000', ':8000'); // Switch to Laravel port
-                const response = await fetch(`${apiUrl}/api/widget/chat`, {
+                const response = await fetch(`${this.config.apiBase}/api/widget/chat`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -392,9 +553,11 @@
                         message: message,
                         widget_token: this.config.widgetToken,
                         session_id: this.sessionId,
-                        customer_data: this.getCustomerData()
+                        customer_data: this.customerData,
+                        is_authenticated: this.isAuthenticated
                     })
                 });
+
                 const data = await response.json();
 
                 if (data.success) {
@@ -411,20 +574,19 @@
             }
         }
 
-        getCustomerData() {
-            // Try to extract customer data from page
-            const data = {};
+        checkRequiresAuth(message) {
+            if (!this.widgetConfig.sensitive_keywords) {
+                return false;
+            }
 
-            // Look for common customer data in various places
-            const userEmail = document.querySelector('[data-user-email]')?.getAttribute('data-user-email');
-            const userName = document.querySelector('[data-user-name]')?.getAttribute('data-user-name');
-            const userId = document.querySelector('[data-user-id]')?.getAttribute('data-user-id');
+            const keywords = this.widgetConfig.sensitive_keywords
+                .toLowerCase()
+                .split(',')
+                .map(k => k.trim())
+                .filter(k => k.length > 0);
 
-            if (userEmail) data.email = userEmail;
-            if (userName) data.name = userName;
-            if (userId) data.user_id = userId;
-
-            return Object.keys(data).length ? data : undefined;
+            const messageWords = message.toLowerCase();
+            return keywords.some(keyword => messageWords.includes(keyword));
         }
 
         addMessage(role, message, sources = []) {
@@ -438,7 +600,7 @@
                 sources.slice(0, 2).forEach(source => {
                     const sourceEl = document.createElement('div');
                     sourceEl.className = 'akili-source';
-                    sourceEl.textContent = `📄 ${source.table || 'Document'} (${Math.round(source.confidence * 100)}%)`;
+                    sourceEl.textContent = `Source: ${source.table || 'Document'}`;
                     sourcesEl.appendChild(sourceEl);
                 });
                 messageEl.appendChild(sourcesEl);
@@ -479,27 +641,16 @@
         }
     }
 
-    // Initialize widget when DOM is ready
+    // Auto-initialize when DOM is ready
     function initWidget() {
-        const script = document.currentScript;
-        const widgetToken = script.getAttribute('data-widget-token');
-        const apiBase = script.getAttribute('data-api-base');
-
-        if (!widgetToken || !apiBase) {
-            console.error('Akili Widget: Missing required attributes');
-            return;
-        }
-
-        window.AkiliWidget = new AkiliWidget({
-            widgetToken: widgetToken,
-            apiBase: apiBase
-        });
+        window.AkiliWidget = new AkiliWidget(config);
     }
 
-    // Initialize when DOM is ready
+    // Initialize based on document state
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initWidget);
     } else {
         initWidget();
     }
+
 })();

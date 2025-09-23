@@ -1,105 +1,105 @@
 <template>
-    <div class="bg-white rounded-lg shadow-sm border p-6">
-        <div class="flex items-center justify-between mb-6">
-            <div>
-                <h3 class="text-lg font-medium text-gray-900">Embed Your Chatbot</h3>
-                <p class="text-sm text-gray-500">
-                    Add this code to any website to enable the chat widget
-                </p>
+    <div class="bg-white border border-gray-200 shadow-sm">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3 class="text-xl font-semibold text-gray-900">Widget Embed Code</h3>
+                    <p class="text-gray-600 mt-1">Integrate your chatbot into any website</p>
+                </div>
+                <button @click="generateEmbedCode" :disabled="isGenerating"
+                    class="bg-gray-900 text-white px-4 py-2 font-medium hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+                    {{ isGenerating ? 'Generating...' : 'Generate Code' }}
+                </button>
             </div>
-            <button @click="generateEmbedCode" :disabled="isGenerating"
-                class="inline-flex items-center px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 disabled:opacity-50">
-                <div v-if="isGenerating" class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                {{ isGenerating ? 'Generating...' : 'Generate Embed Code' }}
-            </button>
         </div>
 
-        <div v-if="embedCode" class="space-y-4">
-            <!-- Widget Preview -->
-            <div class="bg-gray-50 rounded-lg p-4">
-                <h4 class="text-sm font-medium text-gray-900 mb-2">Preview</h4>
-                <div class="bg-white rounded-lg p-4 border-2 border-dashed border-gray-300 text-center">
-                    <div class="inline-flex items-center space-x-2 text-purple-600">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-3.582 8-8 8a8.959 8.959 0 01-4.906-1.468L3 21l2.532-5.094A8.959 8.959 0 013 12c0-4.418 3.582-8 8-8s8 3.582 8 8z" />
-                        </svg>
-                        <span class="text-sm font-medium">{{ chatbotName }} Chat Widget</span>
-                    </div>
-                    <p class="text-xs text-gray-500 mt-1">
-                        Widget will appear as a floating chat bubble on your website
-                    </p>
-                </div>
-            </div>
-
-            <!-- Embed Code -->
-            <div>
-                <div class="flex items-center justify-between mb-2">
-                    <h4 class="text-sm font-medium text-gray-900">Embed Code</h4>
+        <div v-if="embedCode" class="p-6">
+            <!-- Basic Embed Code Section -->
+            <div class="mb-8">
+                <div class="flex items-center justify-between mb-3">
+                    <h4 class="text-lg font-medium text-gray-900">Basic Embed Code</h4>
                     <button @click="copyToClipboard"
-                        class="inline-flex items-center text-sm text-purple-600 hover:text-purple-700">
-                        <template v-if="copied">
-                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M5 13l4 4L19 7" />
-                            </svg>
-                            Copied!
-                        </template>
-                        <template v-else>
-                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                            </svg>
-                            Copy Code
-                        </template>
+                        class="text-sm text-gray-700 hover:text-gray-900 font-medium border border-gray-300 px-3 py-1 hover:border-gray-400 transition-colors">
+                        {{ copied ? 'Copied' : 'Copy' }}
                     </button>
                 </div>
-                <pre class="bg-gray-900 text-gray-100 p-4 rounded-lg text-xs overflow-x-auto">
-    <code>{{ embedCode }}</code>
-</pre>
+                <div class="bg-gray-50 border border-gray-200 p-4 font-mono text-sm text-gray-800 overflow-x-auto">
+                    {{ embedCode }}
+                </div>
             </div>
 
-            <!-- Installation Instructions -->
-            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                <h4 class="text-sm font-medium text-blue-900 mb-2">Installation Instructions</h4>
-                <ol class="text-sm text-blue-800 space-y-1 list-decimal list-inside">
-                    <li>Copy the embed code above</li>
-                    <li>Paste it into your website's HTML, preferably before the closing &lt;/body&gt; tag</li>
-                    <li>Save and publish your website</li>
-                    <li>The chat widget will appear automatically on your site</li>
+            <!-- Implementation Methods -->
+            <div class="space-y-8">
+                <!-- Method 1: Simple Integration -->
+                <div>
+                    <h4 class="text-lg font-medium text-gray-900 mb-3">Method 1: Simple Integration</h4>
+                    <p class="text-gray-600 mb-4">Basic setup - works for anonymous users and logged-in users alike.</p>
+                    <div class="bg-gray-50 border border-gray-200 p-4 font-mono text-sm text-gray-800 overflow-x-auto">
+                        {{ simpleExample }}
+                    </div>
+                </div>
+
+                <!-- Method 2: User Context Integration -->
+                <div>
+                    <h4 class="text-lg font-medium text-gray-900 mb-3">Method 2: With User Context</h4>
+                    <p class="text-gray-600 mb-4">Pass logged-in user information for personalized responses.</p>
+                    <div class="bg-gray-50 border border-gray-200 p-4 font-mono text-sm text-gray-800 overflow-x-auto">
+                        {{ userContextExample }}
+                    </div>
+                    <div class="mt-4 p-3 bg-blue-50 border border-blue-200 text-blue-800 text-sm">
+                        <strong>Note:</strong> Replace the PHP variables with your application's user data or equivalent
+                        template variables for other frameworks.
+                    </div>
+                </div>
+
+                <!-- Method 3: With Authentication -->
+                <div>
+                    <h4 class="text-lg font-medium text-gray-900 mb-3">Method 3: With Authentication Endpoint</h4>
+                    <p class="text-gray-600 mb-4">Enable authentication for sensitive queries. Configure your auth
+                        endpoint in chatbot settings.</p>
+
+                    <div class="mb-4 p-3 bg-blue-50 border border-blue-200 text-blue-800 text-sm">
+                        <strong>Setup Required:</strong> First configure your authentication endpoint URL in the chatbot
+                        behavior settings.
+                    </div>
+
+                    <h5 class="font-medium text-gray-800 mb-2">1. Widget Code (same as Method 2):</h5>
+                    <div
+                        class="bg-gray-50 border border-gray-200 p-4 font-mono text-sm text-gray-800 overflow-x-auto mb-4">
+                        {{ userContextExample }}
+                    </div>
+
+                    <h5 class="font-medium text-gray-800 mb-2">2. Create Authentication Endpoint on Your Server:</h5>
+                    <div class="bg-gray-50 border border-gray-200 p-4 font-mono text-sm text-gray-800 overflow-x-auto">
+                        {{ authEndpointExample }}
+                    </div>
+
+                    <div class="mt-4 p-3 bg-amber-50 border border-amber-200 text-amber-800 text-sm">
+                        <strong>How it works:</strong> When users ask sensitive questions, the widget calls your
+                        configured auth endpoint to verify the user. Set the endpoint URL in chatbot behavior settings.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Installation Steps -->
+            <div class="mt-8 p-4 border border-gray-200">
+                <h4 class="text-lg font-medium text-gray-900 mb-3">Installation Steps</h4>
+                <ol class="text-gray-700 space-y-2">
+                    <li><strong>1.</strong> Copy the embed code above</li>
+                    <li><strong>2.</strong> Choose your implementation method (Simple, User Context, or With
+                        Authentication)</li>
+                    <li><strong>3.</strong> Add the code before the closing &lt;/body&gt; tag in your HTML</li>
+                    <li><strong>4.</strong> If using Method 3, create the authentication endpoint on your server</li>
+                    <li><strong>5.</strong> Test the widget on your website</li>
                 </ol>
             </div>
 
-            <!-- Widget Configuration -->
-            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                <h4 class="text-sm font-medium text-yellow-900 mb-2">Widget Token</h4>
-                <p class="text-sm text-yellow-800 mb-2">
-                    Your widget token: <code class="bg-yellow-200 px-1 rounded text-xs">{{ widgetToken }}</code>
-                </p>
-                <p class="text-xs text-yellow-700">
-                    Keep this token secure. If compromised, regenerate the embed code to get a new token.
-                </p>
-            </div>
-
-            <!-- Advanced Configuration -->
-            <div class="border-t pt-4">
-                <h4 class="text-sm font-medium text-gray-900 mb-2">Advanced Configuration</h4>
-                <div class="text-sm text-gray-600 space-y-2">
-                    <div>
-                        <strong>Customer Data Integration:</strong>
-                        <p class="text-xs mt-1">
-                            To pass customer data to the widget, add these attributes to elements on your page:
-                        </p>
-                        <pre
-                            class="bg-gray-100 p-2 rounded text-xs mt-1 overflow-x-auto">{{ customerDataExample }}</pre>
-                    </div>
-                    <div>
-                        <strong>Styling:</strong>
-                        <p class="text-xs mt-1">
-                            Widget appearance can be customized from the chatbot settings page.
-                        </p>
-                    </div>
-                </div>
+            <!-- Widget Token Info -->
+            <div class="mt-6 p-4 bg-gray-50 border border-gray-200">
+                <h4 class="text-lg font-medium text-gray-900 mb-2">Widget Token</h4>
+                <div class="font-mono text-sm text-gray-600 mb-2">{{ widgetToken }}</div>
+                <p class="text-sm text-gray-600">This token identifies your chatbot. Keep it secure and regenerate if
+                    compromised.</p>
             </div>
         </div>
     </div>
@@ -107,6 +107,8 @@
 
 <script setup>
 import { ref } from 'vue'
+
+
 
 const props = defineProps({
     chatbotId: {
@@ -124,9 +126,10 @@ const widgetToken = ref('')
 const isGenerating = ref(false)
 const copied = ref(false)
 
-const customerDataExample = `<div data-user-email="user@example.com"></div>
-<div data-user-name="John Doe"></div>
-<div data-user-id="12345"></div>`
+// Example code snippets
+const simpleExample = ref('')
+const userContextExample = ref('')
+const authEndpointExample = ref('')
 
 const generateEmbedCode = async () => {
     isGenerating.value = true
@@ -142,12 +145,58 @@ const generateEmbedCode = async () => {
         })
 
         if (response.success) {
-            embedCode.value = response.embed_code
             widgetToken.value = response.widget_token
+            const baseUrl = config.public.apiBase
+
+            // Fix: Re-construct the string to avoid the compiler error
+            embedCode.value = '<script src="' + baseUrl + '/js/akili-widget.js" data-widget-token="' + response.widget_token + '" data-api-base="' + baseUrl + '" defer></' + 'script>';
+
+            // Generate examples
+            simpleExample.value = `<script src="${baseUrl}/js/akili-widget.js" data-widget-token="${response.widget_token}" data-api-base="${baseUrl}" defer></` + `script>`;
+
+            userContextExample.value = `<script src="${baseUrl}/js/akili-widget.js" data-widget-token="${response.widget_token}" data-api-base="${baseUrl}" data-user-email="<?= $user->email ?>" data-user-name="<?= $user->name ?>" data-user-id="<?= $user->id ?>" defer></` + `script>`;
+
+            authEndpointExample.value = `// Example in PHP/Laravel
+Route::post('/api/widget-auth', function(Request $request) {
+    $user = auth()->user();
+
+    if (!$user) {
+        return response()->json(['success' => false], 401);
+    }
+
+    // Verify the customer data matches current user
+    $customerData = $request->input('customer_data');
+    if ($customerData['email'] !== $user->email) {
+        return response()->json(['success' => false], 403);
+    }
+
+    return response()->json([
+        'success' => true,
+        'expires_in' => 1800 // 30 minutes
+    ]);
+});
+
+// Example in Node.js/Express
+app.post('/api/widget-auth', (req, res) => {
+    const user = req.user; // From your auth middleware
+
+    if (!user) {
+        return res.status(401).json({ success: false });
+    }
+
+    const { customer_data } = req.body;
+    if (customer_data.email !== user.email) {
+        return res.status(403).json({ success: false });
+    }
+
+    res.json({
+        success: true,
+        expires_in: 1800 // 30 minutes
+    });
+});`
         }
     } catch (error) {
         console.error('Failed to generate embed code:', error)
-        // You could show a toast notification here
         alert('Failed to generate embed code. Please try again.')
     } finally {
         isGenerating.value = false
@@ -160,10 +209,11 @@ const copyToClipboard = async () => {
         copied.value = true
         setTimeout(() => copied.value = false, 2000)
     } catch (error) {
-        console.error('Failed to copy:', error)
         // Fallback for older browsers
         const textArea = document.createElement('textarea')
         textArea.value = embedCode.value
+        textArea.style.position = 'fixed'
+        textArea.style.opacity = '0'
         document.body.appendChild(textArea)
         textArea.select()
         document.execCommand('copy')
