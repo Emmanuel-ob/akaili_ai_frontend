@@ -1,10 +1,10 @@
 <!-- components/AppLogo.vue -->
 <template>
   <div class="flex items-center" :class="centerClass">
-    <div class="bg-purple-600 rounded-full flex items-center justify-center" :class="sizeClasses.container">
+    <div class="bg-[#7F56D9] rounded-full flex items-center justify-center" :class="sizeClasses.container">
       <span class="text-white font-bold" :class="sizeClasses.text">A</span>
     </div>
-    <h1 class="ml-3 font-bold text-purple-600" :class="sizeClasses.title">Akili AI</h1>
+    <h1 class="ml-3 font-bold text-[#7F56D9]" :class="sizeClasses.title">Akili AI</h1>
   </div>
 </template>
 

@@ -14,7 +14,7 @@ const closeNav = () => {
 </script>
 
 <template>
-  <div class="transition-all duration-200 h-[9vh] md:h-[12vh] z-[100] fixed w-full bg-white">
+  <div class="transition-all duration-200 h-[9vh] md:h-[10vh] lg:h-[12vh] z-[100] fixed w-full bg-white">
     <div class="flex items-center h-full md:w-[95%] lg:w-[95%] justify-between sm:w-[80%] mx-[2rem]">
       <!-- LOGO -->
       <NuxtLink to="/" class="font-bold text-2xl sm:text-3xl">
@@ -65,7 +65,7 @@ const closeNav = () => {
 
     <!-- Mobile Nav Drawer -->
     <div
-      class="fixed top-0 left-0 h-full w-[80%] sm:w-[60%] bg-purple-600 text-white flex flex-col space-y-10 pt-20 pl-12 transform transition-transform duration-500 z-[1050]"
+      class="fixed top-0 left-0 h-full w-[80%] sm:w-[60%] bg-[#7F56D9] text-white flex flex-col space-y-10 pt-20 pl-12 transform transition-transform duration-500 z-[1050]"
       :class="navOpen ? 'translate-x-0' : '-translate-x-full'"
     >
       <!-- Close Button -->
@@ -85,7 +85,7 @@ const closeNav = () => {
         {{ link.label }}
       </NuxtLink>
        <NuxtLink to="/get-started">
-          <button class=" px-11 py-4 nav_primary_btn text-white rounded-lg">
+          <button class=" px-11 py-4 bg-[#0b1020] hover:bg-purple-700 text-white rounded-lg">
             Get Started
           </button>
         </NuxtLink>

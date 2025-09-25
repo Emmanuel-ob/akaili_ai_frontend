@@ -10,7 +10,7 @@
 
 <script setup>
 // This page handles the social auth callback
-onMounted(() => {
+onMounted(async () => {
   const route = useRoute()
   
   // Check if we have auth data in the URL or handle the callback
@@ -28,7 +28,7 @@ onMounted(() => {
       // Not in popup, redirect normally
       const authStore = useAuthStore()
       const user = JSON.parse(decodeURIComponent(route.query.user))
-      authStore.setAuth(route.query.token, user)
+     await  authStore.setAuth(route.query.token, user)
       
       // If this is email verification, go to onboarding
       if (route.query.verified === 'true') {
@@ -50,7 +50,7 @@ onMounted(() => {
       }, window.location.origin)
       window.close()
     } else {
-      navigateTo('/dashboard/login?error=' + encodeURIComponent(route.query.error))
+      navigateTo('/login?error=' + encodeURIComponent(route.query.error))
     }
   } else {
     // No valid callback data
@@ -61,7 +61,7 @@ onMounted(() => {
       }, window.location.origin)
       window.close()
     } else {
-      navigateTo('/dashboard/login?error=auth_failed')
+      navigateTo('/login?error=auth_failed')
     }
   }
 })

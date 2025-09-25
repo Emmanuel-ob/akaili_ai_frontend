@@ -2,11 +2,8 @@
 
 
 <template>
-    <div class="overflow-hidden">
-      <Hero />
-      <ProductSuite />
-      <Features />    
-      <TestimonialCarousel />
+    <div class="overflow-hidden  bg-[#0b1020] pt-30 md:pt-38 lg:pt-43">
+      <Testimonials />
       <CtaBanner />
       <GradualBlur
   preset="footer"
@@ -20,13 +17,8 @@
 
 
 <script setup>
-import Hero from '../components/homepage/Hero.vue'
-import ProductSuite from '../components/homepage/ProductSuite.vue'
-import Features from '../components/homepage/Features.vue'
-import TestimonialCarousel from '~/components/homepage/TestimonialCarousel.vue'
-import CtaBanner from '../components/homepage/CtaBanner.vue'
+import Testimonials from '../components/homepage/Testimonials.vue'
 import GradualBlur from '~/components/homepage/GradualBlur.vue'
-import { onMounted } from 'vue'
 
 
 definePageMeta({
@@ -46,7 +38,7 @@ useSeoMeta({
   twitterImage: '[twitter:image]',
   twitterCard: 'summary'
 })
-    onMounted(() => {
+onMounted(() => {
   if (window.AOS) {
     window.AOS.init({
       duration: 1000,
@@ -54,5 +46,4 @@ useSeoMeta({
     })
   }
 })
-    
 </script>

@@ -85,6 +85,11 @@
 </template>
 
 <script setup>
+
+definePageMeta({
+  layout: false
+})
+
 const authStore = useAuthStore()
 // const onboardingStore = useOnboardingStore()
 const router = useRouter()

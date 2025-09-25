@@ -6,7 +6,7 @@
       <div class="text-center mb-8">
         <div class="flex items-center justify-center mb-4">
 
-  <AppLogo size="md" center />
+          <AppLogo size="md" center />
 
 
 
@@ -16,39 +16,28 @@
       </div>
 
       <!-- Social Login -->
-      <SocialAuthButtons class="mb-6"  @social-auth="handleSocialAuth" />
+      <SocialAuthButtons class="mb-6" @social-auth="handleSocialAuth" />
       <!-- Divider -->
-  <AuthDivider class="mb-6" />
+      <AuthDivider class="mb-6" />
 
       <!-- Login Form -->
       <form class="space-y-4" @submit.prevent="handleLogin">
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-          <input
-            v-model="form.email"
-            type="email"
-            required
+          <input v-model="form.email" type="email" required
             class="w-full px-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-            placeholder="Enter your email"
-          >
+            placeholder="Enter your email">
         </div>
 
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
-          <input
-            v-model="form.password"
-            type="password"
-            required
+          <input v-model="form.password" type="password" required
             class="w-full px-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-            placeholder="Enter your password"
-          >
+            placeholder="Enter your password">
         </div>
 
-        <button
-          type="submit"
-          :disabled="loading"
-          class="w-full bg-purple-600 text-white py-3 px-4 rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-        >
+        <button type="submit" :disabled="loading"
+          class="w-full bg-[#7F56D9] text-white py-3 px-4 rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
           {{ loading ? 'Signing in...' : 'Sign In' }}
         </button>
       </form>
@@ -61,7 +50,7 @@
       <!-- Sign Up Link -->
       <p class="mt-6 text-center text-sm text-gray-600">
         Don't have an account?
-        <NuxtLink to="/register" class="font-medium text-purple-600 hover:text-purple-500">
+        <NuxtLink to="/register" class="font-medium text-[#7F56D9] hover:text-purple-500">
           Sign up
         </NuxtLink>
       </p>
@@ -70,6 +59,11 @@
 </template>
 
 <script setup>
+
+definePageMeta({
+  layout: 'empty'
+})
+
 const authStore = useAuthStore()
 // const onboardingStore = useOnboardingStore()
 const router = useRouter()
@@ -111,7 +105,7 @@ const handleSocialAuth = async (provider) => {
 // Check if already logged in and handle URL parameters
 onMounted(() => {
   authStore.initializeAuth()
-  
+
   if (authStore.isLoggedIn) {
     router.push('/dashboard')
     return
@@ -121,7 +115,7 @@ onMounted(() => {
   if (route.query.success) {
     success.value = decodeURIComponent(route.query.success)
   }
-  
+
   if (route.query.error) {
     error.value = decodeURIComponent(route.query.error)
   }

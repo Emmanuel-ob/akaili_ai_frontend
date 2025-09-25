@@ -1,4 +1,4 @@
-// stores/dashboard/onboarding.js
+// stores/onboarding.js
 import { defineStore } from 'pinia'
 import { useAuthStore } from '~/stores/authStore'
 
@@ -20,7 +20,7 @@ export const useOnboardingStore = defineStore('onboarding', {
             const { token } = useAuthStore()
 
             try {
-                const data = await $fetch(`${config.public.apiBase}/api/dashboard/onboarding/status`, {
+                const data = await $fetch(`${config.public.apiBase}/api/onboarding/status`, {
                     headers: { Authorization: `Bearer ${token}` }
                 })
 
@@ -38,7 +38,7 @@ export const useOnboardingStore = defineStore('onboarding', {
 
             this.loading = true
             try {
-                const data = await $fetch(`${config.public.apiBase}/api/dashboard/onboarding/company-setup`, {
+                const data = await $fetch(`${config.public.apiBase}/api/onboarding/company-setup`, {
                     method: 'POST',
                     body: companyData,
                     headers: { Authorization: `Bearer ${token}` }
@@ -60,7 +60,7 @@ export const useOnboardingStore = defineStore('onboarding', {
 
             this.loading = true
             try {
-                const data = await $fetch(`${config.public.apiBase}/api/dashboard/onboarding/create-chatbot`, {
+                const data = await $fetch(`${config.public.apiBase}/api/onboarding/create-chatbot`, {
                     method: 'POST',
                     body: chatbotData,
                     headers: { Authorization: `Bearer ${token}` }
