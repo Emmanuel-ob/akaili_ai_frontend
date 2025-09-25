@@ -1,0 +1,32 @@
+version: 1
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - echo "Installing dependencies using pnpm..."
+        - nvm install 20
+        - nvm use 20
+        - corepack enable
+        - corepack prepare pnpm@latest --activate
+        - pnpm install
+        - pnpm add -D @esbuild-plugins/node-globals-polyfill
+    build:
+      commands:
+        - echo "Patching oxc-parser bindings.js if missing..."
+        - |
+          if ! find node_modules -path '*oxc-parser*/bindings.js' | grep -q bindings.js; then
+            echo "bindings.js missing — patching with dummy parseSync..."
+            for dir in $(find node_modules -type d -path '*oxc-parser*/node_modules/oxc-parser'); do
+              echo "module.exports = { parseSync() { return {}; } };" > "$dir/bindings.js"
+            done
+          fi
+        - echo "Building Nuxt app..."
+        - pnpm run build
+  artifacts:
+    baseDirectory: .output/public
+    files:
+      - '**/*'
+  cache:
+    paths:
+      - node_modules/**/*
+      - .pnpm-store/**/*
