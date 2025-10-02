@@ -78,33 +78,31 @@
             </div>
         </main>
 
-        <!-- Embed Code Generator - Fixed Logic -->
-        <div v-if="selectedChatbot && selectedChatbot.is_active" class="px-6 mt-8">
-            <EmbedCodeGenerator :chatbot-id="selectedChatbot.id"
-                :chatbot-name="selectedChatbot.name || 'AI Assistant'" />
-        </div>
-
-        <!-- Chatbot Not Active Warning -->
-        <div v-if="selectedChatbot && !selectedChatbot.is_active"
-            class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mx-6 mt-8">
-            <div class="flex">
-                <div class="flex-shrink-0">
-                    <svg class="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd"
-                            d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
-                            clip-rule="evenodd" />
-                    </svg>
-                </div>
-                <div class="ml-3">
-                    <h3 class="text-sm font-medium text-yellow-800">
-                        Chatbot Not Active
-                    </h3>
-                    <p class="mt-2 text-sm text-yellow-700">
-                        Your chatbot needs to be activated before you can generate embed code.
-                        Make sure to activate it in the settings above.
-                    </p>
+        <!-- Embed Code Generator - Always show if chatbot exists -->
+        <div v-if="selectedChatbot" class="px-6 mt-8 mb-8">
+            <div v-if="!selectedChatbot.is_active" class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <svg class="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd"
+                                d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                                clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <div class="ml-3">
+                        <h3 class="text-sm font-medium text-yellow-800">
+                            Chatbot Not Active
+                        </h3>
+                        <p class="mt-2 text-sm text-yellow-700">
+                            Your chatbot needs to be activated before the widget will work on your website.
+                            You can still generate and prepare your embed code, but activate the chatbot in settings to
+                            make it live.
+                        </p>
+                    </div>
                 </div>
             </div>
+            <EmbedCodeGenerator :chatbot-id="selectedChatbot.id"
+                :chatbot-name="selectedChatbot.name || 'AI Assistant'" />
         </div>
     </div>
 </template>
@@ -125,7 +123,6 @@ const tabs = [
     { key: 'behaviour', label: 'Behaviour' }
 ]
 
-// Default form data
 const defaultFormData = {
     name: 'Customer Support Assistant',
     description: 'A helpful assistant for support and inquiries',
@@ -151,30 +148,24 @@ const isEditing = ref(false)
 const currentChatbotId = ref(null)
 const selectedChatbotId = ref(null)
 
-// Fixed computed properties
 const hasChatbot = computed(() => chatbotStore.chatbots.length > 0)
 
 const selectedChatbot = computed(() => {
     if (selectedChatbotId.value) {
         return chatbotStore.chatbots.find(bot => bot.id === selectedChatbotId.value)
     }
-    // Fallback to first chatbot if no specific selection
     return chatbotStore.chatbots[0] || null
 })
 
-// Load existing chatbot data
 const loadChatbotData = () => {
     const chatbot = selectedChatbot.value
 
     if (chatbot) {
         isEditing.value = true
         currentChatbotId.value = chatbot.id
-        console.log('Editing chatbot with ID:', currentChatbotId.value)
 
-        // Reset form to defaults first
         Object.assign(formData, defaultFormData)
 
-        // Populate form with existing data
         Object.keys(formData).forEach(key => {
             if (chatbot[key] !== undefined) {
                 formData[key] = chatbot[key]
@@ -193,35 +184,25 @@ const saveChanges = async () => {
     }
 
     if (result.success) {
-        // Refresh chatbots and reload data
         await chatbotStore.fetchChatbots()
 
-        // If we just created a chatbot, select it
         if (!isEditing.value && result.data) {
             selectedChatbotId.value = result.data.id
         }
 
         loadChatbotData()
-
-        // Show success message (you can add your notification system here)
-        console.log(isEditing.value ? 'Chatbot updated successfully' : 'Chatbot created successfully')
-    } else {
-        console.error(result.message)
-        // Show error message
     }
 }
 
 onMounted(async () => {
     await chatbotStore.fetchChatbots()
 
-    // Auto-select first chatbot if available
     if (chatbotStore.chatbots.length > 0) {
         selectedChatbotId.value = chatbotStore.chatbots[0].id
         loadChatbotData()
     }
 })
 
-// Provide formData to child components
 provide('formData', formData)
 provide('isEditing', readonly(isEditing))
 </script>

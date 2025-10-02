@@ -7,13 +7,21 @@
 
     // Get configuration from script tag
     const getCurrentScript = () => {
-        return document.currentScript ||
-            document.querySelector('script[data-widget-token]') ||
-            (() => {
-                const scripts = document.getElementsByTagName('script');
-                return scripts[scripts.length - 1];
-            })();
+        // First try currentScript (works if loaded via <script src> normally)
+        if (document.currentScript) return document.currentScript;
+
+        // Try last script in DOM that matches our filename
+        const scripts = document.getElementsByTagName('script');
+        for (let i = scripts.length - 1; i >= 0; i--) {
+            if (scripts[i].src && scripts[i].src.includes("akili-widget.js")) {
+                return scripts[i];
+            }
+        }
+
+        // Fallback: find script with data-widget-token
+        return document.querySelector('script[data-widget-token]');
     };
+
 
     const script = getCurrentScript();
     if (!script) {
