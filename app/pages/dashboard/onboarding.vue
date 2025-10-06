@@ -13,7 +13,7 @@
     <!-- Loading State -->
     <div v-if="loading" class="flex items-center justify-center min-h-screen">
       <div class="text-center">
-        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"/>
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-[#7F56D9] mx-auto mb-4"/>
         <p class="text-gray-400">Loading...</p>
       </div>
     </div>
@@ -21,7 +21,7 @@
     <!-- Company Setup Step -->
     <div v-else-if="currentStep === 'company_setup'" class="container mx-auto px-4 py-8">
       <div class="flex items-center justify-center mb-8">
-        <div class="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center mr-2">
+        <div class="w-8 h-8 bg-[#7F56D9] rounded-full flex items-center justify-center mr-2">
           <span class="text-white font-bold text-sm">A</span>
         </div>
         <h1 class="text-xl font-semibold text-purple-400">Company Setup</h1>
@@ -79,7 +79,7 @@
                 v-model="companyForm.plan" 
                 type="radio" 
                 value="free" 
-                class="text-purple-600"
+                class="text-[#7F56D9]"
               >
               <div class="ml-3">
                 <div class="font-medium">Free Plan</div>
@@ -92,7 +92,7 @@
                 v-model="companyForm.plan" 
                 type="radio" 
                 value="starter" 
-                class="text-purple-600"
+                class="text-[#7F56D9]"
               >
               <div class="ml-3">
                 <div class="font-medium">Starter Plan</div>
@@ -112,7 +112,7 @@
 
       <div class="flex justify-center mt-8">
         <button 
-        class="px-8 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        class="px-8 py-3 bg-[#7F56D9] text-white rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         :disabled="isSubmitting || !companyForm.company_name || !companyForm.industry"
           @click="handleCompanySetup" 
         >
@@ -124,7 +124,7 @@
     <!-- Create Chatbot Step -->
     <div v-else-if="currentStep === 'create_chatbot'" class="container mx-auto px-4 py-8">
       <div class="flex items-center justify-center mb-8">
-        <div class="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center mr-2">
+        <div class="w-8 h-8 bg-[#7F56D9] rounded-full flex items-center justify-center mr-2">
           <span class="text-white font-bold text-sm">A</span>
         </div>
         <h1 class="text-xl font-semibold text-purple-400">Create Your Chatbot</h1>
@@ -190,7 +190,7 @@
             Skip for Now
           </button>
           <button 
-          class="px-8 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          class="px-8 py-3 bg-[#7F56D9] text-white rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           :disabled="isSubmitting || !chatbotForm.name"
             @click="handleChatbotCreation" 
           >
@@ -218,7 +218,7 @@
           </p>
           
           <button 
-          class="px-8 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors text-lg"
+          class="px-8 py-3 bg-[#7F56D9] text-white rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors text-lg"
             @click="goToDashboard"
           >
             Go to Dashboard
@@ -339,6 +339,6 @@ onMounted(async () => {
 <!-- <style scoped>
 /* Custom radio button styling */
 input[type="radio"] {
-  @apply w-4 h-4 text-purple-600 bg-gray-800 border-gray-600 focus:ring-purple-500 focus:ring-2;
+  @apply w-4 h-4 text-[#7F56D9] bg-gray-800 border-gray-600 focus:ring-purple-500 focus:ring-2;
 }
 </style> -->

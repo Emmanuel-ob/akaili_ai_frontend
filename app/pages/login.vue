@@ -4,13 +4,14 @@
     <div class="max-w-md w-full">
       <!-- Logo -->
       <div class="text-center mb-8">
-        <div class="flex items-center justify-center mb-4">
+        
+        <NuxtLink class="flex items-center justify-center mb-4 hover:cursor-pointer" to="/">
 
           <AppLogo size="md" center />
 
 
 
-        </div>
+        </NuxtLink>
         <h2 class="text-2xl font-semibold text-gray-800 mb-2">Welcome back</h2>
         <p class="text-gray-600">Sign in to your account</p>
       </div>

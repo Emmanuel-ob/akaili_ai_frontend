@@ -1,7 +1,7 @@
 <template>
     <div class="bg-white rounded-lg shadow-lg max-w-2xl mx-auto">
         <!-- Chat Header -->
-        <div class="bg-purple-600 text-white px-6 py-4 rounded-t-lg">
+        <div class="bg-[#7F56D9] text-white px-6 py-4 rounded-t-lg">
             <h3 class="text-lg font-semibold">{{ chatbotName || 'AI Assistant' }}</h3>
             <p class="text-purple-100 text-sm">Test your chatbot here</p>
         </div>
@@ -21,7 +21,7 @@
                 <div :class="[
                     'max-w-xs lg:max-w-md px-4 py-2 rounded-lg text-sm',
                     message.role === 'user'
-                        ? 'bg-purple-600 text-white'
+                        ? 'bg-[#7F56D9] text-white'
                         : 'bg-white text-gray-800 shadow-sm'
                 ]">
                     <p class="whitespace-pre-wrap">{{ message.message }}</p>
@@ -64,7 +64,7 @@
                     placeholder="Type your message..."
                     class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:bg-gray-100" />
                 <button @click="sendMessage" :disabled="!currentMessage.trim() || isTyping"
-                    class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:opacity-50 disabled:cursor-not-allowed">
+                    class="px-4 py-2 bg-[#7F56D9] text-white rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:opacity-50 disabled:cursor-not-allowed">
                     Send
                 </button>
             </div>

@@ -123,7 +123,7 @@
                     </button>
 
                     <button v-if="status === 'failed'" @click="retrySync"
-                        class="px-4 py-2 text-sm text-white bg-purple-600 hover:bg-purple-700 rounded-md">
+                        class="px-4 py-2 text-sm text-white bg-[#7F56D9] hover:bg-purple-700 rounded-md">
                         Retry Sync
                     </button>
                 </div>

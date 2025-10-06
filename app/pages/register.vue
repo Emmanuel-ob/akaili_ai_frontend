@@ -5,7 +5,9 @@
       <!-- Logo -->
 
 <div class="text-center mb-8">
+    <NuxtLink class="hover:cursor-pointer" to="/"> 
   <AppLogo size="md" center />
+  </NuxtLink>
   <h2 class="text-2xl font-semibold text-gray-800 mb-2 mt-4">Create your account</h2>
   <p class="text-gray-600">Start building your intelligent chatbot</p>
 </div>
@@ -58,7 +60,7 @@
         <button
           type="submit"
           :disabled="loading"
-          class="w-full bg-purple-600 text-white py-3 px-4 rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          class="w-full bg-[#7F56D9] text-white py-3 px-4 rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
           {{ loading ? 'Creating account...' : 'Create Account' }}
         </button>

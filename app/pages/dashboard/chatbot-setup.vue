@@ -51,7 +51,7 @@
 
         <div class="grid grid-cols-3 gap-1 text-center mx-4 mb-8 mt-5">
             <div v-for="tab in tabs" :key="tab.key"
-                class="py-2 cursor-pointer transition-all duration-200 hover:bg-gray-100 rounded-xl"
+                class="py-2 cursor-pointer transition-all duration-200 hover:bg-gray-200 rounded-xl"
                 :class="activeTab === tab.key ? 'active_chatbot_setup' : ''" @click="activeTab = tab.key">
                 {{ tab.label }}
             </div>

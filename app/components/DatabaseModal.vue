@@ -1,137 +1,230 @@
 <!-- components/DatabaseModal.vue -->
 <template>
   <BaseModal :show="show" title="Add Database Connection" @close="$emit('close')">
-    <form class="space-y-4" @submit.prevent="handleSubmit">
-      <FormInput v-model="form.name" label="Connection Name" placeholder="e.g., Products Database" required />
+    <form class="space-y-6" @submit.prevent="handleSubmit">
+      <!-- Responsive 2-column grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- Left Column: Connection details -->
+        <div class="space-y-4">
+          <FormInput
+            v-model="form.name"
+            label="Connection Name"
+            placeholder="e.g., Products Database"
+            required
+          />
 
-      <FormSelect v-model="form.type" label="Database Type" placeholder="Select database type" :options="databaseTypes"
-        required @update:model-value="updateDefaultPort" />
+          <FormSelect
+            v-model="form.type"
+            label="Database Type"
+            placeholder="Select database type"
+            :options="databaseTypes"
+            required
+            @update:model-value="updateDefaultPort"
+          />
 
-      <FormSelect v-model="form.chatbot_id" label="Chatbot" placeholder="Select chatbot" :options="chatbotOptions"
-        required />
+          <FormSelect
+            v-model="form.chatbot_id"
+            label="Chatbot"
+            placeholder="Select chatbot"
+            :options="chatbotOptions"
+            required
+          />
 
-      <!-- Connection Method Toggle -->
-      <div class="mb-4">
-        <label class="block text-sm font-medium text-gray-700 mb-2">Connection Method</label>
-        <div class="flex space-x-4">
-          <label class="flex items-center">
-            <input v-model="connectionMethod" type="radio" value="manual"
-              class="mr-2 text-purple-600 focus:ring-purple-500">
-            Manual Configuration
-          </label>
-          <label class="flex items-center">
-            <input v-model="connectionMethod" type="radio" value="string"
-              class="mr-2 text-purple-600 focus:ring-purple-500">
-            Connection String
-          </label>
-        </div>
-      </div>
-
-      <!-- Connection String Input -->
-      <div v-if="connectionMethod === 'string'">
-        <FormInput v-model="form.connection_string" label="Connection String"
-          placeholder="mysql://user:password@host:port/database" required @blur="onConnectionStringBlur" />
-        <div class="mt-2 p-3 bg-blue-50 border border-blue-200 rounded-md">
-          <p class="text-sm text-blue-800">
-            <strong>Examples:</strong><br>
-            MySQL: <code class="bg-blue-100 px-1 rounded">mysql://user:pass@host:3306/dbname</code><br>
-            PostgreSQL: <code class="bg-blue-100 px-1 rounded">postgresql://user:pass@host:5432/dbname</code><br>
-            MongoDB: <code class="bg-blue-100 px-1 rounded">mongodb+srv://user:pass@host/dbname</code>
-          </p>
-        </div>
-      </div>
-
-      <!-- Manual Configuration -->
-      <div v-else class="space-y-4">
-        <div class="grid grid-cols-2 gap-4">
-          <FormInput v-model="form.host" label="Host" placeholder="localhost" required
-            @blur="onConnectionDetailsChange" />
-          <FormInput v-model="form.port" label="Port" type="number" :placeholder="getDefaultPort(form.type)"
-            @blur="onConnectionDetailsChange" />
-        </div>
-
-        <div class="grid grid-cols-2 gap-4">
-          <FormInput v-model="form.username" label="Username" required @blur="onConnectionDetailsChange" />
-          <FormInput v-model="form.password" label="Password" type="password" @blur="onConnectionDetailsChange" />
-        </div>
-      </div>
-
-      <!-- Auto-fetch databases when connection details are complete -->
-      <div v-if="canLoadDatabases && !showDatabaseSelect">
-        <button type="button" @click="fetchDatabases" :disabled="loadingDatabases"
-          class="w-full px-4 py-2 text-sm text-purple-600 border border-purple-200 rounded-md hover:bg-purple-50 disabled:opacity-50">
-          {{ loadingDatabases ? 'Loading Databases...' : 'Load Available Databases' }}
-        </button>
-      </div>
-
-      <!-- Missing Fields Warning -->
-      <div v-if="showMissingFieldsWarning" class="p-3 bg-yellow-50 border border-yellow-200 rounded-md">
-        <p class="text-sm text-yellow-800">
-          <strong>Missing required fields:</strong> {{ missingFields.join(', ') }}
-          <br>Please fill all required fields to load available databases.
-        </p>
-      </div>
-
-      <!-- Database Selection -->
-      <div v-if="showDatabaseSelect">
-        <FormSelect v-model="form.database" label="Database" placeholder="Select database"
-          :options="availableDatabases.map(db => ({ value: db, label: db }))" required
-          @update:model-value="onDatabaseChange" />
-
-        <!-- Database Warning -->
-        <div v-if="getDatabaseWarning(form.database)" class="mt-2 p-3 bg-yellow-50 border border-yellow-200 rounded-md">
-          <p class="text-sm text-yellow-800">
-            <strong>⚠️ Warning:</strong> {{ getDatabaseWarning(form.database) }}
-          </p>
-        </div>
-
-        <!-- Schema Selection for PostgreSQL -->
-        <div v-if="form.type === 'postgresql' && availableSchemas.length > 0" class="mt-4">
-          <label class="block text-sm font-medium text-gray-700 mb-2">
-            Select Schemas <span class="text-red-500">*</span>
-          </label>
-          <div class="space-y-2 max-h-32 overflow-y-auto border border-gray-200 rounded p-2">
-            <label v-for="schema in availableSchemas" :key="schema"
-              class="flex items-center p-1 hover:bg-gray-50 rounded cursor-pointer">
-              <input v-model="selectedSchemas" type="checkbox" :value="schema"
-                class="mr-2 text-purple-600 focus:ring-purple-500">
-              <span class="text-sm">{{ schema }}</span>
+          <!-- Connection Method Toggle -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+              Connection Method
             </label>
-          </div>
-          <p class="text-xs text-gray-500 mt-1">Selected schemas will be used for table filtering</p>
-
-          <div v-if="selectedSchemas.length === 0" class="mt-2 p-2 bg-yellow-50 border border-yellow-200 rounded-md">
-            <p class="text-sm text-yellow-800">At least one schema must be selected for PostgreSQL connections.</p>
+            <div class="flex space-x-6">
+              <label class="flex items-center text-sm text-gray-700">
+                <input
+                  v-model="connectionMethod"
+                  type="radio"
+                  value="manual"
+                  class="mr-2 text-purple-600 focus:ring-purple-500"
+                />
+                Manual
+              </label>
+              <label class="flex items-center text-sm text-gray-700">
+                <input
+                  v-model="connectionMethod"
+                  type="radio"
+                  value="string"
+                  class="mr-2 text-purple-600 focus:ring-purple-500"
+                />
+                Connection String
+              </label>
+            </div>
           </div>
         </div>
 
-        <button type="button" @click="resetDatabaseSelection"
-          class="text-sm text-gray-600 hover:text-gray-800 underline">
-          Change Connection Details
-        </button>
+        <!-- Right Column: Credentials & database -->
+        <div class="space-y-4">
+          <!-- Connection String -->
+          <div v-if="connectionMethod === 'string'">
+            <FormInput
+              v-model="form.connection_string"
+              label="Connection String"
+              placeholder="mysql://user:password@host:port/database"
+              required
+              @blur="onConnectionStringBlur"
+            />
+            <div
+              class="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-800"
+            >
+              <p><strong>Examples:</strong></p>
+              <p>MySQL: <code class="bg-blue-100 px-1 rounded">mysql://user:pass@host:3306/dbname</code></p>
+              <p>PostgreSQL: <code class="bg-blue-100 px-1 rounded">postgresql://user:pass@host:5432/dbname</code></p>
+              <p>MongoDB: <code class="bg-blue-100 px-1 rounded">mongodb+srv://user:pass@host/dbname</code></p>
+            </div>
+          </div>
+
+          <!-- Manual Config -->
+          <div v-else class="space-y-4">
+            <div class="grid grid-cols-2 gap-4">
+              <FormInput
+                v-model="form.host"
+                label="Host"
+                placeholder="localhost"
+                required
+                @blur="onConnectionDetailsChange"
+              />
+              <FormInput
+                v-model="form.port"
+                label="Port"
+                type="number"
+                :placeholder="getDefaultPort(form.type)"
+                @blur="onConnectionDetailsChange"
+              />
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+              <FormInput
+                v-model="form.username"
+                label="Username"
+                required
+                @blur="onConnectionDetailsChange"
+              />
+              <FormInput
+                v-model="form.password"
+                label="Password"
+                type="password"
+                @blur="onConnectionDetailsChange"
+              />
+            </div>
+          </div>
+
+          <!-- Load DB button -->
+          <div v-if="canLoadDatabases && !showDatabaseSelect">
+            <button
+              type="button"
+              @click="fetchDatabases"
+              :disabled="loadingDatabases"
+              class="w-full px-4 py-2 text-sm text-purple-600 border border-purple-200 rounded-md hover:bg-purple-50 disabled:opacity-50"
+            >
+              {{ loadingDatabases ? 'Loading Databases...' : 'Load Available Databases' }}
+            </button>
+          </div>
+
+          <!-- Warnings / Alerts -->
+          <div
+            v-if="showMissingFieldsWarning"
+            class="p-3 bg-yellow-50 border border-yellow-200 rounded-md text-sm text-yellow-800"
+          >
+            <strong>Missing required fields:</strong> {{ missingFields.join(', ') }}<br />
+            Please fill all required fields to load databases.
+          </div>
+
+          <div v-if="error" class="p-3 bg-red-50 border border-red-200 rounded-md text-sm text-red-600">
+            {{ error }}
+          </div>
+
+          <div
+            v-if="loadingDatabases"
+            class="p-3 bg-blue-50 border border-blue-200 rounded-md text-sm text-blue-600"
+          >
+            Fetching available databases...
+          </div>
+
+          <!-- Database Selection -->
+          <div v-if="showDatabaseSelect" class="space-y-4">
+            <FormSelect
+              v-model="form.database"
+              label="Database"
+              placeholder="Select database"
+              :options="availableDatabases.map(db => ({ value: db, label: db }))"
+              required
+              @update:model-value="onDatabaseChange"
+            />
+
+            <!-- Warnings -->
+            <div
+              v-if="getDatabaseWarning(form.database)"
+              class="mt-2 p-3 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800"
+            >
+              <strong>⚠️ Warning:</strong> {{ getDatabaseWarning(form.database) }}
+            </div>
+
+            <!-- Schemas for PostgreSQL -->
+            <div v-if="form.type === 'postgresql' && availableSchemas.length > 0" class="space-y-2">
+              <label class="block text-sm font-medium text-gray-700">Select Schemas <span class="text-red-500">*</span></label>
+              <div class="space-y-2 max-h-32 overflow-y-auto border border-gray-200 rounded p-2">
+                <label
+                  v-for="schema in availableSchemas"
+                  :key="schema"
+                  class="flex items-center p-1 hover:bg-gray-50 rounded cursor-pointer"
+                >
+                  <input
+                    v-model="selectedSchemas"
+                    type="checkbox"
+                    :value="schema"
+                    class="mr-2 text-purple-600 focus:ring-purple-500"
+                  />
+                  <span class="text-sm">{{ schema }}</span>
+                </label>
+              </div>
+              <p class="text-xs text-gray-500">Selected schemas will be used for table filtering</p>
+
+              <div
+                v-if="selectedSchemas.length === 0"
+                class="p-2 bg-yellow-50 border border-yellow-200 rounded-md text-sm text-yellow-800"
+              >
+                At least one schema must be selected.
+              </div>
+            </div>
+
+            <button
+              type="button"
+              @click="resetDatabaseSelection"
+              class="text-sm text-gray-600 hover:text-gray-800 underline"
+            >
+              Change Connection Details
+            </button>
+          </div>
+        </div>
       </div>
 
-      <div v-if="error" class="p-3 bg-red-50 border border-red-200 rounded-md text-red-600 text-sm">
-        {{ error }}
-      </div>
-
-      <div v-if="loadingDatabases" class="p-3 bg-blue-50 border border-blue-200 rounded-md text-blue-600 text-sm">
-        Fetching available databases...
-      </div>
-
-      <div class="flex justify-end space-x-3 pt-4">
-        <button type="button" class="px-4 py-2 text-sm text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50"
-          @click="$emit('close')">
+      <!-- Footer Actions -->
+      <div class="flex justify-end space-x-3 pt-6 border-t border-gray-200">
+        <button
+          type="button"
+          class="px-4 py-2 text-sm text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50"
+          @click="$emit('close')"
+        >
           Cancel
         </button>
-        <button type="submit" :disabled="loading || !canSubmit"
-          class="px-4 py-2 text-sm text-white bg-purple-600 hover:bg-purple-700 rounded-md disabled:opacity-50">
+        <button
+          type="submit"
+          :disabled="loading || !canSubmit"
+          class="px-4 py-2 text-sm text-white bg-[#7F56D9] hover:bg-purple-700 rounded-lg disabled:opacity-50"
+        >
           {{ loading ? 'Connecting...' : 'Connect Database' }}
         </button>
       </div>
     </form>
   </BaseModal>
 </template>
+
 
 <script setup>
 const props = defineProps({
