@@ -87,6 +87,22 @@ export const useChatbotStore = defineStore('chatbot', {
             }
         },
 
+        async generateEmbedCode(chatbotId) {
+            const config = useRuntimeConfig()
+            const { token } = useAuthStore()
+
+            try {
+                const data = await $fetch(`${config.public.apiBase}/api/chatbots/${chatbotId}/embed-code`, {
+                    method: 'POST',
+                    headers: { Authorization: `Bearer ${token}` }
+                })
+
+                return { success: true, data }
+            } catch (error) {
+                return { success: false, message: error.data?.message || 'Failed to generate embed code' }
+            }
+        },
+
         setCurrent(chatbot) {
             this.currentChatbot = chatbot
         }
