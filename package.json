@@ -7,7 +7,7 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "if [ -z \"$AWS_EXECUTION_ENV\" ]; then nuxt prepare; fi"
+    "postinstall": "node -e \"if(!process.env.AWS_EXECUTION_ENV){require('child_process').execSync('npx nuxt prepare',{stdio:'inherit'})}\""
   },
   "dependencies": {
     "@nuxt/eslint": "^1.7.1",
