@@ -29,6 +29,24 @@ export default defineNuxtConfig({
     },
 
     plugins: [
+      {
+        name: 'polyfill-crypto-hash',
+        enforce: 'pre',
+        async config() {
+          if (typeof globalThis.crypto === 'undefined' || !globalThis.crypto.hash) {
+            const { webcrypto } = await import('node:crypto');
+            if (!globalThis.crypto) {
+              globalThis.crypto = webcrypto;
+            }
+            if (!globalThis.crypto.hash) {
+              globalThis.crypto.hash = async (algorithm: string, data: BufferSource) => {
+                const digest = await webcrypto.subtle.digest(algorithm, data);
+                return new Uint8Array(digest);
+              };
+            }
+          }
+        }
+      },
       tailwindcss(),
     ],
     define: {
@@ -67,6 +85,9 @@ export default defineNuxtConfig({
         { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap' },
          { rel: 'stylesheet', href: 'https://unpkg.com/aos@2.3.1/dist/aos.css' }
       ],
-    },
-  },
+       script: [
+        { src: 'https://unpkg.com/aos@2.3.1/dist/aos.js', defer: true }
+      ]
+    }
+  }
 });
