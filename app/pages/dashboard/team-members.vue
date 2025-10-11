@@ -264,22 +264,12 @@ definePageMeta({
   layout: 'dashboard'
 })
 
-/*
-  NOTE: This demo stores everything in local memory.
-  In production:
-   - validate on server
-   - hash passwords (never store plaintext)
-   - enforce role checks server-side
-   - persist users to DB / auth provider
-*/
-
-// members store (local demo data)
 const members = ref([
   {
     id: nanoid(),
     name: 'John Doe',
     email: 'john@example.com',
-    password: '', // stored for demo only — do NOT store plaintext in prod
+    password: '', 
     accountType: 'internal',
     roles: {
       superAdmin: true,
@@ -492,11 +482,5 @@ function updateMember() {
   // persist to backend in production
 }
 
-onMounted(() => {
-  // optionally load members from backend here
-})
-</script>
 
-<style scoped>
-/* small style niceties */
-</style>
+</script>
