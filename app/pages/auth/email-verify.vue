@@ -34,7 +34,7 @@
         <h2 class="text-2xl font-semibold text-gray-800 mb-2">Verification Failed</h2>
         <p class="text-gray-600 mb-6">{{ error }}</p>
         <NuxtLink 
-          to="/dashboard/login" 
+          to="/login" 
           class="inline-flex items-center px-4 py-2 bg-[#7F56D9] text-white rounded-lg hover:bg-purple-700 transition-colors"
         >
           Back to Login
