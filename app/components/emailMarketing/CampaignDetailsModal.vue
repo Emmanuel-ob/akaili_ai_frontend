@@ -34,12 +34,20 @@
       </div>
 
       <!-- Actions -->
-      <div class="flex justify-end gap-3">
+      <div class="flex justify-end gap-3 flex-wrap">
         <button
           @click="sendTestEmail"
           class="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300"
         >
           Send Test Email
+        </button>
+
+        <!-- Edit Button -->
+        <button
+          @click="editCampaign"
+          class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+        >
+          Edit Campaign
         </button>
 
         <!-- Dynamic Campaign Button -->
@@ -62,6 +70,7 @@
 <script setup>
 const props = defineProps({
   campaign: Object,
+  onChangeTab: Function
 })
 
 const emit = defineEmits(['close', 'update'])
@@ -72,7 +81,6 @@ function sendTestEmail() {
 
 function toggleCampaign() {
   let newStatus
-
   if (props.campaign.status === 'Active') {
     newStatus = 'Paused'
     alert(`⏸️ Campaign "${props.campaign.name}" paused.`)
@@ -85,5 +93,13 @@ function toggleCampaign() {
   }
 
   emit('update', { ...props.campaign, status: newStatus })
+}
+
+function editCampaign() {
+  localStorage.setItem('editingCampaign', JSON.stringify(props.campaign))
+  if (props.onChangeTab) props.onChangeTab('editor')
+  console.log(props);
+  
+  emit('close')
 }
 </script>

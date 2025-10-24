@@ -25,8 +25,8 @@ const stats = ref({ total: 0, active: 0, sent: 0 })
 
 onMounted(async () => {
    const response = await fetch("/data/campaigns.json");
-  const data = await response.json(); // <-- define it here
-  console.log(data); // ✅ works
+  const data = await response.json(); 
+
 
   stats.value.total = data.length
   stats.value.active = data.filter(c => c.status === 'sent').length

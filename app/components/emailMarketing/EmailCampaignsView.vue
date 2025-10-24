@@ -25,7 +25,11 @@
 
     <!-- Campaign List -->
     <div class="mt-6">
-      <EmailCampaignList :new-campaign="newCampaign" />
+      <EmailCampaignList 
+  :new-campaign="newCampaign"
+  :onChangeTab="props.onChangeTab"
+/>
+
     </div>
 
     <!-- Modal -->
