@@ -1,14 +1,21 @@
-<!-- CampaignDetailsModal.vue -->
+<!-- app/components/emailMarketing/CampaignDetailsModal.vue -->
 <template>
   <div class="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-    <div class="bg-white w-full max-w-3xl rounded-2xl shadow-xl p-6 relative overflow-y-auto max-h-[90vh]">
+    <div
+      class="bg-white w-full max-w-3xl rounded-2xl shadow-xl p-6 relative overflow-y-auto max-h-[90vh]"
+    >
       <!-- Close -->
-      <button @click="$emit('close')" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800">
+      <button
+        @click="$emit('close')"
+        class="absolute top-4 right-4 text-gray-500 hover:text-gray-800"
+      >
         ✕
       </button>
 
       <!-- Header -->
-      <h2 class="text-2xl font-bold text-gray-800 mb-2">{{ campaign.name }}</h2>
+      <h2 class="text-2xl font-bold text-gray-800 mb-2">
+        {{ campaign.name }}
+      </h2>
       <p class="text-gray-500 mb-4">{{ campaign.description }}</p>
 
       <!-- Stats -->
@@ -30,7 +37,10 @@
       <!-- Email Preview -->
       <div class="border rounded-lg p-4 mb-6 bg-gray-50">
         <h3 class="font-semibold text-gray-700 mb-2">Email Content</h3>
-        <p class="text-sm text-gray-600 whitespace-pre-line">{{ campaign.content }}</p>
+        <div
+          class="prose prose-sm max-w-none bg-white p-4 border rounded-lg"
+          v-html="campaign.content"
+        ></div>
       </div>
 
       <!-- Actions -->
@@ -60,7 +70,11 @@
               : 'bg-[#7F56D9] hover:bg-[#6C47B5]'
           ]"
         >
-          {{ campaign.status === 'Active' ? 'Stop Campaign' : 'Start Campaign' }}
+          {{
+            campaign.status === 'Active'
+              ? 'Stop Campaign'
+              : 'Start Campaign'
+          }}
         </button>
       </div>
     </div>
@@ -68,6 +82,9 @@
 </template>
 
 <script setup>
+import { useToast } from 'vue-toastification'
+const toast = useToast()
+
 const props = defineProps({
   campaign: Object,
   onChangeTab: Function
@@ -75,31 +92,52 @@ const props = defineProps({
 
 const emit = defineEmits(['close', 'update'])
 
+// ✅ Send test email — increment count and toast
 function sendTestEmail() {
-  alert(`📧 Test email sent for "${props.campaign.name}"`)
+  const updated = {
+    ...props.campaign,
+    emailsSent: (props.campaign.emailsSent || 0) + 1
+  }
+
+  // Save to localStorage immediately
+  const campaigns = JSON.parse(localStorage.getItem('campaigns') || '[]')
+  const index = campaigns.findIndex(c => c.name === props.campaign.name)
+  if (index !== -1) campaigns[index] = updated
+  localStorage.setItem('campaigns', JSON.stringify(campaigns))
+
+  emit('update', updated)
+  toast.success(`📧 Test email sent for "${props.campaign.name}"!`)
 }
 
+// ✅ Toggle campaign (start / stop)
 function toggleCampaign() {
   let newStatus
   if (props.campaign.status === 'Active') {
     newStatus = 'Paused'
-    alert(`⏸️ Campaign "${props.campaign.name}" paused.`)
+    toast.info(`⏸️ Campaign "${props.campaign.name}" paused.`)
   } else if (props.campaign.status === 'Paused') {
     newStatus = 'Active'
-    alert(`▶️ Campaign "${props.campaign.name}" resumed.`)
+    toast.success(`▶️ Campaign "${props.campaign.name}" resumed.`)
   } else {
     newStatus = 'Active'
-    alert(`🚀 Campaign "${props.campaign.name}" started!`)
+    toast.success(`🚀 Campaign "${props.campaign.name}" started!`)
   }
 
-  emit('update', { ...props.campaign, status: newStatus })
+  const updated = { ...props.campaign, status: newStatus }
+
+  // Update localStorage
+  const campaigns = JSON.parse(localStorage.getItem('campaigns') || '[]')
+  const index = campaigns.findIndex(c => c.name === props.campaign.name)
+  if (index !== -1) campaigns[index] = updated
+  localStorage.setItem('campaigns', JSON.stringify(campaigns))
+
+  emit('update', updated)
 }
 
+// ✅ Edit campaign
 function editCampaign() {
   localStorage.setItem('editingCampaign', JSON.stringify(props.campaign))
   if (props.onChangeTab) props.onChangeTab('editor')
-  console.log(props);
-  
   emit('close')
 }
 </script>

@@ -19,17 +19,16 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { computed } from 'vue'
 
-const stats = ref({ total: 0, active: 0, sent: 0 })
+const props = defineProps({
+  campaigns: Array
+})
 
-onMounted(async () => {
-   const response = await fetch("/data/campaigns.json");
-  const data = await response.json(); 
-
-
-  stats.value.total = data.length
-  stats.value.active = data.filter(c => c.status === 'sent').length
-  stats.value.sent = data.reduce((acc, c) => acc + c.emailsSent, 0)
+const stats = computed(() => {
+  const total = props.campaigns?.length || 0
+  const active = props.campaigns?.filter(c => c.status === 'Active').length || 0
+  const sent = props.campaigns?.reduce((acc, c) => acc + (c.emailsSent || 0), 0)
+  return { total, active, sent }
 })
 </script>

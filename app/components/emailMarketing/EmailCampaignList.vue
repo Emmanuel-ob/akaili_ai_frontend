@@ -47,7 +47,7 @@
           <td class="px-6 py-4 text-sm text-gray-600">{{ campaign.opens }}</td>
           <td class="px-6 py-4 text-sm text-gray-600">{{ campaign.clicks }}</td>
           <td class="px-6 py-4 text-sm text-gray-600">{{ campaign.conversion_rate }}%</td>
-          <td class="px-6 py-4 text-sm text-gray-500">{{ campaign.createdAt }}</td>
+          <td class="px-6 py-4 text-sm text-gray-500"> {{ formatDisplayDate(campaign.createdAt) }}</td>
 
           <td class="px-6 py-4 text-right space-x-3 flex justify-end items-center"> 
             <button 
@@ -113,63 +113,30 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch, onBeforeUnmount } from 'vue'
-import { getMergedCampaignData } from '~/utils/dataUtils.js'
+import { ref } from 'vue'
 import CampaignDetailsModal from './CampaignDetailsModal.vue'
 import EmailBaseModal from './EmailBaseModal.vue'
 
 const props = defineProps({
-  newCampaign: Object,
-  onChangeTab: Function
+ campaigns: Array,
+  onChangeTab: Function,
+  onUpdateCampaign: Function,
+  onDeleteCampaign: Function
 })
 
-const campaigns = ref([])
 const selectedCampaign = ref(null)
 const deleteConfirm = ref(null)
 
-// Fetch campaigns
-onMounted(async () => {
-  const saved = localStorage.getItem('campaigns')
-  if (saved) {
-    campaigns.value = JSON.parse(saved)
-  } else {
-    campaigns.value = await getMergedCampaignData()
-  }
-})
-
-// Watch for new campaigns being added
-watch(
-  () => props.newCampaign,
-  (newVal) => {
-    if (newVal) {
-      campaigns.value.unshift({
-        name: newVal.name,
-        status: newVal.status || 'Draft',
-        emailsSent: newVal.emailsSent || 0,
-        createdAt: new Date().toLocaleDateString(),
-        description: newVal.description || 'No description provided.',
-        content: newVal.content || 'Email content not yet created.',
-        opens: 0,
-        clicks: 0,
-        bounces: 0,
-        conversion_rate: 0
-      })
-      localStorage.setItem('campaigns', JSON.stringify(campaigns.value))
-    }
-  },
-  { deep: true }
-)
-
-// Campaign actions
 function viewCampaign(campaign) {
   selectedCampaign.value = campaign
 }
 
 function updateCampaign(updated) {
-  campaigns.value = campaigns.value.map(c => 
-    c.name === updated.name ? updated : c
-  )
-  localStorage.setItem('campaigns', JSON.stringify(campaigns.value))
+  const index = props.campaigns.findIndex(c => c.name === updated.name)
+  if (index !== -1) {
+    props.campaigns[index] = updated
+    localStorage.setItem('campaigns', JSON.stringify(props.campaigns))
+  }
   selectedCampaign.value = null
 }
 
@@ -178,22 +145,39 @@ function confirmDelete(campaign) {
 }
 
 function deleteCampaign(campaign) {
-  campaigns.value = campaigns.value.filter(c => c.name !== campaign.name)
-  localStorage.setItem('campaigns', JSON.stringify(campaigns.value))
+  const index = props.campaigns.findIndex(c => c.name === campaign.name)
+  if (index !== -1) props.campaigns.splice(index, 1)
+  localStorage.setItem('campaigns', JSON.stringify(props.campaigns))
   deleteConfirm.value = null
+  selectedCampaign.value = null
 }
 
-// 🧠 Keyboard support for delete confirmation
+
 function handleKeydown(event) {
   if (!deleteConfirm.value) return
 
   if (event.key === 'Enter') {
     deleteCampaign(deleteConfirm.value)
+    event.preventDefault() // 
   } else if (event.key === 'Escape') {
     deleteConfirm.value = null
   }
 }
 
+
 onMounted(() => window.addEventListener('keydown', handleKeydown))
 onBeforeUnmount(() => window.removeEventListener('keydown', handleKeydown))
+
+
+function formatDisplayDate(dateString) {
+  const date = new Date(dateString)
+  return date.toLocaleString('en-GB', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  })
+}
 </script>
+
