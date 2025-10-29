@@ -5,17 +5,26 @@ export const useAuthStore = defineStore('auth', {
     state: () => ({
         user: null,
         token: null,
-        isLoggedIn: false
+        isLoggedIn: false,
+        currentBusinessId: null,
     }),
 
     actions: {
         async register(userData) {
             const config = useRuntimeConfig()
             try {
-                return await $fetch(`${config.public.apiBase}/api/register`, {
+                const data = await $fetch(`${config.public.apiBase}/api/register`, {
                     method: 'POST',
                     body: userData
                 })
+
+                // Set auth and mark as needing onboarding
+                this.setAuth(data.token, {
+                    ...data.user,
+                    onboarding_completed: false
+                })
+
+                return data
             } catch (error) {
                 throw error.data || error
             }
@@ -39,10 +48,9 @@ export const useAuthStore = defineStore('auth', {
             const config = useRuntimeConfig()
             try {
                 const data = await $fetch(`${config.public.apiBase}/api/auth/${provider}`)
-                // Open in popup or redirect
-                const popup = window.open(data.url, 'social-auth', 'width=600,height=600')
 
-                // Listen for the callback
+                const popup = window.open(data.data.url, 'social-auth', 'width=600,height=600')
+
                 return new Promise((resolve, reject) => {
                     const checkClosed = setInterval(() => {
                         if (popup.closed) {
@@ -51,7 +59,6 @@ export const useAuthStore = defineStore('auth', {
                         }
                     }, 1000)
 
-                    // Listen for message from popup
                     const handleMessage = (event) => {
                         if (event.origin !== window.location.origin) return
 
@@ -63,7 +70,6 @@ export const useAuthStore = defineStore('auth', {
                             this.setAuth(event.data.token, event.data.user)
                             resolve({
                                 ...event.data,
-                                isNewUser: !event.data.user.business_id, // Determine if user needs onboarding
                                 verified: event.data.verified
                             })
                         } else if (event.data.type === 'social-auth-error') {
@@ -79,19 +85,19 @@ export const useAuthStore = defineStore('auth', {
             } catch (error) {
                 throw error.data || error
             }
-        }   ,
+        },
 
         setAuth(token, user) {
             this.token = token
             this.user = user
             this.isLoggedIn = true
+            this.currentBusinessId = user?.current_business_id || null
 
-            // Use cookies for SSR compatibility
             const tokenCookie = useCookie('auth_token', {
                 httpOnly: false,
                 secure: true,
                 sameSite: 'lax',
-                maxAge: 60 * 60 * 24 * 7 // 7 days
+                maxAge: 60 * 60 * 24 * 7
             })
             const userCookie = useCookie('user', {
                 httpOnly: false,
@@ -113,24 +119,17 @@ export const useAuthStore = defineStore('auth', {
                     headers: { Authorization: `Bearer ${this.token}` }
                 })
             } catch (error) {
-                console.log(error)
-                // Continue with logout even if API call fails
+                console.log('Logout error:', error)
             }
 
-            this.user = null
-            this.token = null
-            this.isLoggedIn = false
-
-            const tokenCookie = useCookie('auth_token')
-            const userCookie = useCookie('user')
-            tokenCookie.value = null
-            userCookie.value = null
+            this.clearAuth()
         },
 
         clearAuth() {
             this.user = null
             this.token = null
             this.isLoggedIn = false
+            this.currentBusinessId = null
 
             const tokenCookie = useCookie('auth_token')
             const userCookie = useCookie('user')
@@ -146,7 +145,13 @@ export const useAuthStore = defineStore('auth', {
                 this.token = tokenCookie.value
                 this.user = userCookie.value
                 this.isLoggedIn = true
+                this.currentBusinessId = userCookie.value?.current_business_id || null
             }
+        },
+
+        // Helper to check if user needs onboarding
+        needsOnboarding() {
+            return this.user && !this.user.onboarding_completed
         }
     }
 })
