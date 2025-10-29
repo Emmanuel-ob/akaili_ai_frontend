@@ -11,7 +11,7 @@
               <div class="w-8 h-8 rounded-lg flex items-center justify-center">
                 <NuxtImg src="/dashboard_layout_logo.png" alt="dashboard logo" class="w-5 h-5" />
               </div>
-              <span class="ml-3 text-xl font-bold text-gray-900">Akili AI</span>
+              <span class="ml-3 text-xl font-bold text-gray-900">Xeli ai</span>
             </div>
           </NuxtLink>
 
@@ -149,7 +149,7 @@
                 <div class="w-8 h-8 rounded-lg flex items-center justify-center">
                   <NuxtImg src="/dashboard_layout_logo.png" alt="dashboard logo" class="w-5 h-5" />
                 </div>
-                <span class="ml-3 text-xl font-bold text-gray-900">Akili AI</span>
+                <span class="ml-3 text-xl font-bold text-gray-900">Xeli ai</span>
               </div>
             </NuxtLink>
 

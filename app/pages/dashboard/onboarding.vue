@@ -4,7 +4,7 @@
       <!-- Header -->
       <div class="text-center mb-8">
         <AppLogo size="lg" center class="mb-4" />
-        <h1 class="text-3xl font-bold text-gray-900">Welcome to Akili AI</h1>
+        <h1 class="text-3xl font-bold text-gray-900">Welcome to Xeli ai</h1>
         <p class="mt-2 text-gray-600">Let's set up your account in a few simple steps</p>
       </div>
 

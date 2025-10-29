@@ -4,7 +4,7 @@
     <div class="text-center max-w-lg">
       <AppLogo size="lg" center class="mb-8" />
       
-      <h2 class="text-3xl font-semibold text-gray-800 mb-4">Welcome to Akili AI</h2>
+      <h2 class="text-3xl font-semibold text-gray-800 mb-4">Welcome to Xeli ai</h2>
       <p class="text-gray-600 mb-8 text-lg leading-relaxed">
         You're just a few steps away from creating your first intelligent chatbot. 
         Let's get you set up with everything you need to succeed.
