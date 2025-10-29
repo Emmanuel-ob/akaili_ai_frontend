@@ -1,216 +1,257 @@
 <template>
-  <div>
-    <label class="font-medium text-gray-700">Email Content</label>
+  <div class="p-4 bg-gray-50 rounded-lg">
+    <label class="font-bold text-lg text-gray-800 block mb-3">The Email Content Area</label>
 
     <!-- Tabs -->
-    <div class="flex items-center gap-4 mt-2 border-b border-gray-200">
+    <div class="flex flex-col sm:flex-row border-b border-gray-300">
       <button
         v-for="tab in tabs"
         :key="tab"
-        @click="activeEditTab = tab"
+        @click="whichTabIsActive = tab"
         :class="[
-          'px-3 py-2 text-sm font-medium border-b-2 transition-colors',
-          activeEditTab === tab
-            ? 'border-[#7F56D9] text-[#7F56D9]'
-            : 'border-transparent text-gray-500 hover:text-gray-700'
+          'px-4 py-2 text-sm font-semibold rounded-t-lg transition-colors duration-200',
+          whichTabIsActive === tab
+            ? 'bg-white text-[#6C47B5] border-t-2 border-x-2 border-b-0 border-[#7F56D9]'
+            : 'text-gray-600 hover:bg-gray-100'
         ]"
       >
-        {{ tab.charAt(0).toUpperCase() + tab.slice(1) }}
+        {{ tab.toUpperCase() }}
       </button>
     </div>
 
     <!-- Tab Content -->
-    <div class="mt-3">
-      <!-- Content Tab -->
-      <div v-if="activeEditTab === 'content'">
+    <div class="mt-0 border border-t-0 border-gray-300 rounded-b-lg p-5 bg-white min-h-[350px] shadow-inner">
+      
+      <!-- CONTENT Tab -->
+      <div v-show="whichTabIsActive === 'content'">
         <div
-          class="border rounded-lg p-4 bg-white min-h-[300px]"
+          ref="editableDiv"
+          class="min-h-[300px] outline-none p-2 border border-dashed border-gray-200 rounded-md"
           contenteditable="true"
-          @input="handleContentEdit"
-          v-html="localContent"
+          @input="updateContentData"
         ></div>
       </div>
 
-     <!-- Links Tab -->
-<div v-else-if="activeEditTab === 'links'" class="border rounded-lg p-4 bg-white min-h-[300px] text-gray-700">
-  <p class="mb-2 font-semibold">Links found in this email:</p>
-  
-  <div v-if="links.length">
-    <div
-      v-for="(link, index) in links"
-      :key="index"
-      class="flex gap-2 mb-2 items-center"
-    >
-      <input v-model="link.text" class="border rounded p-1 flex-1" />
-      <input v-model="link.href" class="border rounded p-1 flex-1" />
-      <button
-        @click="updateLink(index, link.text, link.href)"
-        class="px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600"
-      >Update</button>
-    </div>
-  </div>
-  <div v-else class="text-gray-500 mb-2">No links found yet.</div>
+      <!-- LINKS Tab -->
+      <div v-show="whichTabIsActive === 'links'" class="text-gray-700">
+        <p class="mb-4 text-md font-semibold text-[#7F56D9]">Links You Can Edit:</p>
 
-  <!-- Add new link -->
-  <div class="mt-4 flex gap-2">
-    <input v-model="newLinkText" placeholder="Link Text" class="border rounded p-1 flex-1" />
-    <input v-model="newLinkHref" placeholder="https://example.com" class="border rounded p-1 flex-1" />
-    <button @click="addLink(newLinkText, newLinkHref)" class="px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600">Add</button>
-  </div>
-</div>
+        <div v-if="foundLinks.length">
+          <div
+            v-for="(link, idx) in foundLinks"
+            :key="idx"
+            class="flex flex-col sm:flex-row gap-2 mb-4 p-3 bg-gray-50 rounded-lg border"
+          >
+            <input v-model="link.text" class="border rounded-md p-2 flex-1 text-sm bg-white" placeholder="Link Text" />
+            <input v-model="link.href" class="border rounded-md p-2 flex-1 text-sm bg-white" placeholder="Link URL" />
+            <button
+              @click="fixTheLink(idx, link.text, link.href)"
+              class="px-4 py-2 bg-purple-500 text-white rounded-md text-sm hover:bg-purple-600 transition-colors self-end sm:self-center"
+            >
+              Fix It!
+            </button>
+          </div>
+        </div>
+        <div v-else class="text-gray-500 mb-4 p-4 border rounded-lg bg-yellow-50">
+          No links found! Go write some links.
+        </div>
+
+        <!-- Add new link section -->
+        <div class="mt-8 border-t pt-5 border-gray-200">
+          <p class="mb-3 font-bold text-gray-700">Add a New Link:</p>
+          <div class="flex flex-col sm:flex-row gap-3">
+            <input v-model="newText" placeholder="Link Text" class="border rounded-lg p-2 flex-1" />
+            <input v-model="newHref" placeholder="http://mylink.com" class="border rounded-lg p-2 flex-1" />
+            <button 
+              @click="putInTheLink(newText, newHref)" 
+              class="px-4 py-2 bg-green-500 text-white rounded-lg font-medium hover:bg-green-600 transition-colors"
+            >
+              Add Link Now
+            </button>
+          </div>
+        </div>
+      </div>
 
       <!-- HTML Tab -->
-      <div v-else-if="activeEditTab === 'html'">
+      <div v-show="whichTabIsActive === 'html'">
         <textarea
-          v-model="localContent"
-          @input="saveDraft"
-          rows="12"
-          class="w-full border rounded-lg p-3 font-mono text-sm"
+          v-model="currentHtmlCopy"
+          @input="saveDraftAnyway"
+          rows="15"
+          class="w-full border border-gray-400 rounded-lg p-3 font-mono text-sm resize-none focus:border-[#7F56D9] focus:ring-[#7F56D9]"
         ></textarea>
       </div>
     </div>
 
     <!-- Footer Actions -->
-    <div class="flex justify-between items-center mt-4">
-      <span class="text-xs text-gray-500">{{ statusMessage }}</span>
+    <div class="flex justify-between items-center mt-6 p-3 bg-gray-100 rounded-lg border border-gray-200">
+      <span class="text-xs text-gray-500 font-medium">{{ messageDisplay }}</span>
 
-      <div class="flex gap-2">
+      <div class="flex gap-3">
         <button
-          @click="discardDraft"
-          class="px-4 py-2 text-sm border rounded-lg hover:bg-gray-100"
+          @click="resetTheContent"
+          class="px-5 py-2 text-sm text-red-600 border border-red-300 rounded-lg hover:bg-red-50 transition-colors font-medium"
         >
-          Discard Draft
+          Reset To Last Save
         </button>
         <button
-          @click="saveChanges"
-          class="px-4 py-2 text-sm bg-[#7F56D9] text-white rounded-lg hover:bg-[#6C47B5]"
+          @click="tryToSaveChanges"
+          class="px-5 py-2 text-sm bg-[#6C47B5] text-white rounded-lg hover:bg-[#7F56D9] transition-colors shadow-md font-medium"
         >
-          Save Changes
+          Finalize Changes
         </button>
       </div>
     </div>
 
-    <!-- Notification (non-blocking) -->
+    <!-- Simple Notification -->
     <transition name="fade">
       <div
-        v-if="showNotification"
-        class="fixed bottom-5 right-5 bg-gray-900 text-white text-sm px-4 py-3 rounded-lg shadow-lg"
+        v-if="showPopup"
+        class="fixed bottom-6 right-6 bg-gray-800 text-white text-sm px-5 py-3 rounded-xl shadow-2xl z-50 font-semibold"
       >
-        {{ notificationText }}
+        {{ popupText }}
       </div>
     </transition>
   </div>
 </template>
 
 <script setup>
+import { ref, onMounted, computed, defineExpose, watch } from 'vue'
 
-import { ref, watch, onMounted, computed } from 'vue'
+// Props & Emits
+const props = defineProps({
+  mainEmailStuff: String,
+  campaignId: [String, Number]
+})
+const emit = defineEmits(['sendNewEmailHtml'])
 
-const props = defineProps({ modelValue: String })
-const emit = defineEmits(['update:modelValue'])
-
+// State
 const tabs = ['content', 'links', 'html']
-const activeEditTab = ref('content')
-const localContent = ref(props.modelValue || '')
-const statusMessage = ref('')
-const showNotification = ref(false)
-const notificationText = ref('')
+const whichTabIsActive = ref('content')
+const currentHtmlCopy = ref(props.mainEmailStuff || '')
+const editableDiv = ref(null)
+const messageDisplay = ref('')
+const showPopup = ref(false)
+const popupText = ref('')
+const newText = ref('')
+const newHref = ref('')
+let timerForDraft = null
 
-let saveTimeout
-
-// Parse links from HTML content
-const links = computed(() => {
+// --- Computed: extract links
+const foundLinks = computed(() => {
   const parser = new DOMParser()
-  const doc = parser.parseFromString(localContent.value, 'text/html')
-  const anchorTags = Array.from(doc.querySelectorAll('a'))
-  return anchorTags.map(a => ({ text: a.textContent, href: a.href }))
+  const doc = parser.parseFromString(currentHtmlCopy.value, 'text/html')
+  const anchors = Array.from(doc.querySelectorAll('a'))
+  return anchors.map(a => ({ text: a.textContent, href: a.getAttribute('href') }))
 })
 
-// --- UTILITIES ---
-function showToast(msg) {
-  notificationText.value = msg
-  showNotification.value = true
-  setTimeout(() => (showNotification.value = false), 2500)
+// --- Utils
+function showPopupMessage(msg) {
+  popupText.value = msg
+  showPopup.value = true
+  setTimeout(() => (showPopup.value = false), 2500)
 }
 
-// --- DRAFT HANDLING ---
-function saveDraft() {
-  clearTimeout(saveTimeout)
-  saveTimeout = setTimeout(() => {
-    localStorage.setItem('emailEditorDraft', localContent.value)
-    statusMessage.value = 'Draft saved just now'
-  }, 800)
+// --- Draft handling
+function saveDraftAnyway() {
+  clearTimeout(timerForDraft)
+  timerForDraft = setTimeout(() => {
+    if (currentHtmlCopy.value !== props.mainEmailStuff) {
+      localStorage.setItem('emailEditorDraft', currentHtmlCopy.value)
+      messageDisplay.value = 'Draft auto-saved.'
+    }
+  }, 900)
 }
 
-function discardDraft() {
+function forgetMyDrafts() {
   localStorage.removeItem('emailEditorDraft')
-  localContent.value = props.modelValue
-  statusMessage.value = 'Draft discarded'
-  showToast('Draft discarded.')
+  messageDisplay.value = 'Drafts cleared.'
 }
 
-function saveChanges() {
-  emit('update:modelValue', localContent.value)
-  localStorage.removeItem('emailEditorDraft')
-  statusMessage.value = 'All changes saved.'
-  showToast('Changes saved successfully!')
+function resetTheContent() {
+  currentHtmlCopy.value = props.mainEmailStuff
+  if (editableDiv.value) editableDiv.value.innerHTML = currentHtmlCopy.value
+  forgetMyDrafts()
+  showPopupMessage('Content reset to last save!')
 }
 
-function handleContentEdit(e) {
-  localContent.value = e.target.innerHTML
-  saveDraft()
+function tryToSaveChanges() {
+  emit('sendNewEmailHtml', currentHtmlCopy.value)
+  forgetMyDrafts()
+  messageDisplay.value = 'Changes finalized.'
+  showPopupMessage('Saved! Sent to parent.')
 }
 
-// --- LINK EDITING ---
-function updateLink(index, newText, newHref) {
+// --- Handle typing in contenteditable
+function updateContentData(e) {
+  currentHtmlCopy.value = e.target.innerHTML
+  saveDraftAnyway()
+}
+
+// --- Link management
+function fixTheLink(index, newText, newHref) {
   const parser = new DOMParser()
-  const doc = parser.parseFromString(localContent.value, 'text/html')
+  const doc = parser.parseFromString(currentHtmlCopy.value, 'text/html')
   const anchors = Array.from(doc.querySelectorAll('a'))
-
   if (anchors[index]) {
     anchors[index].textContent = newText
-    anchors[index].href = newHref
-    localContent.value = doc.body.innerHTML
-    saveDraft()
-    showToast('Link updated.')
+    anchors[index].setAttribute('href', newHref)
+    currentHtmlCopy.value = doc.body.innerHTML
+    if (editableDiv.value) editableDiv.value.innerHTML = currentHtmlCopy.value
+    saveDraftAnyway()
+    showPopupMessage('Link updated!')
   }
 }
 
-function addLink(text, href) {
-  // Append at the end of content
-  localContent.value += `<a href="${href}" target="_blank">${text}</a>`
-  saveDraft()
-  showToast('Link added.')
+function putInTheLink(text, href) {
+  if (!text || !href) return showPopupMessage('Enter both text and URL.')
+  currentHtmlCopy.value += ` <a href="${href}" target="_blank">${text}</a>`
+  if (editableDiv.value) editableDiv.value.innerHTML = currentHtmlCopy.value
+  saveDraftAnyway()
+  showPopupMessage('New link added!')
+  newText.value = ''
+  newHref.value = ''
 }
 
-// --- INITIAL LOAD ---
+// --- Lifecycle
 onMounted(() => {
+  if (editableDiv.value) editableDiv.value.innerHTML = currentHtmlCopy.value
+
   const savedDraft = localStorage.getItem('emailEditorDraft')
-  if (savedDraft && savedDraft !== props.modelValue) {
-    showToast('Unsaved edits found. Load them?')
-    setTimeout(() => {
-      if (confirm('Load unsaved edits?')) {
-        localContent.value = savedDraft
-        statusMessage.value = 'Draft loaded from local storage.'
-      } else {
-        localStorage.removeItem('emailEditorDraft')
-        statusMessage.value = 'Fresh start. Draft cleared.'
-      }
-    }, 1000)
+  if (savedDraft && savedDraft !== props.mainEmailStuff) {
+    currentHtmlCopy.value = savedDraft
+    editableDiv.value.innerHTML = savedDraft
+    messageDisplay.value = 'Loaded saved draft.'
+    showPopupMessage('Loaded old draft automatically.')
   }
 })
 
-// --- SYNC PARENT VALUE ---
-watch(() => props.modelValue, (newVal) => {
-  if (newVal !== localContent.value) localContent.value = newVal
+// --- Watchers
+watch(() => whichTabIsActive.value, (tab) => {
+  if (tab === 'content' && editableDiv.value) {
+    editableDiv.value.innerHTML = currentHtmlCopy.value
+  }
 })
 
+watch(() => props.mainEmailStuff, (newValue) => {
+  if (newValue !== currentHtmlCopy.value) {
+    currentHtmlCopy.value = newValue
+    if (editableDiv.value) editableDiv.value.innerHTML = newValue
+    messageDisplay.value = 'Loaded new content from parent'
+    showPopupMessage('Template loaded from parent!')
+  }
+})
+
+defineExpose({
+  forgetMyDrafts,
+  tryToSaveChanges,
+})
 </script>
 
 <style scoped>
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.3s ease;
+  transition: opacity 0.4s ease;
 }
 .fade-enter-from,
 .fade-leave-to {

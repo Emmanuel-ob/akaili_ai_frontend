@@ -18,17 +18,62 @@
       </h2>
       <p class="text-gray-500 mb-4">{{ campaign.description }}</p>
 
+      <!-- 🎯 Target Audience -->
+      <div
+        v-if="targetList"
+        class="border border-gray-200 bg-gray-50 rounded-lg p-4 mb-6"
+      >
+        <h3 class="font-semibold text-gray-700 mb-2 flex items-center gap-2">
+          🎯 Target Audience
+        </h3>
+        <div class="text-gray-600 text-sm space-y-2">
+          <p>
+            <span class="font-medium">List:</span>
+            {{ targetList.list_name }} ({{ targetList.subscribers }} subscribers)
+          </p>
+
+          <!-- 🏷️ Multiple Tag Groups -->
+          <div v-if="recipientsTagGroups && recipientsTagGroups.length">
+            <span class="font-medium">Tag Groups:</span>
+            <div class="flex flex-wrap gap-2 mt-1">
+              <span
+                v-for="tag in recipientsTagGroups"
+                :key="tag"
+                class="px-2 py-0.5 bg-purple-100 text-purple-700 rounded-full text-xs font-medium"
+              >
+                {{ tag }}
+              </span>
+            </div>
+          </div>
+
+          <!-- Fallback for single campaign.tag_group -->
+          <div v-else-if="campaign.tag_group">
+            <span class="font-medium">Tag Group:</span>
+            <span
+              class="px-2 py-0.5 bg-purple-100 text-purple-700 rounded-full text-xs font-medium"
+            >
+              {{ campaign.tag_group }}
+            </span>
+          </div>
+
+          <!-- Example contacts -->
+          <p v-if="sampleContacts.length" class="text-xs text-gray-500 mt-1">
+            Example contacts: {{ sampleContacts.join(', ') }}
+          </p>
+        </div>
+      </div>
+
       <!-- Stats -->
       <div class="grid grid-cols-3 gap-4 mb-6">
-        <div class="bg-gray-50 p-4 rounded-lg text-center">
+        <div class="bg-gray-50 p-4 rounded-lg text-center border-l-4 border-purple-500">
           <p class="text-lg font-semibold">{{ campaign.emailsSent }}</p>
           <p class="text-sm text-gray-500">Emails Sent</p>
         </div>
-        <div class="bg-gray-50 p-4 rounded-lg text-center">
+        <div class="bg-gray-50 p-4 rounded-lg text-center border-l-4 border-green-500">
           <p class="text-lg font-semibold">{{ campaign.opens }}</p>
           <p class="text-sm text-gray-500">Opens</p>
         </div>
-        <div class="bg-gray-50 p-4 rounded-lg text-center">
+        <div class="bg-gray-50 p-4 rounded-lg text-center border-l-4 border-blue-500">
           <p class="text-lg font-semibold">{{ campaign.clicks }}</p>
           <p class="text-sm text-gray-500">Clicks</p>
         </div>
@@ -52,7 +97,6 @@
           Send Test Email
         </button>
 
-        <!-- Edit Button -->
         <button
           @click="editCampaign"
           class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
@@ -60,7 +104,6 @@
           Edit Campaign
         </button>
 
-        <!-- Dynamic Campaign Button -->
         <button
           @click="toggleCampaign"
           :class="[
@@ -82,6 +125,7 @@
 </template>
 
 <script setup>
+import { ref, onMounted } from 'vue'
 import { useToast } from 'vue-toastification'
 const toast = useToast()
 
@@ -92,6 +136,41 @@ const props = defineProps({
 
 const emit = defineEmits(['close', 'update'])
 
+const lists = ref([])
+const targetList = ref(null)
+const sampleContacts = ref([])
+const recipientsTagGroups = ref([])
+
+// 🧭 Load Lists and Find Target + tag_groups
+onMounted(async () => {
+  try {
+    const res = await fetch('/data/lists.json')
+    const data = await res.json()
+    lists.value = Array.isArray(data) ? data : [data]
+
+    targetList.value = lists.value.find(
+      list => list.list_id === props.campaign.list_id
+    )
+
+    // Multiple tag groups if available
+    if (props.campaign.recipients && props.campaign.recipients.tag_groups) {
+      recipientsTagGroups.value = props.campaign.recipients.tag_groups
+    }
+
+    // Build sample contacts if single tag_group exists
+    if (targetList.value && props.campaign.tag_group) {
+      const filtered = targetList.value.data.filter(sub =>
+        sub.tags.includes(props.campaign.tag_group)
+      )
+      sampleContacts.value = filtered
+        .slice(0, 3)
+        .map(s => s.first_name + ' ' + s.last_name)
+    }
+  } catch (err) {
+    console.error('Error loading lists:', err)
+  }
+})
+
 // ✅ Send test email — increment count and toast
 function sendTestEmail() {
   const updated = {
@@ -99,7 +178,6 @@ function sendTestEmail() {
     emailsSent: (props.campaign.emailsSent || 0) + 1
   }
 
-  // Save to localStorage immediately
   const campaigns = JSON.parse(localStorage.getItem('campaigns') || '[]')
   const index = campaigns.findIndex(c => c.name === props.campaign.name)
   if (index !== -1) campaigns[index] = updated
@@ -109,7 +187,7 @@ function sendTestEmail() {
   toast.success(`📧 Test email sent for "${props.campaign.name}"!`)
 }
 
-// ✅ Toggle campaign (start / stop)
+// ✅ Toggle campaign
 function toggleCampaign() {
   let newStatus
   if (props.campaign.status === 'Active') {
@@ -125,7 +203,6 @@ function toggleCampaign() {
 
   const updated = { ...props.campaign, status: newStatus }
 
-  // Update localStorage
   const campaigns = JSON.parse(localStorage.getItem('campaigns') || '[]')
   const index = campaigns.findIndex(c => c.name === props.campaign.name)
   if (index !== -1) campaigns[index] = updated

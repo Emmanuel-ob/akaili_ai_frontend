@@ -29,7 +29,9 @@ import EmailAutomation from '~/components/emailMarketing/EmailAutomation.vue'
 import EmailAnalyticsView from '~/components/emailMarketing/EmailAnalyticsView.vue'
 import CampaignEditor from '~/components/emailMarketing/CampaignEditor.vue'
 import { getMergedCampaignData } from '~/utils/dataUtils.js'
+import { useToast } from 'vue-toastification'
 
+const toast = useToast()
 const activeTab = ref('campaigns')
 const campaigns = ref([])
 
@@ -38,7 +40,9 @@ onMounted(async () => {
   startCampaignWatcher()
 })
 
-// 🔹 Load from localStorage or fallback
+/* -------------------------------
+   Load Campaigns (Global Source)
+--------------------------------*/
 async function loadCampaigns() {
   const saved = localStorage.getItem('campaigns')
   if (saved) {
@@ -49,40 +53,53 @@ async function loadCampaigns() {
   }
 }
 
-// 🔹 Add new campaign (used by modal)
+/* -------------------------------
+   Add New Campaign
+--------------------------------*/
 function addCampaign(campaign) {
   const newCampaign = {
     ...campaign,
-    id: Date.now(),
-    createdAt: new Date().toLocaleDateString(),
+    id: campaign.id || Date.now(),
+    createdAt: new Date().toLocaleString(),
     emailsSent: 0,
     opens: 0,
     clicks: 0,
     bounces: 0,
     conversion_rate: 0,
+    list_id: campaign.list_id || null,
+    tag_group: campaign.tag_group || '',
     status: campaign.status || 'Draft'
   }
 
   campaigns.value.unshift(newCampaign)
   localStorage.setItem('campaigns', JSON.stringify(campaigns.value))
+  toast.success(`📧 Campaign "${newCampaign.name}" created.`)
 }
 
-// 🔹 Update campaign (used by details modal or editor)
+/* -------------------------------
+   Update Campaign
+--------------------------------*/
 function updateCampaign(updated) {
   const index = campaigns.value.findIndex(c => c.id === updated.id)
   if (index !== -1) {
     campaigns.value[index] = { ...campaigns.value[index], ...updated }
     localStorage.setItem('campaigns', JSON.stringify(campaigns.value))
+    toast.info(`✏️ Campaign "${updated.name}" updated.`)
   }
 }
 
-// 🔹 Delete campaign
+/* -------------------------------
+   Delete Campaign
+--------------------------------*/
 function deleteCampaign(campaign) {
   campaigns.value = campaigns.value.filter(c => c.id !== campaign.id)
   localStorage.setItem('campaigns', JSON.stringify(campaigns.value))
+  toast.warning(`🗑️ Campaign "${campaign.name}" deleted.`)
 }
 
-// 🔹 Auto-activate scheduled campaigns
+/* -------------------------------
+   Auto-Activate Scheduled Campaigns
+--------------------------------*/
 function startCampaignWatcher() {
   setInterval(() => {
     const now = new Date()
@@ -95,6 +112,13 @@ function startCampaignWatcher() {
           campaign.status = 'Active'
           campaign.emailsSent = (campaign.emailsSent || 0) + 1
           changed = true
+
+          toast.success(`🚀 Campaign "${campaign.name}" is now Active!`)
+          if (campaign.tag_group) {
+            console.log(
+              `Targeting tag group: ${campaign.tag_group} from list ID: ${campaign.list_id}`
+            )
+          }
         }
       }
     })
@@ -105,12 +129,16 @@ function startCampaignWatcher() {
   }, 60 * 1000)
 }
 
-// 🔹 Auto-persist on any manual change
+/* -------------------------------
+   Auto Save on Change
+--------------------------------*/
 watch(campaigns, (newVal) => {
   localStorage.setItem('campaigns', JSON.stringify(newVal))
 }, { deep: true })
 
-// 🔹 Map active tab
+/* -------------------------------
+   Dynamic Tab Mapping
+--------------------------------*/
 const activeComponent = computed(() => ({
   campaigns: EmailCampaignsView,
   templates: EmailTemplatesView,
