@@ -35,13 +35,13 @@ definePageMeta({
 
 
 useSeoMeta({
-  title: 'Akili Ai',
+  title: 'Xeli ai',
   description: "Empower Your Website with 24/7 Smart Customer Support",
-  ogTitle: 'Akili Ai',
+  ogTitle: 'Xeli ai',
   ogDescription:  "Empower Your Website with 24/7 Smart Customer Support",
   ogImage: '/nuxt-course-hero.png',
-  ogUrl: 'Akili Ai',
-  twitterTitle: 'Akili Ai',
+  ogUrl: 'Xeli ai',
+  twitterTitle: 'Xeli ai',
   twitterDescription:  "Empower Your Website with 24/7 Smart Customer Support",
   twitterImage: '[twitter:image]',
   twitterCard: 'summary'

@@ -114,7 +114,7 @@
             <div class="mt-6 p-4 bg-gray-50 border border-gray-200 rounded-lg">
                 <h4 class="text-lg font-medium text-gray-900 mb-2">Widget Token</h4>
                 <div class="font-mono text-sm text-gray-600 mb-2 break-all bg-white p-2 rounded border">{{ widgetToken
-                    }}</div>
+                }}</div>
                 <p class="text-sm text-gray-600">This token identifies your chatbot. Keep it secure and regenerate if
                     compromised.</p>
                 <p class="text-xs text-gray-500 mt-1">Generated: {{ tokenGeneratedAt }}</p>
@@ -189,12 +189,14 @@ const loadEmbedCode = async () => {
                 Authorization: `Bearer ${authStore.token}`
             }
         })
+        console.log('Load response:', response)
 
         if (response.success) {
-            widgetToken.value = response.widget_token
-            embedCode.value = response.embed_code
-            userContextExample.value = response.examples.with_user_data
-            authEndpointExample.value = response.examples.auth_endpoint_example
+            // Access nested data object
+            widgetToken.value = response.data.widget_token
+            embedCode.value = response.data.embed_code
+            userContextExample.value = response.data.examples.with_user_data
+            authEndpointExample.value = response.data.examples.auth_endpoint_example
             tokenGeneratedAt.value = new Date().toLocaleString()
         }
     } catch (error) {
@@ -221,11 +223,14 @@ const regenerateToken = async () => {
             }
         })
 
+        console.log('Regenerate response:', response)
+
         if (response.success) {
-            widgetToken.value = response.widget_token
-            embedCode.value = response.embed_code
-            userContextExample.value = response.examples.with_user_data
-            authEndpointExample.value = response.examples.auth_endpoint_example
+            // Access nested data object
+            widgetToken.value = response.data.widget_token
+            embedCode.value = response.data.embed_code
+            userContextExample.value = response.data.examples.with_user_data
+            authEndpointExample.value = response.data.examples.auth_endpoint_example
             tokenGeneratedAt.value = new Date().toLocaleString()
 
             alert('Token regenerated successfully! Please update your website with the new embed code.')

@@ -1,9 +1,14 @@
 <template>
     <div class="bg-white rounded-lg shadow-lg max-w-2xl mx-auto">
         <!-- Chat Header -->
-        <div class="bg-[#7F56D9] text-white px-6 py-4 rounded-t-lg">
-            <h3 class="text-lg font-semibold">{{ chatbotName || 'AI Assistant' }}</h3>
-            <p class="text-purple-100 text-sm">Test your chatbot here</p>
+        <div class="bg-[#7F56D9] text-white px-6 py-4 rounded-t-lg flex justify-between items-center">
+            <div>
+                <h3 class="text-lg font-semibold">{{ chatbotName || 'AI Assistant' }}</h3>
+                <p class="text-purple-100 text-sm">Test your chatbot here</p>
+            </div>
+            <button @click="resetChat" class="text-purple-100 hover:text-white text-sm underline">
+                Reset Chat
+            </button>
         </div>
 
         <!-- Messages Container -->
@@ -80,7 +85,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, nextTick } from 'vue'
+import { ref, nextTick } from 'vue'
 
 const props = defineProps({
     chatbotId: {
@@ -90,6 +95,14 @@ const props = defineProps({
     chatbotName: {
         type: String,
         default: 'AI Assistant'
+    },
+    testMode: { // New prop: Test mode from parent
+        type: String,
+        default: 'default'
+    },
+    testCustomerData: { // New prop: Customer data for authenticated mode
+        type: Object,
+        default: null
     }
 })
 
@@ -120,6 +133,7 @@ const scrollToBottom = async () => {
 }
 
 // Send message
+// Send message
 const sendMessage = async () => {
     if (!currentMessage.value.trim() || isTyping.value) return
 
@@ -141,17 +155,27 @@ const sendMessage = async () => {
         const config = useRuntimeConfig()
         const authStore = useAuthStore()
 
-        const response = await $fetch(`${config.public.apiBase}/api/conversation/chat`, {
+        const payload = {
+            message: messageText,
+            chatbot_id: props.chatbotId,
+            session_id: sessionId.value
+        }
+
+        // Add test mode if not default (New: Include scenarios)
+        if (props.testMode !== 'default') {
+            payload.test_mode = props.testMode
+            if (props.testMode === 'authenticated' && props.testCustomerData) {
+                payload.test_customer_data = props.testCustomerData
+            }
+        }
+
+        const response = await $fetch(`${config.public.apiBase}/api/chat`, {
             method: 'POST',
             headers: {
                 Authorization: `Bearer ${authStore.token}`,
                 'Content-Type': 'application/json'
             },
-            body: {
-                message: messageText,
-                chatbot_id: props.chatbotId,
-                session_id: sessionId.value
-            }
+            body: payload
         })
 
         if (response.success) {
@@ -160,13 +184,13 @@ const sendMessage = async () => {
                 sessionId.value = response.session_id
             }
 
-            // Add assistant response
+            // Add assistant response - unified response structure
             messages.value.push({
                 role: 'assistant',
-                message: response.response.text,
+                message: response.data.response.text,
                 timestamp: new Date().toISOString(),
-                sources: response.response.sources || [],
-                metadata: response.response.metadata || {}
+                sources: response.data.response.sources || [],
+                metadata: response.data.response.metadata || {}
             })
         } else {
             throw new Error(response.message || 'Failed to send message')
@@ -190,8 +214,13 @@ const sendMessage = async () => {
     }
 }
 
-// Initialize
-onMounted(() => {
+// Reset chat (New: Clear messages and generate new session ID)
+const resetChat = () => {
+    messages.value = []
     sessionId.value = generateSessionId()
-})
+    error.value = ''
+}
+
+// Initialize
+sessionId.value = generateSessionId()
 </script>

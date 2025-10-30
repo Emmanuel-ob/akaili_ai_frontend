@@ -4,7 +4,7 @@
       <!-- 1: logo + blurb + icons -->
       <div>
         <div class="text-3xl font-bold">
-            <h3 class=" text-white text-xl font-bold">Akili AI</h3>
+            <h3 class=" text-white text-xl font-bold">Xeli ai</h3>
         </div>
 
         <p class="mt-5 text-base font-semibold text-[#9CA3AF]">
@@ -71,7 +71,7 @@
 
     <!-- bottom -->
     <div class="mt-8 w-95% mx-auto px-6 border-t border-white/10 pt-8 flex justify-center items-center  text-sm">
-      <p class=" md:w-auto text-center text-lg text-[#9CA3AF]">© 2024 Akili AI. All rights reserved.</p>
+      <p class=" md:w-auto text-center text-lg text-[#9CA3AF]">© 2024 Xeli ai. All rights reserved.</p>
 
      
     </div>

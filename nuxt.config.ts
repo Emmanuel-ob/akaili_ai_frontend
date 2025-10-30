@@ -73,11 +73,11 @@ export default defineNuxtConfig({
 
   app: {
     head: {
-      title: 'Akili AI - Intelligent Chatbot Platform',
+      title: 'Xeli ai - Intelligent Chatbot Platform',
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-        { name: 'description', content: 'Build intelligent chatbots with Akili AI' },
+        { name: 'description', content: 'Build intelligent chatbots with Xeli ai' },
       ],
       link: [
         { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
