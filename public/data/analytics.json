@@ -2,161 +2,81 @@
   {
     "id": 1,
     "campaign_id": 1,
-    "opens": 3,
-    "clicks": 2,
-    "bounces": 1,
-    "conversion_rate": 2.5
+    "opens": 8120,
+    "clicks": 3150,
+    "bounces": 320,
+    "conversion_rate": 14.2
   },
   {
     "id": 2,
     "campaign_id": 2,
-    "opens": 6,
-    "clicks": 4,
-    "bounces": 2,
-    "conversion_rate": 5.0
+    "opens": 6930,
+    "clicks": 2890,
+    "bounces": 210,
+    "conversion_rate": 11.9
   },
   {
     "id": 3,
     "campaign_id": 3,
-    "opens": 9,
-    "clicks": 6,
-    "bounces": 3,
-    "conversion_rate": 7.5
+    "opens": 0,
+    "clicks": 0,
+    "bounces": 0,
+    "conversion_rate": 0
   },
   {
     "id": 4,
     "campaign_id": 4,
-    "opens": 12,
-    "clicks": 8,
-    "bounces": 4,
-    "conversion_rate": 10.0
+    "opens": 7120,
+    "clicks": 2680,
+    "bounces": 180,
+    "conversion_rate": 12.3
   },
   {
     "id": 5,
     "campaign_id": 5,
-    "opens": 15,
-    "clicks": 10,
-    "bounces": 5,
-    "conversion_rate": 12.5
+    "opens": 3280,
+    "clicks": 940,
+    "bounces": 120,
+    "conversion_rate": 9.8
   },
   {
     "id": 6,
     "campaign_id": 6,
-    "opens": 18,
-    "clicks": 12,
-    "bounces": 6,
-    "conversion_rate": 15.0
+    "opens": 0,
+    "clicks": 0,
+    "bounces": 0,
+    "conversion_rate": 0
   },
   {
     "id": 7,
     "campaign_id": 7,
-    "opens": 21,
-    "clicks": 14,
-    "bounces": 7,
-    "conversion_rate": 17.5
+    "opens": 6120,
+    "clicks": 1820,
+    "bounces": 270,
+    "conversion_rate": 8.5
   },
   {
     "id": 8,
     "campaign_id": 8,
-    "opens": 24,
-    "clicks": 16,
-    "bounces": 8,
-    "conversion_rate": 20.0
+    "opens": 9520,
+    "clicks": 4200,
+    "bounces": 350,
+    "conversion_rate": 15.4
   },
   {
     "id": 9,
     "campaign_id": 9,
-    "opens": 27,
-    "clicks": 18,
-    "bounces": 9,
-    "conversion_rate": 22.5
+    "opens": 0,
+    "clicks": 0,
+    "bounces": 0,
+    "conversion_rate": 0
   },
   {
     "id": 10,
     "campaign_id": 10,
-    "opens": 30,
-    "clicks": 20,
-    "bounces": 10,
-    "conversion_rate": 0.0
-  },
-  {
-    "id": 11,
-    "campaign_id": 11,
-    "opens": 33,
-    "clicks": 22,
-    "bounces": 11,
-    "conversion_rate": 2.5
-  },
-  {
-    "id": 12,
-    "campaign_id": 12,
-    "opens": 36,
-    "clicks": 24,
-    "bounces": 12,
-    "conversion_rate": 5.0
-  },
-  {
-    "id": 13,
-    "campaign_id": 13,
-    "opens": 39,
-    "clicks": 26,
-    "bounces": 13,
-    "conversion_rate": 7.5
-  },
-  {
-    "id": 14,
-    "campaign_id": 14,
-    "opens": 42,
-    "clicks": 28,
-    "bounces": 14,
-    "conversion_rate": 10.0
-  },
-  {
-    "id": 15,
-    "campaign_id": 15,
-    "opens": 45,
-    "clicks": 30,
-    "bounces": 15,
-    "conversion_rate": 12.5
-  },
-  {
-    "id": 16,
-    "campaign_id": 16,
-    "opens": 48,
-    "clicks": 32,
-    "bounces": 16,
-    "conversion_rate": 15.0
-  },
-  {
-    "id": 17,
-    "campaign_id": 17,
-    "opens": 51,
-    "clicks": 34,
-    "bounces": 17,
-    "conversion_rate": 17.5
-  },
-  {
-    "id": 18,
-    "campaign_id": 18,
-    "opens": 54,
-    "clicks": 36,
-    "bounces": 18,
-    "conversion_rate": 20.0
-  },
-  {
-    "id": 19,
-    "campaign_id": 19,
-    "opens": 57,
-    "clicks": 38,
-    "bounces": 19,
-    "conversion_rate": 22.5
-  },
-  {
-    "id": 20,
-    "campaign_id": 20,
-    "opens": 60,
-    "clicks": 40,
-    "bounces": 20,
-    "conversion_rate": 0.0
+    "opens": 3840,
+    "clicks": 1120,
+    "bounces": 110,
+    "conversion_rate": 6.3
   }
 ]

@@ -4,13 +4,13 @@
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-10">
       <div>
         <h1 class="text-4xl font-extrabold text-[#7F56D9] tracking-tight">Email Marketing Analytics</h1>
-        <p class="text-gray-500 mt-2">Performance overview for your latest campaigns</p>
+        <p class="text-gray-500 mt-2">Performance overview for your campaigns</p>
       </div>
       <div class="flex gap-3 mt-4 sm:mt-0">
-        <button class="bg-[#7F56D9] text-white px-5 py-2 rounded-xl hover:bg-[#6C47B5] transition">
+        <button @click="downloadReport" class="bg-[#7F56D9] text-white px-5 py-2 rounded-xl hover:bg-[#6C47B5] transition">
           Download Report
         </button>
-        <button class="border border-[#7F56D9] text-[#7F56D9] px-5 py-2 rounded-xl hover:bg-[#7F56D9]/10 transition">
+        <button @click="loadAnalytics" class="border border-[#7F56D9] text-[#7F56D9] px-5 py-2 rounded-xl hover:bg-[#7F56D9]/10 transition">
           Refresh
         </button>
       </div>
@@ -27,7 +27,7 @@
           <div>
             <p class="text-sm font-medium text-gray-500">{{ card.title }}</p>
             <p class="text-4xl font-bold text-gray-900 mt-2">{{ card.value }}</p>
-            <p class="text-xs text-gray-400 mt-1">vs last week: {{ card.change }}</p>
+            <p class="text-xs text-gray-400 mt-1">{{ card.subtext }}</p>
           </div>
           <div class="bg-[#7F56D9]/10 p-3 rounded-xl">
             <component :is="card.icon" class="text-[#7F56D9]" size="26" stroke-width="2.2" />
@@ -55,12 +55,10 @@
             <Line :dataKeys="['name', 'open']" :lineStyle="{ stroke: '#7F56D9', strokeWidth: 3 }" />
             <Line :dataKeys="['name', 'click']" :lineStyle="{ stroke: '#E45858', strokeWidth: 2.5 }" type="step" />
           </template>
-
           <template #widgets>
             <Tooltip
               borderColor="#7F56D9"
               :config="{
-                name: { hide: true },
                 open: { label: 'Open Rate', color: '#7F56D9' },
                 click: { label: 'Click Rate', color: '#E45858' }
               }"
@@ -86,7 +84,6 @@
             <Bar :dataKeys="['name', 'open']" :barStyle="{ fill: '#7F56D9', rx: 6 }" />
             <Bar :dataKeys="['name', 'click']" :barStyle="{ fill: '#E45858', rx: 6 }" />
           </template>
-
           <template #widgets>
             <Tooltip
               borderColor="#E45858"
@@ -115,120 +112,36 @@
             <Grid strokeDasharray="2,2" />
             <Line :dataKeys="['name', 'subs']" :lineStyle="{ stroke: '#00BFA6', strokeWidth: 3 }" type="monotone" />
           </template>
-
           <template #widgets>
             <Tooltip borderColor="#00BFA6" />
           </template>
         </Chart>
       </div>
-
-     <!-- 🥯 Device Distribution (Doughnut Chart) -->
-<div class="bg-white p-6 rounded-2xl shadow-xl border border-gray-100 lg:col-span-2">
-  <h3 class="text-xl font-bold mb-4 text-gray-700">Device Distribution</h3>
-
-  <div class="flex flex-col lg:flex-row items-center justify-center gap-8">
-    <!-- Doughnut Chart -->
-    <Chart
-      :size="{ width: 350, height: 350 }"
-      :data="deviceData"
-      :margin="{ top: 20, right: 20, bottom: 20, left: 20 }"
-    >
-      <template #layers>
-        <Pie
-          :dataKeys="['name', 'value']"
-          :innerRadius="90"
-          :outerRadius="140"
-          :pieStyle="{ stroke: '#fff', strokeWidth: 3 }"
-          :colors="['#7F56D9', '#00BFA6', '#E45858']"
-        />
-      </template>
-
-      <template #widgets>
-        <Tooltip
-          borderColor="#7F56D9"
-          :config="{
-            name: { label: 'Device' },
-            value: { label: 'Usage %' }
-          }"
-        />
-      </template>
-    </Chart>
-
-    <!-- Legend -->
-    <div class="space-y-3">
-      <div
-        v-for="(item, index) in deviceData"
-        :key="item.name"
-        class="flex items-center gap-3"
-      >
-        <div
-          class="w-4 h-4 rounded-full"
-          :style="{ backgroundColor: ['#7F56D9', '#00BFA6', '#E45858'][index] }"
-        ></div>
-        <p class="text-gray-700 font-medium">
-          {{ item.name }} — 
-          <span class="text-gray-500 font-semibold">{{ item.value }}%</span>
-        </p>
-      </div>
-    </div>
-  </div>
-</div>
-
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { Chart, Grid, Line, Bar, Pie, Tooltip } from 'vue3-charts'
+import { ref, onMounted } from 'vue'
+import { Chart, Grid, Line, Bar, Tooltip } from 'vue3-charts'
 import { Send, MailOpen, MousePointer, XCircle, UserMinus } from 'lucide-vue-next'
 
-/* KPI Summary Cards */
-const kpiCards = [
-  { title: 'Emails Sent', value: '45,200', change: '+12%', icon: Send },
-  { title: 'Open Rate', value: '46.2%', change: '+2.3%', icon: MailOpen },
-  { title: 'Click Rate', value: '21.8%', change: '+1.4%', icon: MousePointer },
-  { title: 'Bounces', value: '183', change: '-0.8%', icon: XCircle },
-  { title: 'Unsubscribes', value: '64', change: '+0.3%', icon: UserMinus }
-]
+const campaigns = ref([])
 
-/* Engagement Data */
-const engagement = ref([
-  { name: 'Oct 1', open: 38, click: 12 },
-  { name: 'Oct 5', open: 45, click: 17 },
-  { name: 'Oct 10', open: 48, click: 19 },
-  { name: 'Oct 15', open: 51, click: 22 },
-  { name: 'Oct 20', open: 47, click: 18 },
-  { name: 'Oct 25', open: 54, click: 25 },
-  { name: 'Oct 30', open: 59, click: 29 }
+/* KPI Cards */
+const kpiCards = ref([
+  { title: 'Emails Sent', value: '—', subtext: '', icon: Send },
+  { title: 'Open Rate', value: '—', subtext: '', icon: MailOpen },
+  { title: 'Click Rate', value: '—', subtext: '', icon: MousePointer },
+  { title: 'Bounces', value: '—', subtext: '', icon: XCircle },
+  { title: 'Unsubscribes', value: '—', subtext: '', icon: UserMinus }
 ])
 
-/* Campaign Performance */
-const topCampaigns = ref([
-  { name: 'Welcome Series', open: 58, click: 24 },
-  { name: 'October Promo', open: 52, click: 19 },
-  { name: 'Holiday Blast', open: 49, click: 23 },
-  { name: 'Weekly Digest', open: 44, click: 16 },
-  { name: 'Black Friday', open: 61, click: 29 }
-])
+/* Chart Data */
+const engagement = ref([])
+const topCampaigns = ref([])
+const subscribers = ref([])
 
-/* Subscriber Growth */
-const subscribers = ref([
-  { name: 'Jul', subs: 1200 },
-  { name: 'Aug', subs: 1900 },
-  { name: 'Sep', subs: 2700 },
-  { name: 'Oct', subs: 3200 },
-  { name: 'Nov', subs: 4100 }
-])
-
-/* Device Distribution */
-const deviceData = ref([
-  { name: 'Desktop', value: 64 },
-  { name: 'Mobile', value: 30 },
-  { name: 'Tablet', value: 6 }
-])
-
-/* Axis Config */
 const axis = ref({
   primary: { type: 'band' },
   secondary: { type: 'linear', domain: ['dataMin', 'dataMax + 10'] }
@@ -238,6 +151,74 @@ const axisBar = ref({
   primary: { type: 'band' },
   secondary: { type: 'linear', domain: ['dataMin', 'dataMax + 10'] }
 })
+
+onMounted(() => {
+  loadAnalytics()
+})
+
+function loadAnalytics() {
+  const stored = JSON.parse(localStorage.getItem('campaigns') || '[]')
+  campaigns.value = stored
+
+  if (!stored.length) {
+    console.warn('No campaign data found in localStorage')
+    return
+  }
+
+  // KPI Calculations
+  const totalSent = stored.reduce((sum, c) => sum + (Number(c.emailsSent) || 0), 0)
+  const totalOpens = stored.reduce((sum, c) => sum + (Number(c.opens) || 0), 0)
+  const totalClicks = stored.reduce((sum, c) => sum + (Number(c.clicks) || 0), 0)
+  const totalBounces = stored.reduce((sum, c) => sum + (Number(c.bounces) || 0), 0)
+
+  const avgOpenRate = ((totalOpens / totalSent) * 100 || 0).toFixed(1)
+  const avgClickRate = ((totalClicks / totalSent) * 100 || 0).toFixed(1)
+
+  kpiCards.value = [
+    { title: 'Emails Sent', value: totalSent.toLocaleString(), subtext: 'All campaigns', icon: Send },
+    { title: 'Open Rate', value: `${avgOpenRate}%`, subtext: 'Average per campaign', icon: MailOpen },
+    { title: 'Click Rate', value: `${avgClickRate}%`, subtext: 'Average per campaign', icon: MousePointer },
+    { title: 'Bounces', value: totalBounces.toLocaleString(), subtext: 'Across all sends', icon: XCircle },
+    { title: 'Unsubscribes', value: '0', subtext: 'No data available', icon: UserMinus }
+  ]
+
+  // Engagement Chart
+  engagement.value = stored
+    .slice()
+    .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))
+    .map(c => ({
+      name: c.name || 'Campaign',
+      open: Number(((c.opens / c.emailsSent) * 100).toFixed(1)) || 0,
+      click: Number(((c.clicks / c.emailsSent) * 100).toFixed(1)) || 0
+    }))
+
+  // Top Campaigns by open rate
+  topCampaigns.value = stored
+    .map(c => ({
+      name: c.name,
+      open: Number(((c.opens / c.emailsSent) * 100).toFixed(1)) || 0,
+      click: Number(((c.clicks / c.emailsSent) * 100).toFixed(1)) || 0
+    }))
+    .sort((a, b) => b.open - a.open)
+    .slice(0, 5)
+
+  // Subscriber growth (mock from total recipients)
+  subscribers.value = stored.map(c => ({
+    name: c.name,
+    subs: c.recipients?.recipients_count || 0
+  }))
+}
+
+function downloadReport() {
+  const dataStr = JSON.stringify(campaigns.value, null, 2)
+  const blob = new Blob([dataStr], { type: 'application/json' })
+  const url = URL.createObjectURL(blob)
+  const link = document.createElement('a')
+  link.href = url
+  link.download = 'email_analytics_report.json'
+  link.click()
+  URL.revokeObjectURL(url)
+}
 </script>
 
 <style scoped>

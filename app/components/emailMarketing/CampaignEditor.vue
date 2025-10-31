@@ -1,7 +1,7 @@
 <!-- app/components/emailMarketing/CampaignEditor.vue -->
 <template>
   <div class="p-8 bg-gray-100 min-h-screen">
-    <h1 class="text-3xl font-extrabold mb-6 text-gray-800">Fancy Email Maker Thingy</h1>
+    <h1 class="text-3xl font-extrabold mb-6 text-gray-800">Email Editor</h1>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
       <!-- Column 1: Settings -->
@@ -240,7 +240,7 @@ function doTheSaving() {
 
   const finalCampaignData = {
     ...emailData.value,
-    status: emailData.value.send_date ? 'Scheduled' : 'Drafting',
+    status: emailData.value.send_date ? 'Scheduled' : 'Draft',
     emailsSent: emailData.value.emailsSent || 0,
     opens: emailData.value.opens || 0,
     clicks: emailData.value.clicks || 0,

@@ -1,22 +1,82 @@
 [
-  { "id": 1, "title": "Campaign 1", "subject": "Subject line 1", "status": "scheduled", "send_date": "2025-10-02", "emailsSent": 642 },
-  { "id": 2, "title": "Campaign 2", "subject": "Subject line 2", "status": "sent", "send_date": "2025-10-03", "emailsSent": 3894 },
-  { "id": 3, "title": "Campaign 3", "subject": "Subject line 3", "status": "draft", "send_date": "2025-10-04", "emailsSent": 24 },
-  { "id": 4, "title": "Campaign 4", "subject": "Subject line 4", "status": "scheduled", "send_date": "2025-10-05", "emailsSent": 710 },
-  { "id": 5, "title": "Campaign 5", "subject": "Subject line 5", "status": "sent", "send_date": "2025-10-06", "emailsSent": 2612 },
-  { "id": 6, "title": "Campaign 6", "subject": "Subject line 6", "status": "draft", "send_date": "2025-10-07", "emailsSent": 0 },
-  { "id": 7, "title": "Campaign 7", "subject": "Subject line 7", "status": "scheduled", "send_date": "2025-10-08", "emailsSent": 534 },
-  { "id": 8, "title": "Campaign 8", "subject": "Subject line 8", "status": "sent", "send_date": "2025-10-09", "emailsSent": 4471 },
-  { "id": 9, "title": "Campaign 9", "subject": "Subject line 9", "status": "draft", "send_date": "2025-10-10", "emailsSent": 43 },
-  { "id": 10, "title": "Campaign 10", "subject": "Subject line 10", "status": "scheduled", "send_date": "2025-10-11", "emailsSent": 758 },
-  { "id": 11, "title": "Campaign 11", "subject": "Subject line 11", "status": "sent", "send_date": "2025-10-12", "emailsSent": 3821 },
-  { "id": 12, "title": "Campaign 12", "subject": "Subject line 12", "status": "draft", "send_date": "2025-10-13", "emailsSent": 12 },
-  { "id": 13, "title": "Campaign 13", "subject": "Subject line 13", "status": "scheduled", "send_date": "2025-10-14", "emailsSent": 634 },
-  { "id": 14, "title": "Campaign 14", "subject": "Subject line 14", "status": "sent", "send_date": "2025-10-15", "emailsSent": 5130 },
-  { "id": 15, "title": "Campaign 15", "subject": "Subject line 15", "status": "draft", "send_date": "2025-10-16", "emailsSent": 56 },
-  { "id": 16, "title": "Campaign 16", "subject": "Subject line 16", "status": "scheduled", "send_date": "2025-10-17", "emailsSent": 745 },
-  { "id": 17, "title": "Campaign 17", "subject": "Subject line 17", "status": "sent", "send_date": "2025-10-18", "emailsSent": 2642 },
-  { "id": 18, "title": "Campaign 18", "subject": "Subject line 18", "status": "draft", "send_date": "2025-10-19", "emailsSent": 0 },
-  { "id": 19, "title": "Campaign 19", "subject": "Subject line 19", "status": "scheduled", "send_date": "2025-10-20", "emailsSent": 670 },
-  { "id": 20, "title": "Campaign 20", "subject": "Subject line 20", "status": "sent", "send_date": "2025-10-21", "emailsSent": 4180 }
+  {
+    "id": 1,
+    "title": "Black Friday Mega Sale 2025",
+    "subject": "🔥 70% OFF — Our Biggest Sale of the Year!",
+    "status": "sent",
+    "send_date": "2025-11-25",
+    "emailsSent": 15230
+  },
+  {
+    "id": 2,
+    "title": "Cyber Monday Flash Deals",
+    "subject": "💻 One-Day Only: Massive Tech Discounts!",
+    "status": "scheduled",
+    "send_date": "2025-12-02",
+    "emailsSent": 12890
+  },
+  {
+    "id": 3,
+    "title": "New Year Kickoff Newsletter",
+    "subject": "🎉 Welcome 2026 — See What’s Coming!",
+    "status": "draft",
+    "send_date": "2025-12-30",
+    "emailsSent": 0
+  },
+  {
+    "id": 4,
+    "title": "AI Productivity Toolkit Launch",
+    "subject": "🚀 Introducing Your New AI Assistant for Work",
+    "status": "sent",
+    "send_date": "2025-10-28",
+    "emailsSent": 9321
+  },
+  {
+    "id": 5,
+    "title": "Customer Feedback Request",
+    "subject": "We value your opinion — Share your thoughts!",
+    "status": "sent",
+    "send_date": "2025-10-20",
+    "emailsSent": 4680
+  },
+  {
+    "id": 6,
+    "title": "Abandoned Cart Reminder",
+    "subject": "🛒 Still thinking it over? Your cart is waiting!",
+    "status": "scheduled",
+    "send_date": "2025-11-01",
+    "emailsSent": 2760
+  },
+  {
+    "id": 7,
+    "title": "Welcome Series — Day 1",
+    "subject": "👋 Welcome to Akili AI — Let’s Get Started",
+    "status": "sent",
+    "send_date": "2025-10-01",
+    "emailsSent": 8420
+  },
+  {
+    "id": 8,
+    "title": "Weekly AI Digest #42",
+    "subject": "🧠 This Week in AI — New GPT Tools & Insights",
+    "status": "sent",
+    "send_date": "2025-10-27",
+    "emailsSent": 12750
+  },
+  {
+    "id": 9,
+    "title": "Refer a Friend Program",
+    "subject": "Invite your friends, earn 20% off forever!",
+    "status": "draft",
+    "send_date": "2025-11-10",
+    "emailsSent": 0
+  },
+  {
+    "id": 10,
+    "title": "Monthly Product Update - October",
+    "subject": "🔧 New AI Features You’ll Love This Month",
+    "status": "sent",
+    "send_date": "2025-10-30",
+    "emailsSent": 6840
+  }
 ]

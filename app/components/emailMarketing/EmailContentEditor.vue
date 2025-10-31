@@ -1,6 +1,6 @@
 <template>
   <div class="p-4 bg-gray-50 rounded-lg">
-    <label class="font-bold text-lg text-gray-800 block mb-3">The Email Content Area</label>
+    <label class="font-bold text-lg text-gray-800 block mb-3">The Email Content Editor</label>
 
     <!-- Tabs -->
     <div class="flex flex-col sm:flex-row border-b border-gray-300">
