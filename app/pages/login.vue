@@ -1,16 +1,10 @@
-<!-- page/login.vue -->
 <template>
   <div class="min-h-screen pt-[30vh] sm:pt-[40vh] lg:pt-[6rem] bg-white flex items-center justify-center p-6">
     <div class="max-w-md w-full">
       <!-- Logo -->
       <div class="text-center mb-8">
-        
         <NuxtLink class="flex items-center justify-center mb-4 hover:cursor-pointer" to="/">
-
           <AppLogo size="md" center />
-
-
-
         </NuxtLink>
         <h2 class="text-2xl font-semibold text-gray-800 mb-2">Welcome back</h2>
         <p class="text-gray-600">Sign in to your account</p>
@@ -18,6 +12,7 @@
 
       <!-- Social Login -->
       <SocialAuthButtons class="mb-6" @social-auth="handleSocialAuth" />
+
       <!-- Divider -->
       <AuthDivider class="mb-6" />
 
@@ -43,11 +38,21 @@
         </button>
       </form>
 
-      <!-- Error Message -->
-      <div v-if="error" class="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm">
-        {{ error }}
+      <!-- Error/Success Message -->
+      <div v-if="success" class="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg text-green-600 text-sm">
+        {{ success }}
       </div>
 
+      <div v-if="error" class="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm">
+        {{ error }}
+        <div v-if="verificationExpired && expiredEmail" class="mt-2">
+          <button @click="resendVerification" :disabled="resendLoading"
+            class="text-sm font-medium text-red-700 hover:text-red-800 underline">
+            {{ resendLoading ? 'Sending...' : 'Resend verification email' }}
+          </button>
+        </div>
+      </div>
+      
       <!-- Sign Up Link -->
       <p class="mt-6 text-center text-sm text-gray-600">
         Don't have an account?
@@ -60,13 +65,12 @@
 </template>
 
 <script setup>
-
 definePageMeta({
-  layout: 'empty'
+  layout: 'empty',
+  middleware: 'guest'
 })
 
 const authStore = useAuthStore()
-// const onboardingStore = useOnboardingStore()
 const router = useRouter()
 const route = useRoute()
 
@@ -86,7 +90,17 @@ const handleLogin = async () => {
 
   try {
     await authStore.login(form.value)
-    router.push('/dashboard')
+
+    const user = authStore.user
+
+    // Determine where to redirect based on user state
+    if (!user.onboarding_completed) {
+      router.push('/dashboard/onboarding')
+    } else if (!user.current_business_id) {
+      router.push('/select-business')
+    } else {
+      router.push('/dashboard')
+    }
   } catch (err) {
     error.value = err.message || 'Login failed'
   } finally {
@@ -96,23 +110,27 @@ const handleLogin = async () => {
 
 const handleSocialAuth = async (provider) => {
   try {
-    await authStore.socialAuth(provider)
-    router.push('/dashboard')
+    const result = await authStore.socialAuth(provider)
+
+    const user = authStore.user
+    console.log('Social auth successful:', result)
+    console.log('Authenticated user:', user)
+
+    // Redirect based on user state
+    if (!user.onboarding_completed) {
+      router.push('/dashboard/onboarding')
+    } else if (!user.current_business_id) {
+      router.push('/select-business')
+    } else {
+      router.push('/dashboard')
+    }
   } catch (err) {
     error.value = err.message || 'Social login failed'
   }
 }
 
-// Check if already logged in and handle URL parameters
+// Check for URL parameters (email verification, etc.)
 onMounted(() => {
-  authStore.initializeAuth()
-
-  if (authStore.isLoggedIn) {
-    router.push('/dashboard')
-    return
-  }
-
-  // Check for success/error messages in URL
   if (route.query.success) {
     success.value = decodeURIComponent(route.query.success)
   }

@@ -1,67 +1,46 @@
-<!-- pages/register.vue -->
 <template>
   <div class="min-h-screen pt-[30vh] sm:pt-[40vh] lg:pt-[6rem] bg-white flex items-center justify-center p-6">
     <div class="max-w-md w-full">
       <!-- Logo -->
-
-<div class="text-center mb-8">
-    <NuxtLink class="hover:cursor-pointer" to="/"> 
-  <AppLogo size="md" center />
-  </NuxtLink>
-  <h2 class="text-2xl font-semibold text-gray-800 mb-2 mt-4">Create your account</h2>
-  <p class="text-gray-600">Start building your intelligent chatbot</p>
-</div>
-     
+      <div class="text-center mb-8">
+        <NuxtLink class="hover:cursor-pointer" to="/">
+          <AppLogo size="md" center />
+        </NuxtLink>
+        <h2 class="text-2xl font-semibold text-gray-800 mb-2 mt-4">Create your account</h2>
+        <p class="text-gray-600">Start building your intelligent chatbot</p>
+      </div>
 
       <!-- Social Login -->
-
-<SocialAuthButtons class="mb-6" @social-auth="handleSocialAuth"  />
+      <SocialAuthButtons class="mb-6" @social-auth="handleSocialAuth" />
 
       <!-- Divider -->
-
-<AuthDivider class="mb-6" />
+      <AuthDivider class="mb-6" />
 
       <!-- Register Form -->
-      <form class="space-y-4" @submit.prevent="handleRegister" >
+      <form class="space-y-4" @submit.prevent="handleRegister">
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
-          <input
-            v-model="form.name"
-            type="text"
-            required
+          <input v-model="form.name" type="text" required
             class="w-full px-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-            placeholder="Enter your full name"
-          >
+            placeholder="Enter your full name">
         </div>
 
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-          <input
-            v-model="form.email"
-            type="email"
-            required
+          <input v-model="form.email" type="email" required
             class="w-full px-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-            placeholder="Enter your email"
-          >
+            placeholder="Enter your email">
         </div>
 
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
-          <input
-            v-model="form.password"
-            type="password"
-            required
-            minlength="8"
+          <input v-model="form.password" type="password" required minlength="8"
             class="w-full px-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-            placeholder="Create a password (min. 8 characters)"
-          >
+            placeholder="Create a password (min. 8 characters)">
         </div>
 
-        <button
-          type="submit"
-          :disabled="loading"
-          class="w-full bg-[#7F56D9] text-white py-3 px-4 rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-        >
+        <button type="submit" :disabled="loading"
+          class="w-full bg-[#7F56D9] text-white py-3 px-4 rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
           {{ loading ? 'Creating account...' : 'Create Account' }}
         </button>
       </form>
@@ -87,13 +66,12 @@
 </template>
 
 <script setup>
-
 definePageMeta({
-  layout: false
+  layout: 'empty',
+  middleware: 'guest'
 })
 
 const authStore = useAuthStore()
-// const onboardingStore = useOnboardingStore()
 const router = useRouter()
 
 const form = ref({
@@ -124,12 +102,15 @@ const handleRegister = async () => {
 
 const handleSocialAuth = async (provider) => {
   try {
-    const result = await authStore.socialAuth(provider)
-    
-    // If user is new (no business_id), go to onboarding
-    // If user exists, go to dashboard
-    if (result.isNewUser) {
+    await authStore.socialAuth(provider)
+
+    const user = authStore.user
+
+    // New users from social auth are already verified, send to onboarding
+    if (!user.onboarding_completed) {
       router.push('/dashboard/onboarding')
+    } else if (!user.current_business_id) {
+      router.push('/select-business')
     } else {
       router.push('/dashboard')
     }
@@ -137,12 +118,4 @@ const handleSocialAuth = async (provider) => {
     error.value = err.message || 'Social registration failed'
   }
 }
-
-// Check if already logged in
-onMounted(() => {
-  authStore.initializeAuth()
-  if (authStore.isLoggedIn) {
-    router.push('/dashboard')
-  }
-})
 </script>

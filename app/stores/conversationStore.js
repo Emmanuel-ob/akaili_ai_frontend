@@ -6,7 +6,13 @@ export const useConversationStore = defineStore('conversation', {
         conversations: [],
         loading: false,
         embedCode: '',
-        widgetToken: ''
+        widgetToken: '',
+        testMode: 'default', // 'default', 'authenticated', 'anonymous'
+        testCustomerData: {
+            email: '',
+            name: '',
+            id: ''
+        }
     }),
 
     actions: {
@@ -29,23 +35,33 @@ export const useConversationStore = defineStore('conversation', {
             }
         },
 
-        async generateEmbedCode(chatbotId) {
+        async sendMessage(chatbotId, message, sessionId = null) {
             const config = useRuntimeConfig()
-            const { token } = useAuthStore()
+            const authStore = useAuthStore()
 
             try {
-                const data = await $fetch(`${config.public.apiBase}/api/chatbots/${chatbotId}/embed-code`, {
+                const payload = {
+                    chatbot_id: chatbotId,
+                    message: message,
+                    session_id: sessionId
+                }
+
+                // Add test mode if not default
+                if (this.testMode !== 'default') {
+                    payload.test_mode = this.testMode
+
+                    if (this.testMode === 'authenticated' && this.testCustomerData.email) {
+                        payload.test_customer_data = this.testCustomerData
+                    }
+                }
+
+                const response = await $fetch(`${config.public.apiBase}/api/chat`, {
                     method: 'POST',
-                    headers: { Authorization: `Bearer ${token}` }
+                    body: payload,
+                    headers: { Authorization: `Bearer ${authStore.token}` }
                 })
 
-                if (data.success) {
-                    this.embedCode = data.embed_code
-                    this.widgetToken = data.widget_token
-                    return data
-                } else {
-                    throw new Error(data.message)
-                }
+                return response
             } catch (error) {
                 throw error.data || error
             }

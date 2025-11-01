@@ -41,6 +41,38 @@
                 </select>
             </div>
 
+            <!-- Test Mode Selector -->
+            <div class="bg-white p-4 rounded-lg shadow-sm">
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    Test Mode
+                </label>
+                <select v-model="testMode"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                    <option value="default">Default (Authenticated as You)</option>
+                    <option value="authenticated">Simulate Authenticated Customer</option>
+                    <option value="anonymous">Simulate Anonymous User</option>
+                </select>
+
+                <!-- Customer Data Inputs (for Authenticated Mode) -->
+                <div v-if="testMode === 'authenticated'" class="mt-4 space-y-3">
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700 mb-1">Customer ID</label>
+                        <input v-model="testCustomerData.id" type="text" placeholder="e.g., cust_123"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" />
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700 mb-1">Customer Name</label>
+                        <input v-model="testCustomerData.name" type="text" placeholder="e.g., John Doe"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" />
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700 mb-1">Customer Email</label>
+                        <input v-model="testCustomerData.email" type="email" placeholder="e.g., john@example.com"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" />
+                    </div>
+                </div>
+            </div>
+
             <!-- Status Cards -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div class="bg-white p-4 rounded-lg shadow-sm border-l-4 border-blue-500">
@@ -67,8 +99,9 @@
 
             <!-- Chat Interface -->
             <div v-if="selectedChatbotId">
-                <ChatWidget :chatbot-id="selectedChatbotId"
-                    :chatbot-name="selectedChatbot?.name || 'AI Assistant'" />
+                <ChatWidget :chatbot-id="selectedChatbotId" :chatbot-name="selectedChatbot?.name || 'AI Assistant'"
+                    :test-mode="testMode"
+                    :test-customer-data="testMode === 'authenticated' ? testCustomerData : null" />
             </div>
 
             <!-- Help Section -->
@@ -79,6 +112,8 @@
                     <li>• Try follow-up questions to test conversation memory</li>
                     <li>• Check if sources are properly cited in responses</li>
                     <li>• Test edge cases like questions outside your data scope</li>
+                    <li>• Switch test modes to simulate different user scenarios (e.g., authenticated vs. anonymous)
+                    </li>
                 </ul>
             </div>
         </div>
@@ -97,6 +132,8 @@ const chatbotStore = useChatbotStore()
 const databaseStore = useDatabaseStore()
 
 const selectedChatbotId = ref('')
+const testMode = ref('default') // New: Test mode selector
+const testCustomerData = ref({ id: '', name: '', email: '' }) // New: Customer data for authenticated mode
 
 // Computed properties
 const availableChatbots = computed(() => chatbotStore.chatbots || [])
