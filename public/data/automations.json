@@ -1,0 +1,122 @@
+[
+  {
+    "id": 1,
+    "name": "Automation 1",
+    "trigger": "Purchase",
+    "active": true
+  },
+  {
+    "id": 2,
+    "name": "Automation 2",
+    "trigger": "Abandoned Cart",
+    "active": false
+  },
+  {
+    "id": 3,
+    "name": "Automation 3",
+    "trigger": "Signup",
+    "active": true
+  },
+  {
+    "id": 4,
+    "name": "Automation 4",
+    "trigger": "Purchase",
+    "active": false
+  },
+  {
+    "id": 5,
+    "name": "Automation 5",
+    "trigger": "Abandoned Cart",
+    "active": true
+  },
+  {
+    "id": 6,
+    "name": "Automation 6",
+    "trigger": "Signup",
+    "active": false
+  },
+  {
+    "id": 7,
+    "name": "Automation 7",
+    "trigger": "Purchase",
+    "active": true
+  },
+  {
+    "id": 8,
+    "name": "Automation 8",
+    "trigger": "Abandoned Cart",
+    "active": false
+  },
+  {
+    "id": 9,
+    "name": "Automation 9",
+    "trigger": "Signup",
+    "active": true
+  },
+  {
+    "id": 10,
+    "name": "Automation 10",
+    "trigger": "Purchase",
+    "active": false
+  },
+  {
+    "id": 11,
+    "name": "Automation 11",
+    "trigger": "Abandoned Cart",
+    "active": true
+  },
+  {
+    "id": 12,
+    "name": "Automation 12",
+    "trigger": "Signup",
+    "active": false
+  },
+  {
+    "id": 13,
+    "name": "Automation 13",
+    "trigger": "Purchase",
+    "active": true
+  },
+  {
+    "id": 14,
+    "name": "Automation 14",
+    "trigger": "Abandoned Cart",
+    "active": false
+  },
+  {
+    "id": 15,
+    "name": "Automation 15",
+    "trigger": "Signup",
+    "active": true
+  },
+  {
+    "id": 16,
+    "name": "Automation 16",
+    "trigger": "Purchase",
+    "active": false
+  },
+  {
+    "id": 17,
+    "name": "Automation 17",
+    "trigger": "Abandoned Cart",
+    "active": true
+  },
+  {
+    "id": 18,
+    "name": "Automation 18",
+    "trigger": "Signup",
+    "active": false
+  },
+  {
+    "id": 19,
+    "name": "Automation 19",
+    "trigger": "Purchase",
+    "active": true
+  },
+  {
+    "id": 20,
+    "name": "Automation 20",
+    "trigger": "Abandoned Cart",
+    "active": false
+  }
+]

@@ -145,6 +145,12 @@ const chatbotTypeOptions = [
   { value: 'support', label: 'Technical Support' }
 ]
 
+onMounted(() => {
+  authStore.initializeAuth()
+  if (!authStore.isLoggedIn) {
+    router.push('/login')
+    return
+  }
 // Computed
 const currentStepNumber = computed(() => {
   if (currentStep.value === 'business_setup') return 1
@@ -230,6 +236,16 @@ onMounted(() => {
     currentStep.value = user.onboarding_step
   }
 
+// Initialize onboarding status
+onMounted(async () => {
+  try {
+    await onboardingStore.getStatus()
+  } catch (err) {
+    console.error('Failed to get onboarding status:', err)
+    // If there's an error, redirect to login
+    router.push('/login')
+  } finally {
+    loading.value = false
   // If user already has a business, skip to chatbot creation
   if (user.current_business_id && currentStep.value === 'business_setup') {
     currentStep.value = 'chatbot_creation'
