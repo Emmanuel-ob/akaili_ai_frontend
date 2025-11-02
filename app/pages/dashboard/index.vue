@@ -117,6 +117,11 @@
 </template>
 
 <script setup>
+
+definePageMeta({
+  'layout': 'dashboard'
+})
+
 import StatCard from '~/components/StatCard.vue'
 import EmptyState from '~/components/EmptyState.vue'
 import { Plus } from 'lucide-vue-next'

@@ -98,16 +98,15 @@
               <!-- Roles Display - FIXED: changed member.role to member.roles -->
               <div v-if="member.roles && Object.keys(member.roles).length > 0" class="mt-2 flex flex-wrap gap-2">
                 <template v-for="(permissions, roleName) in member.roles" :key="roleName">
-                  <div class="text-xs px-2 py-1 rounded bg-purple-100 text-purple-700">
-                    {{ formatRoleName(roleName) }}
-                  </div>
-                  <template v-if="typeof permissions === 'object'">
-                    <div v-for="(value, permName) in permissions" :key="permName" v-show="value"
-                      class="text-xs px-2 py-1 rounded bg-gray-100 text-gray-700">
-                      {{ formatRoleName(permName) }}
-                    </div>
-                  </template>
+                  <div class="font-bold text-gray-700 mt-3">{{ formatRoleName(roleName) }}</div>
+
+                  <ul class="ml-4 text-sm text-gray-500">
+                    <li v-for="perm in permissions" :key="perm">
+                      {{ formatRoleName(perm) }}
+                    </li>
+                  </ul>
                 </template>
+
               </div>
               <div v-else class="mt-2">
                 <span class="text-xs text-gray-400">No roles assigned</span>
@@ -240,7 +239,7 @@
       <template #header>
         <h3 class="text-lg font-semibold">Manage Roles - {{ rolesMember?.name }}</h3>
       </template>
-      <template #body>  
+      <template #body>
         <form @submit.prevent="updateRoles" class="space-y-4">
           <div class="space-y-3 max-h-96 overflow-y-auto border border-gray-200 rounded-lg p-4">
             <div v-for="role in teamStore.rolesList" :key="role.name" class="border border-gray-200 rounded-lg p-3">
@@ -360,7 +359,11 @@ const toggleRole = (rolesObj, roleName) => {
 
 // Format role name for display
 const formatRoleName = (name) => {
-  return name.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')
+  if (typeof name !== 'string') return ''
+  return name
+    .split('_')
+    .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(' ')
 }
 
 // Convert roles object to API format

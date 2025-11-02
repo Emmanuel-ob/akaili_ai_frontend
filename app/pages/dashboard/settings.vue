@@ -570,13 +570,13 @@ const resetPasswordForm = () => {
 
 // Business actions
 const updateBusiness = async () => {
-    if (!businessStore.business?._id) {
+    if (!businessStore.business?.id) {
         errorMessage.value = 'No business found'
         return
     }
 
     try {
-        const result = await businessStore.updateBusiness(businessStore.business._id, businessForm.value)
+        const result = await businessStore.updateBusiness(businessStore.business.id, businessForm.value)
         if (result.success) {
             successMessage.value = 'Business settings updated successfully!'
             setTimeout(() => { successMessage.value = '' }, 3000)

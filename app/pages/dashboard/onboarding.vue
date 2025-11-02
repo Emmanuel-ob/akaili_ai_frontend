@@ -1,96 +1,113 @@
 <template>
-  <div class="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-    <div class="max-w-3xl mx-auto">
-      <!-- Header -->
-      <div class="text-center mb-8">
-        <AppLogo size="lg" center class="mb-4" />
-        <h1 class="text-3xl font-bold text-gray-900">Welcome to Xeli ai</h1>
-        <p class="mt-2 text-gray-600">Let's set up your account in a few simple steps</p>
+  <div class="min-h-screen bg-gray-50 flex flex-col">
+    <!-- Header -->
+    <header class="bg-white border-b border-gray-200 py-4 px-6" role="banner">
+      <div class="max-w-4xl mx-auto flex justify-between items-center">
+        <NuxtLink to="/" aria-label="Xeli AI Home">
+          <NuxtImg src="/Logo.png" alt="Xeli AI Logo" width="120" height="32" loading="eager" />
+        </NuxtLink>
+        <button @click="handleLogout"
+          class="text-sm text-gray-600 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 rounded px-3 py-1"
+          aria-label="Logout">
+          Logout
+        </button>
       </div>
+    </header>
 
-      <!-- Progress Indicator -->
-      <OnboardingProgress :current="currentStepNumber" class="mb-12" />
+    <!-- Main Content -->
+    <main class="flex-1 py-12 px-6" role="main">
+      <div class="max-w-4xl mx-auto">
+        <!-- Progress Indicator -->
+        <div class="mb-12" role="region" aria-label="Onboarding progress">
+          <OnboardingProgress :current="currentStepNumber" />
+        </div>
 
-      <!-- Step 1: Business Setup -->
-      <div v-if="currentStep === 'business_setup'" class="bg-white rounded-lg shadow p-8">
-        <h2 class="text-2xl font-semibold text-gray-900 mb-6">Company Information</h2>
+        <!-- Loading State -->
+        <div v-if="loading" class="flex justify-center py-12" role="status" aria-live="polite">
+          <div class="w-8 h-8 border-4 border-purple-600 border-t-transparent rounded-full animate-spin"
+            aria-label="Loading"></div>
+        </div>
 
-        <form @submit.prevent="handleBusinessSubmit" class="space-y-6">
-          <FormInput v-model="businessForm.company_name" label="Company Name" placeholder="Enter your company name"
-            required />
+        <!-- Step 1: Company Setup -->
+        <div v-else-if="currentStep === 'business_setup'"
+          class="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+          <h2 class="text-2xl font-bold text-gray-900 mb-6">Setup Your Company</h2>
 
-          <FormInput v-model="businessForm.industry" label="Industry"
-            placeholder="e.g., E-commerce, Healthcare, Finance" required />
+          <form @submit.prevent="handleCompanySetup" class="space-y-6">
+            <FormInput v-model="companyForm.company_name" label="Company Name" placeholder="Enter your company name"
+              required aria-required="true" />
 
-          <FormSelect v-model="businessForm.company_size" label="Company Size" :options="companySizeOptions" />
+            <FormInput v-model="companyForm.business_email" label="Business Email" type="email"
+              placeholder="Enter business email" required aria-required="true" />
 
-          <FormInput v-model="businessForm.website_url" label="Website URL" type="url"
-            placeholder="https://example.com" />
+            <FormInput v-model="companyForm.business_phone" label="Business Phone" type="tel"
+              placeholder="Enter phone number" required aria-required="true" />
 
-          <FormInput v-model="businessForm.location" label="Location" placeholder="City, Country" />
+            <FormInput v-model="companyForm.address" label="Business Address" placeholder="Enter business address"
+              required aria-required="true" />
 
-          <div class="flex justify-end space-x-4">
-            <button type="submit" :disabled="businessLoading"
-              class="px-6 py-3 bg-[#7F56D9] text-white rounded-lg hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
-              {{ businessLoading ? 'Saving...' : 'Continue' }}
+            <div v-if="error" class="p-4 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm" role="alert">
+              {{ error }}
+            </div>
+
+            <button type="submit" :disabled="setupLoading"
+              class="w-full bg-[#7F56D9] text-white py-3 px-4 rounded-lg hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-colors">
+              {{ setupLoading ? 'Setting up...' : 'Continue' }}
             </button>
-          </div>
-        </form>
+          </form>
+        </div>
 
-        <div v-if="businessError" class="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm">
-          {{ businessError }}
+        <!-- Step 2: Chatbot Creation -->
+        <div v-else-if="currentStep === 'chatbot_creation'"
+          class="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+          <h2 class="text-2xl font-bold text-gray-900 mb-6">Create Your Chatbot</h2>
+
+          <form @submit.prevent="handleChatbotCreation" class="space-y-6">
+            <FormInput v-model="chatbotForm.name" label="Chatbot Name" placeholder="Enter chatbot name" required
+              aria-required="true" />
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Welcome Message</label>
+              <textarea v-model="chatbotForm.welcome_message" rows="4"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                placeholder="Enter welcome message for your chatbot" required aria-required="true"></textarea>
+            </div>
+
+            <div v-if="error" class="p-4 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm" role="alert">
+              {{ error }}
+            </div>
+
+            <div class="flex space-x-4">
+              <button type="button" @click="goBack"
+                class="flex-1 border border-gray-300 text-gray-700 py-3 px-4 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors">
+                Back
+              </button>
+              <button type="submit" :disabled="setupLoading"
+                class="flex-1 bg-[#7F56D9] text-white py-3 px-4 rounded-lg hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-colors">
+                {{ setupLoading ? 'Creating...' : 'Complete Setup' }}
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Completed State -->
+        <div v-else-if="currentStep === 'completed'"
+          class="bg-white rounded-lg shadow-sm border border-gray-200 p-8 text-center">
+          <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+              aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+          </div>
+          <h2 class="text-2xl font-bold text-gray-900 mb-2">Setup Complete!</h2>
+          <p class="text-gray-600 mb-6">Your account is ready to use.</p>
+          <button @click="finishOnboarding"
+            class="bg-[#7F56D9] text-white py-3 px-8 rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-colors">
+            Go to Dashboard
+          </button>
         </div>
       </div>
-
-      <!-- Step 2: Chatbot Creation -->
-      <div v-if="currentStep === 'chatbot_creation'" class="bg-white rounded-lg shadow p-8">
-        <h2 class="text-2xl font-semibold text-gray-900 mb-6">Create Your Chatbot</h2>
-
-        <form @submit.prevent="handleChatbotSubmit" class="space-y-6">
-          <FormInput v-model="chatbotForm.name" label="Chatbot Name" placeholder="e.g., Customer Support Bot"
-            required />
-
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
-            <textarea v-model="chatbotForm.description" rows="3"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
-              placeholder="Describe what your chatbot will do" />
-          </div>
-
-          <FormSelect v-model="chatbotForm.type" label="Chatbot Type" :options="chatbotTypeOptions" />
-
-          <FormInput v-model="chatbotForm.welcome_message" label="Welcome Message"
-            placeholder="Hello! How can I help you today?" />
-
-          <div class="flex justify-between">
-            <button type="button" @click="goToPreviousStep"
-              class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
-              Back
-            </button>
-
-            <button type="submit" :disabled="chatbotLoading"
-              class="px-6 py-3 bg-[#7F56D9] text-white rounded-lg hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
-              {{ chatbotLoading ? 'Creating...' : 'Complete Setup' }}
-            </button>
-          </div>
-        </form>
-
-        <div v-if="chatbotError" class="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm">
-          {{ chatbotError }}
-        </div>
-      </div>
-
-      <!-- Success State -->
-      <div v-if="onboardingComplete" class="bg-white rounded-lg shadow p-8 text-center">
-        <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-          <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-          </svg>
-        </div>
-        <h2 class="text-2xl font-semibold text-gray-900 mb-2">All Set!</h2>
-        <p class="text-gray-600 mb-6">Your account is ready. Redirecting to dashboard...</p>
-      </div>
-    </div>
+    </main>
   </div>
 </template>
 
@@ -101,138 +118,100 @@ definePageMeta({
 })
 
 const authStore = useAuthStore()
+const onboardingStore = useOnboardingStore()
 const businessStore = useBusinessStore()
 const chatbotStore = useChatbotStore()
 const router = useRouter()
 
-// State
+const loading = ref(true)
+const setupLoading = ref(false)
+const error = ref('')
 const currentStep = ref('business_setup')
-const businessLoading = ref(false)
-const chatbotLoading = ref(false)
-const businessError = ref('')
-const chatbotError = ref('')
-const onboardingComplete = ref(false)
 
-// Forms
-const businessForm = ref({
+const companyForm = ref({
   company_name: '',
-  industry: '',
-  company_size: '',
-  website_url: '',
-  location: ''
+  business_email: '',
+  business_phone: '',
+  address: ''
 })
 
 const chatbotForm = ref({
   name: '',
-  description: '',
-  type: 'general',
   welcome_message: 'Hello! How can I help you today?'
 })
 
-// Options
-const companySizeOptions = [
-  { value: '1-10', label: '1-10 employees' },
-  { value: '11-50', label: '11-50 employees' },
-  { value: '51-200', label: '51-200 employees' },
-  { value: '201-500', label: '201-500 employees' },
-  { value: '500+', label: '500+ employees' }
-]
-
-const chatbotTypeOptions = [
-  { value: 'general', label: 'General Purpose' },
-  { value: 'customer_service', label: 'Customer Service' },
-  { value: 'sales', label: 'Sales' },
-  { value: 'support', label: 'Technical Support' }
-]
-
-// Computed
 const currentStepNumber = computed(() => {
   if (currentStep.value === 'business_setup') return 1
   if (currentStep.value === 'chatbot_creation') return 2
   return 3
 })
 
-// Methods
-const handleBusinessSubmit = async () => {
-  businessLoading.value = true
-  businessError.value = ''
+const handleLogout = async () => {
+  await authStore.logout()
+  router.push('/login')
+}
+
+const handleCompanySetup = async () => {
+  setupLoading.value = true
+  error.value = ''
 
   try {
-    const result = await businessStore.createBusiness(businessForm.value)
+    const result = await businessStore.createBusiness(companyForm.value)
 
     if (result.success) {
-      // Update user state
-      authStore.user.current_business_id = result.data.business.id
-      authStore.user.onboarding_step = 'chatbot_creation'
-
-      // Move to next step
+      await onboardingStore.getStatus()
       currentStep.value = 'chatbot_creation'
     } else {
-      businessError.value = result.message || 'Failed to create business'
+      error.value = result.message || 'Failed to setup company'
     }
-  } catch (error) {
-    businessError.value = error.message || 'An error occurred'
+  } catch (err) {
+    error.value = err.message || 'An error occurred'
   } finally {
-    businessLoading.value = false
+    setupLoading.value = false
   }
 }
 
-const handleChatbotSubmit = async () => {
-  chatbotLoading.value = true
-  chatbotError.value = ''
+const handleChatbotCreation = async () => {
+  setupLoading.value = true
+  error.value = ''
 
   try {
-    // Create chatbot
     const result = await chatbotStore.createChatbot(chatbotForm.value)
 
     if (result.success) {
-      // Call the onboarding complete endpoint
-      const onboardingStore = useOnboardingStore()
-      const completeResult = await onboardingStore.completeOnboarding()
-
-      if (completeResult.success) {
-        // Mark onboarding as complete
-        onboardingComplete.value = true
-
-        // Update user (already updated in store, but ensure it's synced)
-        authStore.user.onboarding_completed = true
-        authStore.user.onboarding_step = null
-
-        // Redirect to dashboard after a brief delay
-        setTimeout(() => {
-          router.push('/dashboard')
-        }, 1500)
-      } else {
-        chatbotError.value = completeResult.message || 'Failed to complete onboarding'
-      }
+      await onboardingStore.getStatus()
+      currentStep.value = 'completed'
     } else {
-      chatbotError.value = result.message || 'Failed to create chatbot'
+      error.value = result.message || 'Failed to create chatbot'
     }
-  } catch (error) {
-    chatbotError.value = error.message || 'An error occurred'
+  } catch (err) {
+    error.value = err.message || 'An error occurred'
   } finally {
-    chatbotLoading.value = false
+    setupLoading.value = false
   }
 }
 
-const goToPreviousStep = () => {
-  if (currentStep.value === 'chatbot_creation') {
-    currentStep.value = 'business_setup'
-  }
+const goBack = () => {
+  currentStep.value = 'business_setup'
 }
 
-// Initialize
-onMounted(() => {
-  const user = authStore.user
+const finishOnboarding = async () => {
+  await onboardingStore.completeOnboarding()
+  router.push('/dashboard')
+}
 
-  // Set current step based on user's onboarding progress
-  if (user.onboarding_step) {
-    currentStep.value = user.onboarding_step
-  }
+onMounted(async () => {
+  try {
+    const status = await onboardingStore.getStatus()
+    currentStep.value = status.current_step
 
-  // If user already has a business, skip to chatbot creation
-  if (user.current_business_id && currentStep.value === 'business_setup') {
-    currentStep.value = 'chatbot_creation'
+    if (status.completed) {
+      router.push('/dashboard')
+    }
+  } catch (err) {
+    console.error('Failed to get onboarding status:', err)
+  } finally {
+    loading.value = false
   }
 })
 </script>

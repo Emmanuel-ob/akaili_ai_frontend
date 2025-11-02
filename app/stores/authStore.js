@@ -1,4 +1,4 @@
-// stores/auth.js
+// stores/authStore.js
 import { defineStore } from 'pinia'
 
 export const useAuthStore = defineStore('auth', {
@@ -20,7 +20,7 @@ export const useAuthStore = defineStore('auth', {
 
                 // Set auth and mark as needing onboarding
                 this.setAuth(data.token, {
-                    ...data.user,
+                    ...data.data.user,
                     onboarding_completed: false
                 })
 
@@ -33,12 +33,20 @@ export const useAuthStore = defineStore('auth', {
         async login(credentials) {
             const config = useRuntimeConfig()
             try {
-                const data = await $fetch(`${config.public.apiBase}/api/login`, {
+                const response = await $fetch(`${config.public.apiBase}/api/login`, {
                     method: 'POST',
                     body: credentials
                 })
-                this.setAuth(data.token, data.user)
-                return data
+
+                // FIXED: Access user from data.user not response.user
+                const userData = response.data?.user || response.user
+
+                if (!userData) {
+                    throw new Error('Invalid response format from server')
+                }
+
+                this.setAuth(response.token, userData)
+                return response
             } catch (error) {
                 throw error.data || error
             }
@@ -95,13 +103,13 @@ export const useAuthStore = defineStore('auth', {
 
             const tokenCookie = useCookie('auth_token', {
                 httpOnly: false,
-                secure: true,
+                secure: process.env.NODE_ENV === 'production',
                 sameSite: 'lax',
                 maxAge: 60 * 60 * 24 * 7
             })
             const userCookie = useCookie('user', {
                 httpOnly: false,
-                secure: true,
+                secure: process.env.NODE_ENV === 'production',
                 sameSite: 'lax',
                 maxAge: 60 * 60 * 24 * 7
             })
