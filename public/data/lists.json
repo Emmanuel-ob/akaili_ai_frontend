@@ -1,0 +1,457 @@
+{
+  "list_id": 1,
+  "list_name": "Main Marketing Subscribers",
+  "subscribers": 50,
+  "data": [
+    {
+      "id": 1001,
+      "first_name": "Alex",
+      "last_name": "Johnson",
+      "email": "alex.j@example.com",
+      "status": "active",
+      "last_activity": "2025-10-27T10:00:00Z",
+      "tags": ["newly-registered", "high-usage-user"]
+    },
+    {
+      "id": 1002,
+      "first_name": "Maria",
+      "last_name": "Garcia",
+      "email": "maria.g@example.com",
+      "status": "pending",
+      "last_activity": "2025-10-20T14:30:00Z",
+      "tags": ["unfinished-registration"]
+    },
+    {
+      "id": 1003,
+      "first_name": "Ben",
+      "last_name": "Chen",
+      "email": "ben.c@example.com",
+      "status": "active",
+      "last_activity": "2025-10-26T08:15:00Z",
+      "tags": ["trial-ending-soon", "abandoned-cart"]
+    },
+    {
+      "id": 1004,
+      "first_name": "Sarah",
+      "last_name": "Miller",
+      "email": "sarah.m@example.com",
+      "status": "active",
+      "last_activity": "2025-07-01T11:00:00Z",
+      "tags": ["lapsed-30-days"]
+    },
+    {
+      "id": 1005,
+      "first_name": "David",
+      "last_name": "Lee",
+      "email": "david.l@example.com",
+      "status": "active",
+      "last_activity": "2025-10-26T15:45:00Z",
+      "tags": ["purchase-new-product", "high-usage-user"]
+    },
+    {
+      "id": 1006,
+      "first_name": "Amara",
+      "last_name": "Chukwu",
+      "email": "amara.c@example.com",
+      "status": "active",
+      "last_activity": "2025-09-15T09:20:00Z",
+      "tags": ["billing-failed"]
+    },
+    {
+      "id": 1007,
+      "first_name": "Tom",
+      "last_name": "Wilson",
+      "email": "tom.w@example.com",
+      "status": "active",
+      "last_activity": "2025-10-27T07:30:00Z",
+      "tags": ["newly-registered"]
+    },
+    {
+      "id": 1008,
+      "first_name": "Chloe",
+      "last_name": "Davis",
+      "email": "chloe.d@example.com",
+      "status": "pending",
+      "last_activity": "2025-10-24T18:00:00Z",
+      "tags": ["unfinished-registration", "abandoned-cart"]
+    },
+    {
+      "id": 1009,
+      "first_name": "Ryan",
+      "last_name": "Kim",
+      "email": "ryan.k@example.com",
+      "status": "active",
+      "last_activity": "2025-10-26T11:00:00Z",
+      "tags": ["abandoned-cart", "newly-registered"]
+    },
+    {
+      "id": 1010,
+      "first_name": "Sofia",
+      "last_name": "Ramos",
+      "email": "sofia.r@example.com",
+      "status": "active",
+      "last_activity": "2025-09-05T12:00:00Z",
+      "tags": ["lapsed-30-days", "billing-failed"]
+    },
+    {
+      "id": 1011,
+      "first_name": "Mark",
+      "last_name": "Brown",
+      "email": "mark.b@example.com",
+      "status": "active",
+      "last_activity": "2025-10-26T20:00:00Z",
+      "tags": ["high-usage-user", "purchase-new-product"]
+    },
+    {
+      "id": 1012,
+      "first_name": "Zoe",
+      "last_name": "Wang",
+      "email": "zoe.w@example.com",
+      "status": "active",
+      "last_activity": "2025-10-25T09:00:00Z",
+      "tags": ["trial-ending-soon"]
+    },
+    {
+      "id": 1013,
+      "first_name": "Kofi",
+      "last_name": "Boateng",
+      "email": "kofi.b@example.com",
+      "status": "active",
+      "last_activity": "2025-10-27T08:00:00Z",
+      "tags": ["newly-registered", "purchase-new-product"]
+    },
+    {
+      "id": 1014,
+      "first_name": "Elena",
+      "last_name": "Petrov",
+      "email": "elena.p@example.com",
+      "status": "pending",
+      "last_activity": "2025-10-22T06:00:00Z",
+      "tags": ["unfinished-registration"]
+    },
+    {
+      "id": 1015,
+      "first_name": "Jason",
+      "last_name": "Reed",
+      "email": "jason.r@example.com",
+      "status": "active",
+      "last_activity": "2025-10-26T17:00:00Z",
+      "tags": ["abandoned-cart", "trial-ending-soon"]
+    },
+    {
+      "id": 1016,
+      "first_name": "Lila",
+      "last_name": "Singh",
+      "email": "lila.s@example.com",
+      "status": "active",
+      "last_activity": "2025-08-01T04:00:00Z",
+      "tags": ["lapsed-30-days", "billing-failed"]
+    },
+    {
+      "id": 1017,
+      "first_name": "Mike",
+      "last_name": "Vance",
+      "email": "mike.v@example.com",
+      "status": "active",
+      "last_activity": "2025-10-27T09:00:00Z",
+      "tags": ["purchase-new-product"]
+    },
+    {
+      "id": 1018,
+      "first_name": "Nia",
+      "last_name": "Obi",
+      "email": "nia.o@example.com",
+      "status": "active",
+      "last_activity": "2025-09-20T13:00:00Z",
+      "tags": ["billing-failed"]
+    },
+    {
+      "id": 1019,
+      "first_name": "Oscar",
+      "last_name": "Cruz",
+      "email": "oscar.c@example.com",
+      "status": "active",
+      "last_activity": "2025-10-27T06:00:00Z",
+      "tags": ["newly-registered", "high-usage-user"]
+    },
+    {
+      "id": 1020,
+      "first_name": "Penny",
+      "last_name": "Scott",
+      "email": "penny.s@example.com",
+      "status": "active",
+      "last_activity": "2025-10-15T10:00:00Z",
+      "tags": ["trial-ending-soon", "lapsed-30-days"]
+    },
+    {
+      "id": 1021,
+      "first_name": "Victor",
+      "last_name": "Hugo",
+      "email": "victor.h@example.com",
+      "status": "active",
+      "last_activity": "2025-10-27T00:00:00Z",
+      "tags": ["high-usage-user"]
+    },
+    {
+      "id": 1022,
+      "first_name": "Grace",
+      "last_name": "Adams",
+      "email": "grace.a@example.com",
+      "status": "active",
+      "last_activity": "2025-06-10T12:00:00Z",
+      "tags": ["lapsed-30-days"]
+    },
+    {
+      "id": 1023,
+      "first_name": "Javier",
+      "last_name": "Morales",
+      "email": "javier.m@example.com",
+      "status": "active",
+      "last_activity": "2025-10-25T19:00:00Z",
+      "tags": ["abandoned-cart", "purchase-new-product"]
+    },
+    {
+      "id": 1024,
+      "first_name": "Kate",
+      "last_name": "Baker",
+      "email": "kate.b@example.com",
+      "status": "active",
+      "last_activity": "2025-10-26T14:00:00Z",
+      "tags": ["trial-ending-soon", "high-usage-user"]
+    },
+    {
+      "id": 1025,
+      "first_name": "Leo",
+      "last_name": "Kimani",
+      "email": "leo.k@example.com",
+      "status": "pending",
+      "last_activity": "2025-10-23T16:00:00Z",
+      "tags": ["unfinished-registration", "newly-registered"]
+    },
+    {
+      "id": 1026,
+      "first_name": "Naomi",
+      "last_name": "Hart",
+      "email": "naomi.h@example.com",
+      "status": "active",
+      "last_activity": "2025-09-01T05:00:00Z",
+      "tags": ["billing-failed", "lapsed-30-days"]
+    },
+    {
+      "id": 1027,
+      "first_name": "Pedro",
+      "last_name": "Costa",
+      "email": "pedro.c@example.com",
+      "status": "active",
+      "last_activity": "2025-10-27T01:00:00Z",
+      "tags": ["newly-registered"]
+    },
+    {
+      "id": 1028,
+      "first_name": "Quinn",
+      "last_name": "Smith",
+      "email": "quinn.s@example.com",
+      "status": "active",
+      "last_activity": "2025-10-24T22:00:00Z",
+      "tags": ["abandoned-cart"]
+    },
+    {
+      "id": 1029,
+      "first_name": "Riley",
+      "last_name": "Fischer",
+      "email": "riley.f@example.com",
+      "status": "active",
+      "last_activity": "2025-10-18T14:00:00Z",
+      "tags": ["trial-ending-soon"]
+    },
+    {
+      "id": 1030,
+      "first_name": "Samira",
+      "last_name": "Javed",
+      "email": "samira.j@example.com",
+      "status": "active",
+      "last_activity": "2025-10-27T03:00:00Z",
+      "tags": ["high-usage-user", "purchase-new-product"]
+    },
+    {
+      "id": 1031,
+      "first_name": "Theo",
+      "last_name": "Nguyen",
+      "email": "theo.n@example.com",
+      "status": "active",
+      "last_activity": "2025-05-20T17:00:00Z",
+      "tags": ["lapsed-30-days"]
+    },
+    {
+      "id": 1032,
+      "first_name": "Uma",
+      "last_name": "Sharma",
+      "email": "uma.s@example.com",
+      "status": "active",
+      "last_activity": "2025-10-26T02:00:00Z",
+      "tags": ["billing-failed"]
+    },
+    {
+      "id": 1033,
+      "first_name": "Vince",
+      "last_name": "Lopez",
+      "email": "vince.l@example.com",
+      "status": "active",
+      "last_activity": "2025-10-27T04:00:00Z",
+      "tags": ["newly-registered", "abandoned-cart"]
+    },
+    {
+      "id": 1034,
+      "first_name": "Willow",
+      "last_name": "Gray",
+      "email": "willow.g@example.com",
+      "status": "pending",
+      "last_activity": "2025-10-25T07:00:00Z",
+      "tags": ["unfinished-registration"]
+    },
+    {
+      "id": 1035,
+      "first_name": "Xavier",
+      "last_name": "Perez",
+      "email": "xavier.p@example.com",
+      "status": "active",
+      "last_activity": "2025-10-26T13:00:00Z",
+      "tags": ["trial-ending-soon"]
+    },
+    {
+      "id": 1036,
+      "first_name": "Yara",
+      "last_name": "Ali",
+      "email": "yara.a@example.com",
+      "status": "active",
+      "last_activity": "2025-08-15T09:00:00Z",
+      "tags": ["lapsed-30-days", "billing-failed"]
+    },
+    {
+      "id": 1037,
+      "first_name": "Zane",
+      "last_name": "Scott",
+      "email": "zane.s@example.com",
+      "status": "active",
+      "last_activity": "2025-10-27T05:00:00Z",
+      "tags": ["purchase-new-product", "high-usage-user"]
+    },
+    {
+      "id": 1038,
+      "first_name": "April",
+      "last_name": "Voss",
+      "email": "april.v@example.com",
+      "status": "active",
+      "last_activity": "2025-10-25T11:00:00Z",
+      "tags": ["abandoned-cart", "newly-registered"]
+    },
+    {
+      "id": 1039,
+      "first_name": "Bruno",
+      "last_name": "Riva",
+      "email": "bruno.r@example.com",
+      "status": "pending",
+      "last_activity": "2025-10-24T08:00:00Z",
+      "tags": ["unfinished-registration", "trial-ending-soon"]
+    },
+    {
+      "id": 1040,
+      "first_name": "Celia",
+      "last_name": "Diaz",
+      "email": "celia.d@example.com",
+      "status": "active",
+      "last_activity": "2025-10-27T09:00:00Z",
+      "tags": ["high-usage-user", "newly-registered"]
+    },
+    {
+      "id": 1041,
+      "first_name": "Devin",
+      "last_name": "Hale",
+      "email": "devin.h@example.com",
+      "status": "active",
+      "last_activity": "2025-04-10T16:00:00Z",
+      "tags": ["lapsed-30-days", "billing-failed"]
+    },
+    {
+      "id": 1042,
+      "first_name": "Eva",
+      "last_name": "Jansen",
+      "email": "eva.j@example.com",
+      "status": "active",
+      "last_activity": "2025-10-26T04:00:00Z",
+      "tags": ["purchase-new-product"]
+    },
+    {
+      "id": 1043,
+      "first_name": "Finn",
+      "last_name": "O'Connell",
+      "email": "finn.o@example.com",
+      "status": "active",
+      "last_activity": "2025-10-27T02:00:00Z",
+      "tags": ["trial-ending-soon"]
+    },
+    {
+      "id": 1044,
+      "first_name": "Gita",
+      "last_name": "Rao",
+      "email": "gita.r@example.com",
+      "status": "active",
+      "last_activity": "2025-10-25T15:00:00Z",
+      "tags": ["abandoned-cart", "high-usage-user"]
+    },
+    {
+      "id": 1045,
+      "first_name": "Hakeem",
+      "last_name": "Jamal",
+      "email": "hakeem.j@example.com",
+      "status": "pending",
+      "last_activity": "2025-10-21T11:00:00Z",
+      "tags": ["unfinished-registration", "newly-registered"]
+    },
+    {
+      "id": 1046,
+      "first_name": "Ines",
+      "last_name": "Mendes",
+      "email": "ines.m@example.com",
+      "status": "active",
+      "last_activity": "2025-07-20T13:00:00Z",
+      "tags": ["lapsed-30-days"]
+    },
+    {
+      "id": 1047,
+      "first_name": "Jaxon",
+      "last_name": "Cruz",
+      "email": "jaxon.c@example.com",
+      "status": "active",
+      "last_activity": "2025-10-27T04:00:00Z",
+      "tags": ["newly-registered", "purchase-new-product"]
+    },
+    {
+      "id": 1048,
+      "first_name": "Kai",
+      "last_name": "Takahashi",
+      "email": "kai.t@example.com",
+      "status": "active",
+      "last_activity": "2025-10-26T18:00:00Z",
+      "tags": ["high-usage-user", "trial-ending-soon"]
+    },
+    {
+      "id": 1049,
+      "first_name": "Luna",
+      "last_name": "Hart",
+      "email": "luna.h@example.com",
+      "status": "active",
+      "last_activity": "2025-10-25T01:00:00Z",
+      "tags": ["billing-failed", "abandoned-cart"]
+    },
+    {
+      "id": 1050,
+      "first_name": "Musa",
+      "last_name": "Ibrahim",
+      "email": "musa.i@example.com",
+      "status": "active",
+      "last_activity": "2025-10-27T08:00:00Z",
+      "tags": ["newly-registered"]
+    }
+  ]
+}

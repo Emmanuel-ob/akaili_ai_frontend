@@ -1,0 +1,23 @@
+[
+  {
+    "plan": "Starter",
+    "price": "Free",
+    "limits": "1,000 conversations",
+    "chatbots": 1,
+    "support": "Email"
+  },
+  {
+    "plan": "Professional",
+    "price": "$99",
+    "limits": "10,000 conversations",
+    "chatbots": 5,
+    "support": "Priority"
+  },
+  {
+    "plan": "Enterprise",
+    "price": "$299",
+    "limits": "Unlimited",
+    "chatbots": "Unlimited",
+    "support": "24/7 Phone"
+  }
+]

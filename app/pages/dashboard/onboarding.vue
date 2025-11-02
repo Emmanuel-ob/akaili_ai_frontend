@@ -140,6 +140,29 @@ const chatbotForm = ref({
   welcome_message: 'Hello! How can I help you today?'
 })
 
+// Options
+const companySizeOptions = [
+  { value: '1-10', label: '1-10 employees' },
+  { value: '11-50', label: '11-50 employees' },
+  { value: '51-200', label: '51-200 employees' },
+  { value: '201-500', label: '201-500 employees' },
+  { value: '500+', label: '500+ employees' }
+]
+
+const chatbotTypeOptions = [
+  { value: 'general', label: 'General Purpose' },
+  { value: 'customer_service', label: 'Customer Service' },
+  { value: 'sales', label: 'Sales' },
+  { value: 'support', label: 'Technical Support' }
+]
+
+onMounted(() => {
+  authStore.initializeAuth()
+  if (!authStore.isLoggedIn) {
+    router.push('/login')
+    return
+  }
+// Computed
 const currentStepNumber = computed(() => {
   if (currentStep.value === 'business_setup') return 1
   if (currentStep.value === 'chatbot_creation') return 2
@@ -191,27 +214,34 @@ const handleChatbotCreation = async () => {
   }
 }
 
-const goBack = () => {
-  currentStep.value = 'business_setup'
+const goToPreviousStep = () => {
+  if (currentStep.value === 'chatbot_creation') {
+    currentStep.value = 'business_setup'
+  }
 }
 
-const finishOnboarding = async () => {
-  await onboardingStore.completeOnboarding()
-  router.push('/dashboard')
-}
+// Initialize
+onMounted(() => {
+  const user = authStore.user
 
+  // Set current step based on user's onboarding progress
+  if (user.onboarding_step) {
+    currentStep.value = user.onboarding_step
+  }
+
+// Initialize onboarding status
 onMounted(async () => {
   try {
-    const status = await onboardingStore.getStatus()
-    currentStep.value = status.current_step
-
-    if (status.completed) {
-      router.push('/dashboard')
-    }
+    await onboardingStore.getStatus()
   } catch (err) {
     console.error('Failed to get onboarding status:', err)
+    // If there's an error, redirect to login
+    router.push('/login')
   } finally {
     loading.value = false
+  // If user already has a business, skip to chatbot creation
+  if (user.current_business_id && currentStep.value === 'business_setup') {
+    currentStep.value = 'chatbot_creation'
   }
 })
 </script>
