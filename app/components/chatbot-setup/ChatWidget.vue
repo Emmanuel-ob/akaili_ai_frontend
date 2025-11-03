@@ -37,7 +37,7 @@
                         <p class="text-xs text-gray-500 mb-1">Sources:</p>
                         <div class="text-xs text-gray-600">
                             <div v-for="(source, idx) in message.sources.slice(0, 2)" :key="idx" class="truncate">
-                                📄 {{ source.table || 'Document' }} ({{ Math.round(source.confidence * 100) }}%)
+                                📄 {{ source.table || 'Knowledge Base' }} ({{ Math.round(source.confidence * 100) }}%)
                             </div>
                         </div>
                     </div>
@@ -95,14 +95,6 @@ const props = defineProps({
     chatbotName: {
         type: String,
         default: 'AI Assistant'
-    },
-    testMode: { // New prop: Test mode from parent
-        type: String,
-        default: 'default'
-    },
-    testCustomerData: { // New prop: Customer data for authenticated mode
-        type: Object,
-        default: null
     }
 })
 
@@ -133,7 +125,6 @@ const scrollToBottom = async () => {
 }
 
 // Send message
-// Send message
 const sendMessage = async () => {
     if (!currentMessage.value.trim() || isTyping.value) return
 
@@ -161,14 +152,6 @@ const sendMessage = async () => {
             session_id: sessionId.value
         }
 
-        // Add test mode if not default (New: Include scenarios)
-        if (props.testMode !== 'default') {
-            payload.test_mode = props.testMode
-            if (props.testMode === 'authenticated' && props.testCustomerData) {
-                payload.test_customer_data = props.testCustomerData
-            }
-        }
-
         const response = await $fetch(`${config.public.apiBase}/api/chat`, {
             method: 'POST',
             headers: {
@@ -184,7 +167,7 @@ const sendMessage = async () => {
                 sessionId.value = response.session_id
             }
 
-            // Add assistant response - unified response structure
+            // Add assistant response
             messages.value.push({
                 role: 'assistant',
                 message: response.data.response.text,
@@ -214,7 +197,7 @@ const sendMessage = async () => {
     }
 }
 
-// Reset chat (New: Clear messages and generate new session ID)
+// Reset chat
 const resetChat = () => {
     messages.value = []
     sessionId.value = generateSessionId()

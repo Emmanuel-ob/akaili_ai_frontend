@@ -1,0 +1,256 @@
+<template>
+    <div>
+        <header class="bg-white px-6 py-4 border-b border-gray-200">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h1 class="text-[#7F56D9] text-2xl font-bold">Knowledge Base</h1>
+                    <p class="text-sm lg:text-base text-[#6B7280]">
+                        Manage your chatbot's FAQ sources and training data
+                    </p>
+                </div>
+
+                <div class="flex items-center space-x-4">
+                    <!-- Chatbot Selector -->
+                    <select v-model="selectedChatbotId" @change="onChatbotChange"
+                        class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                        <option value="">Select Chatbot</option>
+                        <option v-for="bot in chatbotStore.chatbots" :key="bot.id" :value="bot.id">
+                            {{ bot.name }}
+                        </option>
+                    </select>
+                </div>
+            </div>
+        </header>
+
+        <main class="px-6 py-6">
+            <!-- No Chatbot Selected -->
+            <div v-if="!selectedChatbotId"
+                class="text-center py-12 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+                <svg class="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                </svg>
+                <p class="text-lg font-medium text-gray-700 mb-2">Select a Chatbot</p>
+                <p class="text-sm text-gray-500">Choose a chatbot to manage its knowledge base</p>
+            </div>
+
+            <!-- Main Content -->
+            <div v-else>
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                    <StatCard title="Total Sources" :value="faqStore.faqSources.length" icon="folder" color="blue" />
+                    <StatCard title="Active Sources" :value="activeSources" icon="check-circle" color="green" />
+                    <StatCard title="Total Items" :value="totalItems" icon="document" color="purple" />
+                    <StatCard title="Embedded Items" :value="embeddedItems" icon="database" color="indigo" />
+                </div>
+
+                <!-- Action Tabs -->
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <div @click="handleTabClick('upload')" :class="[
+                        'cursor-pointer rounded-lg border-2 p-6 transition-all',
+                        activeTab === 'upload'
+                            ? 'border-purple-500 bg-purple-50'
+                            : 'border-gray-200 hover:border-gray-300'
+                    ]">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-900">Upload Documents</h3>
+                                <p class="text-sm text-gray-600 mt-1">PDF, Word, Excel, CSV, TXT, JSON</p>
+                            </div>
+                            <svg class="w-10 h-10 text-purple-600" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div @click="handleTabClick('manual')" :class="[
+                        'cursor-pointer rounded-lg border-2 p-6 transition-all',
+                        activeTab === 'manual'
+                            ? 'border-purple-500 bg-purple-50'
+                            : 'border-gray-200 hover:border-gray-300'
+                    ]">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-900">Manual Q&A</h3>
+                                <p class="text-sm text-gray-600 mt-1">Create question-answer pairs</p>
+                            </div>
+                            <svg class="w-10 h-10 text-purple-600" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 4v16m8-8H4" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Upload/Manual Entry Forms -->
+                <div v-if="activeTab === 'upload'" class="mb-6">
+                    <FAQUpload :chatbot-id="selectedChatbotId" @uploaded="handleUploaded"
+                        @processing="isProcessing = $event" />
+                </div>
+
+                <div v-if="activeTab === 'manual'" class="mb-6">
+                    <FAQManualEntry :chatbot-id="selectedChatbotId" :editing-source="editingFAQ" @saved="handleSaved"
+                        @processing="isProcessing = $event" @cancel="handleCancelEdit" />
+                </div>
+
+                <!-- FAQ Sources List -->
+                <div class="bg-white rounded-lg border border-gray-200 p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-gray-900">FAQ Sources</h3>
+                        <button @click="refreshList" :disabled="faqStore.loading"
+                            class="p-2 text-gray-600 hover:text-gray-900 disabled:opacity-50">
+                            <svg class="w-5 h-5" :class="{ 'animate-spin': faqStore.loading }" fill="none"
+                                stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    <FAQList :faq-sources="faqStore.faqSources" :loading="faqStore.loading" @preview="handlePreview"
+                        @edit="handleEdit" @embed="handleEmbed" @reprocess="handleReprocess" @delete="handleDelete" />
+                </div>
+            </div>
+        </main>
+
+        <!-- Preview/Editor Modal -->
+        <FAQPreviewEditor :show="showPreviewModal" :faq-source="selectedFAQ" @close="closePreviewModal"
+            @saved="handleContentSaved" @embedded="handleEmbedded" />
+    </div>
+</template>
+
+<script setup>
+import { ref, computed, onMounted } from 'vue'
+import FAQUpload from '~/components/faq/FAQUpload.vue'
+import FAQManualEntry from '~/components/faq/FAQManualEntry.vue'
+import FAQList from '~/components/faq/FAQList.vue'
+import FAQPreviewEditor from '~/components/faq/FAQPreviewEditor.vue'
+import StatCard from '~/components/StatCard.vue'
+
+definePageMeta({
+    layout: 'dashboard'
+})
+
+const faqStore = useFAQStore()
+const chatbotStore = useChatbotStore()
+
+const selectedChatbotId = ref('')
+const activeTab = ref('upload')
+const isProcessing = ref(false)
+const showPreviewModal = ref(false)
+const selectedFAQ = ref(null)
+const editingFAQ = ref(null)
+
+const activeSources = computed(() => {
+    return faqStore.faqSources.filter(faq => faq.is_active).length
+})
+
+const totalItems = computed(() => {
+    return faqStore.faqSources.reduce((sum, faq) => sum + (faq.total_items || 0), 0)
+})
+
+const embeddedItems = computed(() => {
+    return faqStore.faqSources.reduce((sum, faq) => sum + (faq.embedded_items || 0), 0)
+})
+
+const onChatbotChange = async () => {
+    if (selectedChatbotId.value) {
+        await faqStore.fetchFAQSources(selectedChatbotId.value)
+        editingFAQ.value = null
+    }
+}
+
+const refreshList = async () => {
+    if (selectedChatbotId.value) {
+        await faqStore.fetchFAQSources(selectedChatbotId.value)
+    }
+}
+
+const handleTabClick = (tab) => {
+    activeTab.value = tab
+    if (tab !== 'manual') {
+        editingFAQ.value = null
+    }
+}
+
+const handleUploaded = async (faqSource) => {
+    // Show preview for confirmation
+    selectedFAQ.value = faqSource
+    showPreviewModal.value = true
+    await refreshList()
+}
+
+const handleSaved = async (faqSource) => {
+    // Show preview for confirmation
+    selectedFAQ.value = faqSource
+    showPreviewModal.value = true
+    await refreshList()
+    editingFAQ.value = null
+}
+
+const handlePreview = (faqSource) => {
+    selectedFAQ.value = faqSource
+    showPreviewModal.value = true
+}
+
+const handleEdit = (faqSource) => {
+    // Switch to manual tab and load the FAQ for editing
+    editingFAQ.value = faqSource
+    activeTab.value = 'manual'
+}
+
+const handleCancelEdit = () => {
+    editingFAQ.value = null
+    activeTab.value = 'upload'
+}
+
+const handleEmbed = async (faqSource) => {
+    selectedFAQ.value = faqSource
+    showPreviewModal.value = true
+}
+
+const handleReprocess = async (faqSource) => {
+    if (confirm('This will delete existing embeddings and recreate them. Continue?')) {
+        const result = await faqStore.reprocess(faqSource.id)
+
+        if (result.success) {
+            await refreshList()
+        }
+    }
+}
+
+const handleDelete = async (faqSource) => {
+    if (confirm('Are you sure you want to delete this FAQ source? This action cannot be undone.')) {
+        const result = await faqStore.deleteFAQ(faqSource.id)
+
+        if (result.success) {
+            await refreshList()
+        }
+    }
+}
+
+const closePreviewModal = () => {
+    showPreviewModal.value = false
+    selectedFAQ.value = null
+}
+
+const handleContentSaved = async () => {
+    await refreshList()
+}
+
+const handleEmbedded = async (count) => {
+    await refreshList()
+}
+
+onMounted(async () => {
+    await chatbotStore.fetchChatbots()
+
+    if (chatbotStore.chatbots.length > 0) {
+        selectedChatbotId.value = chatbotStore.chatbots[0].id
+        await onChatbotChange()
+    }
+})
+</script>
