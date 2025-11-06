@@ -110,6 +110,24 @@
   </svg>
   Email Marketing
 </NuxtLink>
+<NuxtLink
+  to="/dashboard/agent-chat"
+  class="flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors"
+  :class="$route.path === '/dashboard/agent-chat'
+    ? 'bg-purple-50 text-[#7F56D9]'
+    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'"
+>
+  <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2v10z"
+    />
+  </svg>
+  Agent Chat
+</NuxtLink>
+
 
 
               <NuxtLink to="/dashboard/settings"
@@ -274,6 +292,24 @@
                   </svg>
                   Team Members
                 </NuxtLink>
+                <NuxtLink
+  to="/dashboard/agent-chat"
+  class="flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors"
+  :class="$route.path === '/dashboard/agent-chat'
+    ? 'bg-purple-50 text-[#7F56D9]'
+    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'"
+>
+  <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2v10z"
+    />
+  </svg>
+  Agent Chat
+</NuxtLink>
+
                 <NuxtLink to="/dashboard/settings"
                   class="flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors" :class="$route.path === '/dashboard/settings'
                   ? 'bg-purple-50 text-[#7F56D9]'
@@ -339,7 +375,7 @@
     mobileSidebarOpen.value = false
   }
 
-  const handleLogout = async () => {
+/*   const handleLogout = async () => {
     await authStore.logout()
     router.push('/login')
   }
@@ -348,7 +384,7 @@
     if (!authStore.isLoggedIn) {
       router.push('/login')
     }
-  })
+  }) */
 
 
   </script>
