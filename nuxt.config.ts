@@ -63,11 +63,15 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
   ],
    plugins: [
-    '~/plugins/aos.client.js'
+    '~/plugins/03.aos.client.js'
   ],
   runtimeConfig: {
     public: {
       apiBase: process.env.API_BASE_URL || 'http://localhost:8000',
+      reverbAppKey: process.env.NUXT_PUBLIC_REVERB_APP_KEY || 'your-app-key',
+      reverbHost: process.env.NUXT_PUBLIC_REVERB_HOST || 'localhost',
+      reverbPort: process.env.NUXT_PUBLIC_REVERB_PORT || '8080',
+      reverbScheme: process.env.NUXT_PUBLIC_REVERB_SCHEME || 'http',
     },
   },
 

@@ -82,7 +82,14 @@ export const useFAQStore = defineStore('faq', {
                     headers: { Authorization: `Bearer ${token}` }
                 })
 
-                return { success: true, data: data.faq_source }
+                // Return with job_id for tracking
+                return {
+                    success: true,
+                    data: {
+                        ...data.faq_source,
+                        job_id: data.job_id
+                    }
+                }
             } catch (error) {
                 this.error = error.data?.message || 'Failed to upload file'
                 return { success: false, message: this.error }
@@ -119,7 +126,11 @@ export const useFAQStore = defineStore('faq', {
                     headers: { Authorization: `Bearer ${token}` }
                 })
 
-                return { success: true, embedded_count: data.embedded_count }
+                // Return with job_id for tracking
+                return {
+                    success: true,
+                    job_id: data.job_id
+                }
             } catch (error) {
                 this.error = error.data?.message || 'Failed to embed FAQ'
                 return { success: false, message: this.error }
@@ -198,15 +209,18 @@ export const useFAQStore = defineStore('faq', {
             const { token } = useAuthStore()
 
             try {
-                await $fetch(`${config.public.apiBase}/api/faq/${faqSourceId}`, {
+                const data = await $fetch(`${config.public.apiBase}/api/faq/${faqSourceId}`, {
                     method: 'DELETE',
                     headers: { Authorization: `Bearer ${token}` }
                 })
 
-                // Remove from local state
-                this.faqSources = this.faqSources.filter(f => f.id !== faqSourceId)
+                // Don't remove from local state immediately - let job polling handle it
+                // This way user sees the deletion progress
 
-                return { success: true }
+                return {
+                    success: true,
+                    job_id: data.job_id
+                }
             } catch (error) {
                 return { success: false, message: error.data?.message || 'Failed to delete FAQ' }
             }
@@ -219,12 +233,15 @@ export const useFAQStore = defineStore('faq', {
             this.processing = true
 
             try {
-                await $fetch(`${config.public.apiBase}/api/faq/${faqSourceId}/reprocess`, {
+                const data = await $fetch(`${config.public.apiBase}/api/faq/${faqSourceId}/reprocess`, {
                     method: 'POST',
                     headers: { Authorization: `Bearer ${token}` }
                 })
 
-                return { success: true }
+                return {
+                    success: true,
+                    job_id: data.job_id
+                }
             } catch (error) {
                 return { success: false, message: error.data?.message || 'Failed to reprocess FAQ' }
             } finally {
@@ -248,6 +265,12 @@ export const useFAQStore = defineStore('faq', {
 
         completedFAQs: (state) => {
             return state.faqSources.filter(faq => faq.status === 'completed')
+        },
+
+        processingFAQs: (state) => {
+            return state.faqSources.filter(faq =>
+                faq.status === 'pending' || faq.status === 'processing'
+            )
         }
     }
 })

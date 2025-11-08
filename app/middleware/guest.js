@@ -8,7 +8,7 @@ export default defineNuxtRouteMiddleware((to, from) => {
     const authStore = useAuthStore()
 
     // Initialize auth from cookies
-    authStore.initializeAuth()
+    // authStore.initializeAuth()
 
     // If user is already logged in, redirect to appropriate page
     if (authStore.isLoggedIn) {

@@ -10,7 +10,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     const businessStore = useBusinessStore()
 
     // Initialize auth from cookies
-    authStore.initializeAuth()
+    // authStore.initializeAuth()
 
     // If not authenticated, redirect to login
     if (!authStore.isLoggedIn) {

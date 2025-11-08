@@ -218,7 +218,7 @@ const goBack = () => {
 // Single initialization lifecycle hook (async) to avoid nested onMounted calls
 onMounted(async () => {
   try {
-    await authStore.initializeAuth()
+    // await authStore.initializeAuth()
 
     if (!authStore.isLoggedIn) {
       router.push('/login')

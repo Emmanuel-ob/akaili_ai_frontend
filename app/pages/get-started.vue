@@ -36,9 +36,19 @@ const router = useRouter()
 
 // Check if already logged in
 onMounted(() => {
-  authStore.initializeAuth()
+  //  authStore.initializeAuth() 
+
   if (authStore.isLoggedIn) {
-    router.push('/dashboard')
+    const user = authStore.user
+
+    // Redirect based on user state
+    if (!user.onboarding_completed) {
+      router.push('/dashboard/onboarding')
+    } else if (!user.current_business_id) {
+      router.push('/select-business')
+    } else {
+      router.push('/dashboard')
+    }
   }
 })
 </script>

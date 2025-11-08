@@ -2,14 +2,28 @@
     <div class="bg-white rounded-lg border border-gray-200 p-6">
         <h3 class="text-lg font-semibold text-gray-900 mb-4">Upload Documents</h3>
 
+        <!-- Real-time Progress Display (via WebSocket) -->
+        <div v-if="currentJobProgress" class="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <div class="flex items-center justify-between mb-2">
+                <span class="text-sm font-medium text-blue-900">Processing File...</span>
+                <span class="text-xs text-blue-600">{{ currentJobProgress.percentage || 0 }}%</span>
+            </div>
+            <div class="w-full bg-blue-200 rounded-full h-2">
+                <div class="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                    :style="{ width: (currentJobProgress.percentage || 0) + '%' }" />
+            </div>
+            <p class="text-xs text-blue-600 mt-2">{{ formatStep(currentJobProgress.step) }}</p>
+        </div>
+
         <!-- Drag & Drop Area -->
         <div @drop.prevent="handleDrop" @dragover.prevent="isDragging = true" @dragleave.prevent="isDragging = false"
             :class="[
                 'border-2 border-dashed rounded-lg p-8 text-center transition-colors',
-                isDragging ? 'border-purple-500 bg-purple-50' : 'border-gray-300 hover:border-gray-400'
+                isDragging ? 'border-purple-500 bg-purple-50' : 'border-gray-300 hover:border-gray-400',
+                uploading ? 'opacity-50 cursor-not-allowed' : ''
             ]">
             <input ref="fileInput" type="file" class="hidden" accept=".pdf,.docx,.doc,.xlsx,.xls,.csv,.txt,.json"
-                @change="handleFileSelect" />
+                @change="handleFileSelect" :disabled="uploading" />
 
             <div v-if="!selectedFile">
                 <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -17,8 +31,8 @@
                         d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                 </svg>
                 <p class="mt-2 text-sm text-gray-600">Drag and drop your file here, or</p>
-                <button type="button" @click="$refs.fileInput.click()"
-                    class="mt-2 text-sm text-purple-600 hover:text-purple-700 font-medium">
+                <button type="button" @click="$refs.fileInput.click()" :disabled="uploading"
+                    class="mt-2 text-sm text-purple-600 hover:text-purple-700 font-medium disabled:opacity-50">
                     Browse files
                 </button>
                 <p class="mt-4 text-xs text-gray-500">
@@ -38,7 +52,7 @@
                         <p class="text-xs text-gray-500">{{ formatFileSize(selectedFile.size) }}</p>
                     </div>
                 </div>
-                <button @click="clearFile" class="text-gray-400 hover:text-gray-600">
+                <button @click="clearFile" :disabled="uploading" class="text-gray-400 hover:text-gray-600">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M6 18L18 6M6 6l12 12" />
@@ -54,7 +68,8 @@
                     Source Name <span class="text-red-500">*</span>
                 </label>
                 <input v-model="sourceName" type="text" placeholder="e.g., Product FAQs, Support Documentation"
-                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    :disabled="uploading"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:bg-gray-100"
                     required />
             </div>
 
@@ -63,7 +78,8 @@
                     Priority (1-10)
                 </label>
                 <div class="flex items-center space-x-4">
-                    <input v-model.number="priority" type="range" min="1" max="10" class="flex-1" />
+                    <input v-model.number="priority" type="range" min="1" max="10" :disabled="uploading"
+                        class="flex-1" />
                     <span class="text-sm font-medium text-gray-900 w-8">{{ priority }}</span>
                 </div>
                 <p class="text-xs text-gray-500 mt-1">
@@ -78,8 +94,8 @@
 
             <!-- Action Buttons -->
             <div class="flex justify-end space-x-3">
-                <button type="button" @click="clearFile"
-                    class="px-4 py-2 text-sm text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50">
+                <button type="button" @click="clearFile" :disabled="uploading"
+                    class="px-4 py-2 text-sm text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50">
                     Cancel
                 </button>
                 <button type="button" @click="handleUpload" :disabled="!sourceName || uploading"
@@ -92,7 +108,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 
 const props = defineProps({
     chatbotId: {
@@ -104,6 +120,9 @@ const props = defineProps({
 const emit = defineEmits(['uploaded', 'processing'])
 
 const faqStore = useFAQStore()
+const wsStore = useWebSocketStore()
+
+const COMPONENT_ID = 'faq-upload-component'
 
 const fileInput = ref(null)
 const selectedFile = ref(null)
@@ -112,11 +131,13 @@ const priority = ref(5)
 const isDragging = ref(false)
 const uploading = ref(false)
 const error = ref('')
+const currentJobProgress = ref(null)
+const currentJobId = ref(null)
+const currentFaqId = ref(null)
 
 const handleDrop = (e) => {
     isDragging.value = false
     const files = e.dataTransfer.files
-
     if (files.length > 0) {
         validateAndSetFile(files[0])
     }
@@ -124,7 +145,6 @@ const handleDrop = (e) => {
 
 const handleFileSelect = (e) => {
     const files = e.target.files
-
     if (files.length > 0) {
         validateAndSetFile(files[0])
     }
@@ -133,14 +153,12 @@ const handleFileSelect = (e) => {
 const validateAndSetFile = (file) => {
     error.value = ''
 
-    // Check file size (10MB)
     const maxSize = 10 * 1024 * 1024
     if (file.size > maxSize) {
         error.value = 'File size must be less than 10MB'
         return
     }
 
-    // Check file type
     const allowedTypes = [
         'application/pdf',
         'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
@@ -159,7 +177,6 @@ const validateAndSetFile = (file) => {
 
     selectedFile.value = file
 
-    // Auto-generate source name from filename
     if (!sourceName.value) {
         sourceName.value = file.name.replace(/\.[^/.]+$/, '')
     }
@@ -170,10 +187,45 @@ const clearFile = () => {
     sourceName.value = ''
     priority.value = 5
     error.value = ''
+    currentJobProgress.value = null
+    currentJobId.value = null
+    currentFaqId.value = null
 
     if (fileInput.value) {
         fileInput.value.value = ''
     }
+
+    uploading.value = false
+}
+
+const setupEventListeners = () => {
+    // Listen for progress updates for this specific upload
+    wsStore.on('job.progress.updated', (event) => {
+        if (event.job_id === currentJobId.value) {
+            currentJobProgress.value = event.progress
+        }
+    }, COMPONENT_ID)
+
+    // Listen for processing completion
+    wsStore.on('faq.processing.completed', (event) => {
+        if (event.faq_source.id === currentFaqId.value) {
+            // Job complete - reset UI
+            clearFile()
+            emit('uploaded', event.faq_source)
+            emit('processing', false)
+        }
+    }, COMPONENT_ID)
+
+    // Listen for processing failure
+    wsStore.on('faq.processing.failed', (event) => {
+        if (event.faq_source.id === currentFaqId.value) {
+            // Job failed - show error
+            uploading.value = false
+            error.value = event.error
+            currentJobProgress.value = null
+            emit('processing', false)
+        }
+    }, COMPONENT_ID)
 }
 
 const handleUpload = async () => {
@@ -181,7 +233,6 @@ const handleUpload = async () => {
 
     uploading.value = true
     error.value = ''
-
     emit('processing', true)
 
     const result = await faqStore.uploadFile(
@@ -191,24 +242,35 @@ const handleUpload = async () => {
         priority.value
     )
 
-    uploading.value = false
-    emit('processing', false)
-
     if (result.success) {
-        emit('uploaded', result.data)
-        clearFile()
+        currentJobId.value = result.data.job_id
+        currentFaqId.value = result.data.id
     } else {
+        uploading.value = false
+        emit('processing', false)
         error.value = result.message
     }
 }
 
 const formatFileSize = (bytes) => {
     if (bytes === 0) return '0 Bytes'
-
     const k = 1024
     const sizes = ['Bytes', 'KB', 'MB', 'GB']
     const i = Math.floor(Math.log(bytes) / Math.log(k))
-
     return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i]
 }
+
+const formatStep = (step) => {
+    if (!step) return 'Processing...'
+    return step.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
+}
+
+onMounted(() => {
+    setupEventListeners()
+})
+
+onUnmounted(() => {
+    // Clean up event listeners for this component
+    wsStore.offAll(COMPONENT_ID)
+})
 </script>

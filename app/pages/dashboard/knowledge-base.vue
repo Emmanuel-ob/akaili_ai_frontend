@@ -123,12 +123,14 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { useToast } from 'vue-toastification'
 import FAQUpload from '~/components/faq/FAQUpload.vue'
 import FAQManualEntry from '~/components/faq/FAQManualEntry.vue'
 import FAQList from '~/components/faq/FAQList.vue'
 import FAQPreviewEditor from '~/components/faq/FAQPreviewEditor.vue'
 import StatCard from '~/components/StatCard.vue'
+import ActionToast from '~/components/ActionToast.vue'
 
 definePageMeta({
     layout: 'dashboard'
@@ -136,6 +138,10 @@ definePageMeta({
 
 const faqStore = useFAQStore()
 const chatbotStore = useChatbotStore()
+const wsStore = useWebSocketStore()
+const toast = useToast()
+
+const COMPONENT_ID = 'knowledge-base-page'
 
 const selectedChatbotId = ref('')
 const activeTab = ref('upload')
@@ -163,6 +169,88 @@ const onChatbotChange = async () => {
     }
 }
 
+const setupEventListeners = () => {
+    // Register event handlers for this page
+    wsStore.on('faq.processing.completed', handleProcessingCompleted, COMPONENT_ID)
+    wsStore.on('faq.processing.failed', handleProcessingFailed, COMPONENT_ID)
+    wsStore.on('faq.embedding.completed', handleEmbeddingCompleted, COMPONENT_ID)
+    wsStore.on('faq.embedding.failed', handleEmbeddingFailed, COMPONENT_ID)
+    wsStore.on('faq.deletion.completed', handleDeletionCompleted, COMPONENT_ID)
+    wsStore.on('job.progress.updated', handleProgressUpdated, COMPONENT_ID)
+}
+
+const handleProcessingCompleted = async (event) => {
+    await refreshList()
+
+    // Show toast with action button
+    toast.success({
+        component: ActionToast,
+        props: {
+            type: 'success',
+            title: 'Processing Complete',
+            message: event.message,
+            actionLabel: 'Review Now',
+            onAction: () => {
+                const faq = faqStore.faqSources.find(f => f.id === event.faq_source.id)
+                if (faq) handlePreview(faq)
+            }
+        }
+    }, { timeout: 8000 })
+}
+
+const handleProcessingFailed = async (event) => {
+    await refreshList()
+
+    toast.error({
+        component: ActionToast,
+        props: {
+            type: 'error',
+            title: 'Processing Failed',
+            message: event.message,
+            actionLabel: 'Retry',
+            onAction: async () => {
+                const faq = faqStore.faqSources.find(f => f.id === event.faq_source.id)
+                if (faq) await faqStore.reprocess(faq.id)
+            }
+        }
+    }, { timeout: 10000 })
+}
+
+const handleEmbeddingCompleted = async (event) => {
+    await refreshList()
+    toast.success(event.message, { timeout: 5000 })
+}
+
+const handleEmbeddingFailed = async (event) => {
+    await refreshList()
+
+    toast.error({
+        component: ActionToast,
+        props: {
+            type: 'error',
+            title: 'Embedding Failed',
+            message: event.message,
+            actionLabel: 'Retry',
+            onAction: async () => {
+                const faq = faqStore.faqSources.find(f => f.id === event.faq_source.id)
+                if (faq) await faqStore.confirmAndEmbed(faq.id)
+            }
+        }
+    }, { timeout: 10000 })
+}
+
+const handleDeletionCompleted = async (event) => {
+    await refreshList()
+    toast.success(event.message, { timeout: 3000 })
+}
+
+const handleProgressUpdated = (event) => {
+    const faq = faqStore.faqSources.find(f => f.id === event.faq_source_id)
+    if (faq) {
+        faq.progress = event.progress
+    }
+}
+
 const refreshList = async () => {
     if (selectedChatbotId.value) {
         await faqStore.fetchFAQSources(selectedChatbotId.value)
@@ -177,14 +265,10 @@ const handleTabClick = (tab) => {
 }
 
 const handleUploaded = async (faqSource) => {
-    // Show preview for confirmation
-    selectedFAQ.value = faqSource
-    showPreviewModal.value = true
     await refreshList()
 }
 
 const handleSaved = async (faqSource) => {
-    // Show preview for confirmation
     selectedFAQ.value = faqSource
     showPreviewModal.value = true
     await refreshList()
@@ -197,7 +281,6 @@ const handlePreview = (faqSource) => {
 }
 
 const handleEdit = (faqSource) => {
-    // Switch to manual tab and load the FAQ for editing
     editingFAQ.value = faqSource
     activeTab.value = 'manual'
 }
@@ -208,16 +291,17 @@ const handleCancelEdit = () => {
 }
 
 const handleEmbed = async (faqSource) => {
-    selectedFAQ.value = faqSource
-    showPreviewModal.value = true
+    const result = await faqStore.confirmAndEmbed(faqSource.id)
+    if (result && result.success) {
+        toast.info('Embedding job started...', { timeout: 3000 })
+    }
 }
 
 const handleReprocess = async (faqSource) => {
     if (confirm('This will delete existing embeddings and recreate them. Continue?')) {
         const result = await faqStore.reprocess(faqSource.id)
-
-        if (result.success) {
-            await refreshList()
+        if (result && result.success) {
+            toast.info('Reprocessing job started...', { timeout: 3000 })
         }
     }
 }
@@ -225,9 +309,8 @@ const handleReprocess = async (faqSource) => {
 const handleDelete = async (faqSource) => {
     if (confirm('Are you sure you want to delete this FAQ source? This action cannot be undone.')) {
         const result = await faqStore.deleteFAQ(faqSource.id)
-
-        if (result.success) {
-            await refreshList()
+        if (result && result.success) {
+            toast.info('Deletion job started...', { timeout: 3000 })
         }
     }
 }
@@ -252,5 +335,13 @@ onMounted(async () => {
         selectedChatbotId.value = chatbotStore.chatbots[0].id
         await onChatbotChange()
     }
+
+    // Set up event listeners
+    setupEventListeners()
+})
+
+onUnmounted(() => {
+    // Clean up event listeners for this component
+    wsStore.offAll(COMPONENT_ID)
 })
 </script>

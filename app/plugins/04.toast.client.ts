@@ -1,11 +1,11 @@
 import { defineNuxtPlugin } from '#app'
-import Toast, { useToast } from 'vue-toastification'
+import Toast from 'vue-toastification'
 import 'vue-toastification/dist/index.css'
 
 export default defineNuxtPlugin((nuxtApp) => {
   nuxtApp.vueApp.use(Toast, {
     position: 'top-right',
-    timeout: 3000,
+    timeout: 5000,
     closeOnClick: true,
     pauseOnFocusLoss: true,
     pauseOnHover: true,
@@ -15,7 +15,8 @@ export default defineNuxtPlugin((nuxtApp) => {
     hideProgressBar: false,
     closeButton: 'button',
     icon: true,
+    transition: 'Vue-Toastification__bounce',
+    maxToasts: 5,
+    newestOnTop: true
   })
 })
-
-export { useToast }

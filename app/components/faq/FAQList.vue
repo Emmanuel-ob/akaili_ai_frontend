@@ -22,10 +22,7 @@
                         <h3 class="text-lg font-semibold text-gray-900">{{ faq.source_name }}</h3>
 
                         <!-- Status Badge -->
-                        <span :class="[
-                            'px-2 py-1 text-xs font-medium rounded-full',
-                            getStatusColor(faq.status)
-                        ]">
+                        <span :class="['px-2 py-1 text-xs font-medium rounded-full', getStatusColor(faq.status)]">
                             {{ faq.status.toUpperCase() }}
                         </span>
 
@@ -44,14 +41,9 @@
                             </svg>
                             {{ getSourceTypeLabel(faq.source_type) }}
                         </span>
-
                         <span v-if="faq.file_name">{{ faq.file_name }}</span>
-
-                        <span>{{ faq.total_items }} items</span>
-
-                        <span v-if="faq.embedded_items">
-                            {{ faq.embedded_items }} embedded
-                        </span>
+                        <span>{{ faq.total_items || 0 }} items</span>
+                        <span v-if="faq.embedded_items">{{ faq.embedded_items }} embedded</span>
                     </div>
                 </div>
 
@@ -64,15 +56,18 @@
                 </div>
             </div>
 
-            <!-- Progress Bar (if processing) -->
-            <div v-if="faq.status === 'processing'" class="mb-4">
+            <!-- Progress Bar (if processing or pending) -->
+            <div v-if="faq.status === 'processing' || faq.status === 'pending'" class="mb-4">
                 <div class="flex items-center justify-between text-sm text-gray-600 mb-1">
-                    <span>Processing...</span>
+                    <span>{{ faq.status === 'pending' ? 'Queued...' : 'Processing...' }}</span>
                     <span>{{ getProgressPercentage(faq) }}%</span>
                 </div>
                 <div class="w-full bg-gray-200 rounded-full h-2">
                     <div class="bg-purple-600 h-2 rounded-full transition-all duration-300"
-                        :style="{ width: getProgressPercentage(faq) + '%' }" />
+                        :style="{ width: getProgressPercentage(faq) + '%' }">
+                        <div v-if="faq.status === 'processing'"
+                            class="h-full w-full bg-gradient-to-r from-transparent via-white to-transparent opacity-30 animate-shimmer" />
+                    </div>
                 </div>
             </div>
 
@@ -89,14 +84,15 @@
                     <div class="flex items-center space-x-2">
                         <label class="text-sm text-gray-600">Priority:</label>
                         <input :value="faq.priority" @change="updatePriority(faq.id, $event.target.value)" type="range"
-                            min="1" max="10" class="w-24" />
+                            min="1" max="10" class="w-24" :disabled="faq.status === 'processing'" />
                         <span class="text-sm font-medium text-gray-900 w-6">{{ faq.priority }}</span>
                     </div>
                 </div>
 
                 <div class="flex items-center space-x-2">
                     <!-- Edit Button (manual_qa only) -->
-                    <button v-if="faq.source_type === 'manual_qa'" @click="$emit('edit', faq)"
+                    <button v-if="faq.source_type === 'manual_qa' && faq.status !== 'processing'"
+                        @click="$emit('edit', faq)"
                         class="px-3 py-1.5 text-sm text-purple-700 border border-purple-300 rounded-md hover:bg-purple-50">
                         Edit Q&A
                     </button>
@@ -114,24 +110,26 @@
                     </button>
 
                     <!-- Reprocess Button -->
-                    <button v-if="faq.embedded_items > 0" @click="$emit('reprocess', faq)"
+                    <button v-if="faq.embedded_items > 0 && faq.status !== 'processing'"
+                        @click="$emit('reprocess', faq)"
                         class="px-3 py-1.5 text-sm text-purple-600 border border-purple-200 rounded-md hover:bg-purple-50">
                         Reprocess
                     </button>
 
                     <!-- Toggle Active -->
-                    <button v-if="faq.embedded_items > 0" @click="toggleActive(faq.id)" :class="[
-                        'px-3 py-1.5 text-sm rounded-md transition-colors',
-                        faq.is_active
-                            ? 'text-yellow-700 border border-yellow-300 hover:bg-yellow-50'
-                            : 'text-green-700 border border-green-300 hover:bg-green-50'
-                    ]">
+                    <button v-if="faq.embedded_items > 0 && faq.status !== 'processing'" @click="toggleActive(faq.id)"
+                        :class="[
+                            'px-3 py-1.5 text-sm rounded-md transition-colors',
+                            faq.is_active
+                                ? 'text-yellow-700 border border-yellow-300 hover:bg-yellow-50'
+                                : 'text-green-700 border border-green-300 hover:bg-green-50'
+                        ]">
                         {{ faq.is_active ? 'Deactivate' : 'Activate' }}
                     </button>
 
                     <!-- Delete Button -->
-                    <button @click="$emit('delete', faq)"
-                        class="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-md">
+                    <button @click="$emit('delete', faq)" :disabled="faq.status === 'processing'"
+                        class="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-md disabled:opacity-50 disabled:cursor-not-allowed">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -186,6 +184,7 @@ const getSourceTypeLabel = (type) => {
 
 const getProgressPercentage = (faq) => {
     if (faq.total_items === 0) return 0
+    if (faq.status === 'pending') return 0
     return Math.round((faq.embedded_items / faq.total_items) * 100)
 }
 
@@ -197,3 +196,19 @@ const toggleActive = async (faqId) => {
     await faqStore.toggleActive(faqId)
 }
 </script>
+
+<style scoped>
+@keyframes shimmer {
+    0% {
+        transform: translateX(-100%);
+    }
+
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+.animate-shimmer {
+    animation: shimmer 2s infinite;
+}
+</style>
