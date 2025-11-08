@@ -36,7 +36,7 @@
           />
           <button
             @click="addClient"
-            class="bg-purple-600 hover:bg-purple-700 text-white px-5 py-2 rounded-lg transition w-full"
+            class="bg-[#7F56D9] hover:bg-purple-700 text-white px-5 py-2 rounded-lg transition w-full"
           >
             Add Client
           </button>

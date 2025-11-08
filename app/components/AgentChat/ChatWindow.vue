@@ -37,11 +37,11 @@
           v-model="newMessage"
           placeholder="Type a message..."
           @keyup.enter="handleSend"
-          class="flex-1 border rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-purple-600 transition"
+          class="flex-1 border rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#7F56D9] focus:border-[#7F56D9] transition"
         />
         <button
           @click="handleSend"
-          class="p-3 bg-purple-600 text-white rounded-xl hover:bg-purple-700 transition"
+          class="p-3 bg-[#7F56D9] text-white rounded-xl hover:bg-purple-700 transition"
         >
           <Send class="w-5 h-5" />
         </button>

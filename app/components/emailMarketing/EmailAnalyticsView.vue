@@ -1,125 +1,149 @@
 <template>
-  <div class="p-8 bg-gradient-to-b from-[#F9FAFB] to-[#F3F0FF] min-h-screen">
+  <div class="p-4 sm:p-6 lg:p-8 bg-gradient-to-b from-[#F9FAFB] to-[#F3F0FF] min-h-screen">
+    
     <!-- HEADER -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-10">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 sm:mb-10">
       <div>
-        <h1 class="text-4xl font-extrabold text-[#7F56D9] tracking-tight">Email Marketing Analytics</h1>
-        <p class="text-gray-500 mt-2">Performance overview for your campaigns</p>
+        <h1 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#7F56D9] tracking-tight">
+          Email Marketing Analytics
+        </h1>
+        <p class="text-gray-500 mt-1 sm:mt-2 text-sm sm:text-base">
+          Performance overview for your campaigns
+        </p>
       </div>
-      <div class="flex gap-3 mt-4 sm:mt-0">
-        <button @click="downloadReport" class="bg-[#7F56D9] text-white px-5 py-2 rounded-xl hover:bg-[#6C47B5] transition">
+
+      <div class="flex flex-col sm:flex-row gap-3 mt-4 sm:mt-0 w-full sm:w-auto">
+        <button 
+          @click="downloadReport"
+          class="bg-[#7F56D9] text-white px-4 sm:px-5 py-2 rounded-xl text-sm sm:text-base
+                 hover:bg-[#6C47B5] transition w-full sm:w-auto"
+        >
           Download Report
         </button>
-        <button @click="loadAnalytics" class="border border-[#7F56D9] text-[#7F56D9] px-5 py-2 rounded-xl hover:bg-[#7F56D9]/10 transition">
+
+        <button 
+          @click="loadAnalytics"
+          class="border border-[#7F56D9] text-[#7F56D9] px-4 sm:px-5 py-2 rounded-xl text-sm sm:text-base
+                 hover:bg-[#7F56D9]/10 transition w-full sm:w-auto"
+        >
           Refresh
         </button>
       </div>
     </div>
 
     <!-- KPI Summary -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 mb-12">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-6 mb-8 sm:mb-12">
       <div
         v-for="card in kpiCards"
         :key="card.title"
-        class="bg-white rounded-2xl shadow-sm hover:shadow-lg border border-gray-100 p-6 transition-all duration-300"
+        class="bg-white rounded-2xl shadow-sm hover:shadow-lg border border-gray-100 p-4 sm:p-6 transition-all duration-300"
       >
         <div class="flex justify-between items-start">
           <div>
-            <p class="text-sm font-medium text-gray-500">{{ card.title }}</p>
-            <p class="text-4xl font-bold text-gray-900 mt-2">{{ card.value }}</p>
-            <p class="text-xs text-gray-400 mt-1">{{ card.subtext }}</p>
+            <p class="text-xs sm:text-sm font-medium text-gray-500">{{ card.title }}</p>
+            <p class="text-2xl sm:text-4xl font-bold text-gray-900 mt-1 sm:mt-2">{{ card.value }}</p>
+            <p class="text-[10px] sm:text-xs text-gray-400 mt-1">{{ card.subtext }}</p>
           </div>
-          <div class="bg-[#7F56D9]/10 p-3 rounded-xl">
-            <component :is="card.icon" class="text-[#7F56D9]" size="26" stroke-width="2.2" />
+          <div class="bg-[#7F56D9]/10 p-2 sm:p-3 rounded-xl">
+            <component :is="card.icon" class="text-[#7F56D9]" size="22" sm:size="26" stroke-width="2.2" />
           </div>
         </div>
       </div>
     </div>
 
     <!-- Charts Section -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
+      
       <!-- Engagement Over Time -->
-      <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition">
-        <h3 class="text-lg font-semibold text-gray-700 mb-4 flex items-center gap-2">
+      <div class="bg-white p-4 sm:p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition overflow-x-auto">
+        <h3 class="text-base sm:text-lg font-semibold text-gray-700 mb-3 sm:mb-4 flex items-center gap-2">
           📈 Engagement Over Time
         </h3>
-        <Chart
-          :size="{ width: 550, height: 360 }"
-          :data="engagement"
-          :margin="{ left: 10, top: 20, right: 10, bottom: 20 }"
-          :direction="'horizontal'"
-          :axis="axis"
-        >
-          <template #layers>
-            <Grid strokeDasharray="2,2" />
-            <Line :dataKeys="['name', 'open']" :lineStyle="{ stroke: '#7F56D9', strokeWidth: 3 }" />
-            <Line :dataKeys="['name', 'click']" :lineStyle="{ stroke: '#E45858', strokeWidth: 2.5 }" type="step" />
-          </template>
-          <template #widgets>
-            <Tooltip
-              borderColor="#7F56D9"
-              :config="{
-                open: { label: 'Open Rate', color: '#7F56D9' },
-                click: { label: 'Click Rate', color: '#E45858' }
-              }"
-            />
-          </template>
-        </Chart>
+        <div class="min-w-[500px]">
+          <Chart
+            :size="{ width: 550, height: 360 }"
+            :data="engagement"
+            :margin="{ left: 10, top: 20, right: 10, bottom: 20 }"
+            :direction="'horizontal'"
+            :axis="axis"
+          >
+            <template #layers>
+              <Grid strokeDasharray="2,2" />
+              <Line :dataKeys="['name', 'open']" :lineStyle="{ stroke: '#7F56D9', strokeWidth: 3 }" />
+              <Line :dataKeys="['name', 'click']" :lineStyle="{ stroke: '#E45858', strokeWidth: 2.5 }" type="step" />
+            </template>
+            <template #widgets>
+              <Tooltip
+                borderColor="#7F56D9"
+                :config="{
+                  open: { label: 'Open Rate', color: '#7F56D9' },
+                  click: { label: 'Click Rate', color: '#E45858' }
+                }"
+              />
+            </template>
+          </Chart>
+        </div>
       </div>
 
       <!-- Top Campaign Performance -->
-      <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition">
-        <h3 class="text-lg font-semibold text-gray-700 mb-4 flex items-center gap-2">
+      <div class="bg-white p-4 sm:p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition overflow-x-auto">
+        <h3 class="text-base sm:text-lg font-semibold text-gray-700 mb-3 sm:mb-4 flex items-center gap-2">
           🏆 Top Campaign Performance
         </h3>
-        <Chart
-          :size="{ width: 550, height: 360 }"
-          :data="topCampaigns"
-          :margin="{ left: 10, top: 20, right: 10, bottom: 20 }"
-          :direction="'vertical'"
-          :axis="axisBar"
-        >
-          <template #layers>
-            <Grid strokeDasharray="2,2" />
-            <Bar :dataKeys="['name', 'open']" :barStyle="{ fill: '#7F56D9', rx: 6 }" />
-            <Bar :dataKeys="['name', 'click']" :barStyle="{ fill: '#E45858', rx: 6 }" />
-          </template>
-          <template #widgets>
-            <Tooltip
-              borderColor="#E45858"
-              :config="{
-                open: { label: 'Open Rate', color: '#7F56D9' },
-                click: { label: 'Click Rate', color: '#E45858' }
-              }"
-            />
-          </template>
-        </Chart>
+        <div class="min-w-[500px]">
+          <Chart
+            :size="{ width: 550, height: 360 }"
+            :data="topCampaigns"
+            :margin="{ left: 10, top: 20, right: 10, bottom: 20 }"
+            :direction="'vertical'"
+            :axis="axisBar"
+          >
+            <template #layers>
+              <Grid strokeDasharray="2,2" />
+              <Bar :dataKeys="['name', 'open']" :barStyle="{ fill: '#7F56D9', rx: 6 }" />
+              <Bar :dataKeys="['name', 'click']" :barStyle="{ fill: '#E45858', rx: 6 }" />
+            </template>
+            <template #widgets>
+              <Tooltip
+                borderColor="#E45858"
+                :config="{
+                  open: { label: 'Open Rate', color: '#7F56D9' },
+                  click: { label: 'Click Rate', color: '#E45858' }
+                }"
+              />
+            </template>
+          </Chart>
+        </div>
       </div>
 
       <!-- Subscriber Growth -->
-      <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition lg:col-span-2">
-        <h3 class="text-lg font-semibold text-gray-700 mb-4 flex items-center gap-2">
+      <div class="bg-white p-4 sm:p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition overflow-x-auto lg:col-span-2">
+        <h3 class="text-base sm:text-lg font-semibold text-gray-700 mb-3 sm:mb-4 flex items-center gap-2">
           👥 Subscriber Growth Trend
         </h3>
-        <Chart
-          :size="{ width: 1150, height: 360 }"
-          :data="subscribers"
-          :margin="{ left: 10, top: 20, right: 10, bottom: 20 }"
-          :direction="'horizontal'"
-          :axis="axis"
-        >
-          <template #layers>
-            <Grid strokeDasharray="2,2" />
-            <Line :dataKeys="['name', 'subs']" :lineStyle="{ stroke: '#00BFA6', strokeWidth: 3 }" type="monotone" />
-          </template>
-          <template #widgets>
-            <Tooltip borderColor="#00BFA6" />
-          </template>
-        </Chart>
+        <div class="min-w-[500px]">
+          <Chart
+            :size="{ width: 1150, height: 360 }"
+            :data="subscribers"
+            :margin="{ left: 10, top: 20, right: 10, bottom: 20 }"
+            :direction="'horizontal'"
+            :axis="axis"
+          >
+            <template #layers>
+              <Grid strokeDasharray="2,2" />
+              <Line :dataKeys="['name', 'subs']" :lineStyle="{ stroke: '#00BFA6', strokeWidth: 3 }" type="monotone" />
+            </template>
+            <template #widgets>
+              <Tooltip borderColor="#00BFA6" />
+            </template>
+          </Chart>
+        </div>
       </div>
+
     </div>
   </div>
 </template>
+
 
 <script setup>
 import { ref, onMounted } from 'vue'
@@ -183,30 +207,31 @@ function loadAnalytics() {
   ]
 
   // Engagement Chart
-  engagement.value = stored
-    .slice()
-    .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))
-    .map(c => ({
-      name: c.name || 'Campaign',
-      open: Number(((c.opens / c.emailsSent) * 100).toFixed(1)) || 0,
-      click: Number(((c.clicks / c.emailsSent) * 100).toFixed(1)) || 0
-    }))
-
-  // Top Campaigns by open rate
-  topCampaigns.value = stored
-    .map(c => ({
-      name: c.name,
-      open: Number(((c.opens / c.emailsSent) * 100).toFixed(1)) || 0,
-      click: Number(((c.clicks / c.emailsSent) * 100).toFixed(1)) || 0
-    }))
-    .sort((a, b) => b.open - a.open)
-    .slice(0, 5)
-
-  // Subscriber growth (mock from total recipients)
-  subscribers.value = stored.map(c => ({
-    name: c.name,
-    subs: c.recipients?.recipients_count || 0
+ engagement.value = stored
+  .slice()
+  .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))
+  .map(c => ({
+    name: c.name.length > 20 ? c.name.slice(0, 20) + "…" : c.name,
+    open: Number(((c.opens / c.emailsSent) * 100).toFixed(1)) || 0,
+    click: Number(((c.clicks / c.emailsSent) * 100).toFixed(1)) || 0
   }))
+
+
+  /* Top Campaigns */
+topCampaigns.value = stored
+  .map(c => ({
+    name: c.name.length > 20 ? c.name.slice(0, 20) + "…" : c.name,
+    open: Number(((c.opens / c.emailsSent) * 100).toFixed(1)) || 0,
+    click: Number(((c.clicks / c.emailsSent) * 100).toFixed(1)) || 0
+  }))
+  .sort((a, b) => b.open - a.open)
+  .slice(0, 5)
+
+  /* Subscribers growth */
+subscribers.value = stored.map(c => ({
+  name: c.name.length > 20 ? c.name.slice(0, 20) + "…" : c.name,
+  subs: c.recipients?.recipients_count || 0
+}))
 }
 
 function downloadReport() {

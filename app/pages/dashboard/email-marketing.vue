@@ -35,6 +35,10 @@ const toast = useToast()
 const activeTab = ref('campaigns')
 const campaigns = ref([])
 
+definePageMeta({
+  layout: 'dashboard'
+})
+
 onMounted(async () => {
   await loadCampaigns()
   startCampaignWatcher()

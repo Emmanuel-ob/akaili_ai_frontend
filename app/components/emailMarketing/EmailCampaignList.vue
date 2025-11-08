@@ -1,11 +1,13 @@
 <!-- app/components/emailMarketing/EmailCampaignList.vue -->
 <template>
   <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-    <div class="p-4 border-b border-gray-200 flex justify-between items-center">
-      <h2 class="text-lg font-semibold text-gray-700">Campaigns</h2>
-    </div>
+   <div class="p-4 border-b border-gray-200 flex justify-between items-center">
+  <h2 class="text-lg font-semibold text-gray-700">Campaigns</h2>
+</div>
 
-    <table class="min-w-full divide-y divide-gray-200">
+   <div class="overflow-x-auto">
+  <table class="min-w-full divide-y divide-gray-200">
+
       <thead class="bg-gray-50">
         <tr>
           <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
@@ -68,7 +70,9 @@
           </td>
         </tr>
       </tbody>
-    </table>
+      </table>
+</div>
+
 
     <!-- Campaign Details Modal -->
     <CampaignDetailsModal
