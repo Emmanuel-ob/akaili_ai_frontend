@@ -110,6 +110,24 @@
   </svg>
   Email Marketing
 </NuxtLink>
+<NuxtLink
+  to="/dashboard/agent-chat"
+  class="flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors"
+  :class="$route.path === '/dashboard/agent-chat'
+    ? 'bg-purple-50 text-[#7F56D9]'
+    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'"
+>
+  <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2v10z"
+    />
+  </svg>
+  Agent Chat
+</NuxtLink>
+
 
 
               <NuxtLink to="/dashboard/settings"
@@ -145,7 +163,7 @@
         @click="closeSidebar"></div>
 
       <!-- Mobile Sidebar (no transition) -->
-      <aside v-if="mobileSidebarOpen" class="fixed top-0 left-0 z-50 h-full w-64 bg-white shadow-lg p-4 lg:hidden">
+      <aside v-if="mobileSidebarOpen" class="fixed top-0 left-0 z-50 h-full w-64 bg-white shadow-lg p-3 lg:hidden">
         <div class="flex justify-between items-center mb-6">
           <h2 class="text-lg font-semibold">Menu</h2>
           <button @click="closeSidebar" class="text-gray-600 hover:text-gray-900">
@@ -155,23 +173,25 @@
 
 
 
-        <div class=" border-gray-200 fixed h-[90%] grid place-content-between  ">
+       <div class="border-gray-200 h-full flex flex-col justify-between overflow-y-auto pb-6">
+
           <div class="">
             <!-- Logo -->
-            <NuxtLink to="/" class="p-6 ">
-              <div class="flex items-center px-5">
-                <div class="w-8 h-8 rounded-lg flex items-center justify-center">
-                  <NuxtImg src="/dashboard_layout_logo.png" alt="dashboard logo" class="w-5 h-5" />
-                </div>
-                <span class="ml-3 text-xl font-bold text-gray-900">Xeli ai</span>
-              </div>
-            </NuxtLink>
+            <NuxtLink to="/" class="p-4">
+  <div class="flex items-center px-3">
+    <div class="w-6 h-6 rounded-lg flex items-center justify-center">
+      <NuxtImg src="/dashboard_layout_logo.png" alt="dashboard logo" class="w-4 h-4" />
+    </div>
+    <span class="ml-2 text-lg font-bold text-gray-900">Xeli ai</span>
+  </div>
+</NuxtLink>
+
 
             <!-- Navigation -->
             <nav class="mt-6 px-3">
               <div class="space-y-1">
                 <NuxtLink to="/dashboard"
-                  class="flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors"
+                  class="flex items-center px-3 py-2 text-xs sm:text-sm font-medium rounded-lg transition-colors"
                   :class="$route.path === '/dashboard' ? 'bg-purple-50 text-[#7F56D9]' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'">
                   <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -183,7 +203,7 @@
                 </NuxtLink>
 
                 <NuxtLink to="/dashboard/chatbot-setup"
-                  class="flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors"
+                  class="flex items-center px-3 py-2 text-xs sm:text-sm font-medium rounded-lg transition-colors"
                   :class="$route.path === '/dashboard/chatbot-setup' ? 'bg-purple-50 text-[#7F56D9]' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'">
                   <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -196,7 +216,7 @@
                 </NuxtLink>
 
                 <NuxtLink to="/dashboard/knowledge-base"
-                  class="flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors"
+                  class="flex items-center px-3 py-2 text-xs sm:text-sm font-medium rounded-lg transition-colors"
                   :class="$route.path === '/dashboard/knowledge-base' ? 'bg-purple-50 text-[#7F56D9]' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'">
                   <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -207,7 +227,7 @@
                 </NuxtLink>
 
                 <NuxtLink to="/dashboard/live-monitoring"
-                  class="flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors"
+                  class="flex items-center px-3 py-2 text-xs sm:text-sm font-medium rounded-lg transition-colors"
                   :class="$route.path === '/live-monitoring' ? 'bg-purple-50 text-[#7F56D9]' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'">
                   <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -218,7 +238,7 @@
                 </NuxtLink>
 
                 <NuxtLink to="/analytics"
-                  class="flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors"
+                  class="flex items-center px-3 py-2 text-xs sm:text-sm font-medium rounded-lg transition-colors"
                   :class="$route.path === '/analytics' ? 'bg-purple-50 text-[#7F56D9]' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'">
                   <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -230,7 +250,7 @@
 
 
                 <NuxtLink to="/dashboard/test-chat"
-                  class="flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors"
+                  class="flex items-center px-3 py-2 text-xs sm:text-sm font-medium rounded-lg transition-colors"
                   :class="$route.path === '/dashboard/test-chat' ? 'bg-purple-50 text-[#7F56D9]' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'">
                   <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -241,7 +261,7 @@
                 </NuxtLink>
 
                 <NuxtLink to="/dashboard/team-members"
-                  class="flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors" :class="$route.path === '/dashboard/team-members'
+                  class="flex items-center px-3 py-2 text-xs sm:text-sm font-medium rounded-lg transition-colors" :class="$route.path === '/dashboard/team-members'
                   ? 'bg-purple-50 text-[#7F56D9]'
                   : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'"
               >
@@ -253,7 +273,7 @@
               </NuxtLink>
               <NuxtLink
   to="/dashboard/email-marketing"
-  class="flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors"
+  class="flex items-center px-3 py-2 text-xs sm:text-sm font-medium rounded-lg transition-colors"
   :class="$route.path === '/dashboard/email-marketing'
     ? 'bg-purple-50 text-[#7F56D9]'
     : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'"
@@ -265,17 +285,27 @@
   Email Marketing
 </NuxtLink>
 
-                <NuxtLink to="/dashboard/team-members"
-                  class="flex items-center px-3 py-2 text-sm font-medium rounded-lg transition
-                  : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'">
-                  <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M17 20h5v-2a4 4 0 00-4-4h-1M9 20H4v-2a4 4 0 014-4h1m4-9a4 4 0 11-8 0 4 4 0 018 0zm8 4a4 4 0 11-8 0 4 4 0 018 0z" />
-                  </svg>
-                  Team Members
-                </NuxtLink>
+              
+                <NuxtLink
+  to="/dashboard/agent-chat"
+  class="flex items-center px-3 py-2 text-xs sm:text-sm font-medium rounded-lg transition-colors"
+  :class="$route.path === '/dashboard/agent-chat'
+    ? 'bg-purple-50 text-[#7F56D9]'
+    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'"
+>
+  <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2v10z"
+    />
+  </svg>
+  Agent Chat
+</NuxtLink>
+
                 <NuxtLink to="/dashboard/settings"
-                  class="flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors" :class="$route.path === '/dashboard/settings'
+                  class="flex items-center px-3 py-2 text-xs sm:text-sm font-medium rounded-lg transition-colors" :class="$route.path === '/dashboard/settings'
                   ? 'bg-purple-50 text-[#7F56D9]'
                   : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'">
                   <Icon name="SettingsIcon" class="w-5 h-5 mr-3" />
@@ -339,7 +369,7 @@
     mobileSidebarOpen.value = false
   }
 
-  const handleLogout = async () => {
+/*   const handleLogout = async () => {
     await authStore.logout()
     router.push('/login')
   }
@@ -348,7 +378,7 @@
     if (!authStore.isLoggedIn) {
       router.push('/login')
     }
-  })
+  }) */
 
 
   </script>

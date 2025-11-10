@@ -1,21 +1,26 @@
 <template>
-  <div class="p-6">
-    <h1 class="text-3xl font-bold mb-6 text-gray-800">Choose an AI-Powered Template</h1>
+  <div class="p-3 sm:p-4 lg:p-6">
+    <h1 class="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6 text-gray-800">
+      Choose an AI-Powered Template
+    </h1>
 
     <!-- Search & Category Filters -->
-    <div class="flex mb-6 space-x-4">
+    <div class="flex flex-col sm:flex-row mb-4 sm:mb-6 sm:space-x-4 space-y-3 sm:space-y-0">
       <input 
         v-model="searchTerm" 
         type="text" 
         placeholder="Search templates by name, subject, or content..." 
-        class="p-2 border border-gray-300 rounded-md w-full max-w-lg shadow-sm focus:ring-[#7F56D9] focus:border-[#7F56D9]"
+        class="p-2 text-sm sm:text-base border border-gray-300 rounded-md w-full shadow-sm focus:ring-[#7F56D9] focus:border-[#7F56D9]"
       />
+
       <select 
         v-model="selectedCategory" 
-        class="p-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#7F56D9] focus:border-[#7F56D9]"
+        class="p-2 text-sm sm:text-base border border-gray-300 rounded-md shadow-sm focus:ring-[#7F56D9] focus:border-[#7F56D9]"
       >
         <option value="">All Categories</option>
-        <option v-for="tag in uniqueTags" :key="tag" :value="tag" class="capitalize">{{ tag }}</option>
+        <option v-for="tag in uniqueTags" :key="tag" :value="tag" class="capitalize">
+          {{ tag }}
+        </option>
       </select>
     </div>
 
@@ -33,27 +38,36 @@
     </div>
 
     <!-- Template Grid -->
-    <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+    <div
+      v-else
+      class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4"
+    >
       <div
         v-for="t in filteredTemplates"
         :key="t.id"
-        class="bg-white rounded-xl p-4 shadow-lg border border-gray-100 flex flex-col justify-between hover:border-[#7F56D9] transition duration-300"
+        class="bg-white rounded-xl p-3 sm:p-4 shadow-lg border border-gray-100
+               flex flex-col justify-between hover:border-[#7F56D9] transition duration-300"
       >
-        <!-- HTML Preview (replaces image) -->
-        <div class="relative mb-4">
+        <!-- HTML Preview -->
+        <div class="relative mb-3 sm:mb-4">
           <div class="preview-wrapper border border-gray-200 rounded-lg overflow-hidden">
-          <div
-  class="email-preview relative scale-75 origin-top-left transform overflow-hidden h-[400px] w-full border border-gray-200 rounded-lg shadow-sm bg-white"
-  v-html="t.html_content"
-></div>
+
+            <div
+              class="email-preview relative overflow-hidden 
+                     h-[260px] sm:h-[400px] w-full border border-gray-200
+                     rounded-lg shadow-sm bg-white
+                     scale-[0.60] sm:scale-75 origin-top-left"
+              v-html="t.html_content"
+            ></div>
 
           </div>
+
           <!-- Tags -->
           <div class="absolute top-2 left-2 flex flex-wrap gap-1">
             <span
               v-for="tag in t.tags"
               :key="tag"
-              class="text-xs font-medium px-2 py-0.5 rounded-full bg-gray-100 text-gray-600 capitalize"
+              class="text-[10px] sm:text-xs font-medium px-2 py-0.5 rounded-full bg-gray-100 text-gray-600 capitalize"
             >
               {{ tag }}
             </span>
@@ -62,23 +76,34 @@
 
         <!-- Template Info -->
         <div class="flex-grow">
-          <h3 class="font-bold text-lg mb-1 text-gray-900 truncate" :title="t.name">
+          <h3
+            class="font-bold text-sm sm:text-lg mb-1 text-gray-900 truncate"
+            :title="t.name"
+          >
             {{ t.name.replace('Template ' + t.id + ' - ', '') }}
           </h3>
-          <p class="text-sm text-gray-500 line-clamp-2 mb-3 h-10">{{ t.preview_text }}</p>
+
+          <p
+            class="text-xs sm:text-sm text-gray-500 line-clamp-2 mb-3 h-10"
+          >
+            {{ t.preview_text }}
+          </p>
         </div>
 
         <!-- Actions -->
-        <div class="mt-4 flex justify-between items-center space-x-2">
-          <button 
-            @click="proceedToEditor(t)" 
-            class="flex-1 text-sm text-white bg-[#7F56D9] hover:bg-[#6c48c4] px-4 py-2 rounded-lg font-medium transition duration-200"
+        <div class="mt-3 sm:mt-4 flex justify-between items-center space-x-2">
+          <button
+            @click="proceedToEditor(t)"
+            class="flex-1 text-xs sm:text-sm text-white bg-[#7F56D9] hover:bg-[#6c48c4]
+                   px-3 sm:px-4 py-2 rounded-lg font-medium transition duration-200"
           >
             Use Template
           </button>
-          <button 
-            @click="openPreview(t)" 
-            class="px-3 py-2 text-sm text-[#7F56D9] border border-[#7F56D9] hover:bg-[#F2F4F7] rounded-lg"
+
+          <button
+            @click="openPreview(t)"
+            class="px-2 sm:px-3 py-2 text-xs sm:text-sm text-[#7F56D9]
+                   border border-[#7F56D9] hover:bg-[#F2F4F7] rounded-lg"
           >
             Preview
           </button>
@@ -86,7 +111,7 @@
       </div>
     </div>
 
-    <!-- Preview Modal -->
+    <!-- Preview Modal (unchanged) -->
     <EmailBaseModal
       v-if="previewTemplate"
       :show="!!previewTemplate"
@@ -108,6 +133,7 @@
     </EmailBaseModal>
   </div>
 </template>
+
 
 <script setup>
 import { ref, onMounted, computed } from 'vue'
