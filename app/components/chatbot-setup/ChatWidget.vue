@@ -4,11 +4,37 @@
         <div class="bg-[#7F56D9] text-white px-6 py-4 rounded-t-lg flex justify-between items-center">
             <div>
                 <h3 class="text-lg font-semibold">{{ chatbotName || 'AI Assistant' }}</h3>
-                <p class="text-purple-100 text-sm">Test your chatbot here</p>
+                <p class="text-purple-100 text-sm">
+                    <span v-if="handoverStatus === 'requested'">⏳ Connecting you to an agent...</span>
+                    <span v-else-if="handoverStatus === 'active'">✅ Chatting with {{ agentName || 'Agent' }}</span>
+                    <span v-else>🤖 AI Assistant</span>
+                </p>
             </div>
             <button @click="resetChat" class="text-purple-100 hover:text-white text-sm underline">
                 Reset Chat
             </button>
+        </div>
+
+        <!-- Handover Status Banner -->
+        <div v-if="handoverStatus === 'requested'" class="bg-yellow-50 border-b border-yellow-200 p-3">
+            <div class="flex items-center text-yellow-800 text-sm">
+                <div class="animate-spin mr-2 w-4 h-4 border-2 border-yellow-600 border-t-transparent rounded-full">
+                </div>
+                <span>Finding an available agent. Please wait...</span>
+            </div>
+        </div>
+
+        <div v-if="handoverStatus === 'rejected'" class="bg-red-50 border-b border-red-200 p-3">
+            <p class="text-red-800 text-sm">
+                ❌ All agents are currently busy. You can continue chatting with our AI assistant or try again later.
+            </p>
+        </div>
+
+        <div v-if="handoverStatus === 'active'" class="bg-green-50 border-b border-green-200 p-3">
+            <p class="text-green-800 text-sm flex items-center">
+                <span class="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></span>
+                Connected to {{ agentName || 'an agent' }}
+            </p>
         </div>
 
         <!-- Messages Container -->
@@ -27,8 +53,15 @@
                     'max-w-xs lg:max-w-md px-4 py-2 rounded-lg text-sm',
                     message.role === 'user'
                         ? 'bg-[#7F56D9] text-white'
-                        : 'bg-white text-gray-800 shadow-sm'
+                        : message.role === 'system'
+                            ? 'bg-yellow-50 text-yellow-800 border border-yellow-200 text-xs italic'
+                            : message.role === 'agent'
+                                ? 'bg-green-50 text-gray-800 shadow-sm border-l-4 border-green-500'
+                                : 'bg-white text-gray-800 shadow-sm'
                 ]">
+                    <p v-if="message.role === 'agent'" class="text-xs text-green-600 font-semibold mb-1">
+                        {{ message.metadata?.agent_name || 'Agent' }}
+                    </p>
                     <p class="whitespace-pre-wrap">{{ message.message }}</p>
 
                     <!-- Show sources for assistant messages -->
@@ -64,6 +97,14 @@
 
         <!-- Input Area -->
         <div class="p-4 border-t border-gray-200">
+            <!-- Handover Request Button -->
+            <div v-if="!handoverStatus && !isHandoverRequested" class="mb-2">
+                <button @click="requestHumanAgent"
+                    class="w-full text-sm text-[#7F56D9] hover:text-purple-700 font-medium py-2 border border-[#7F56D9] rounded-lg hover:bg-purple-50 transition">
+                    💬 Speak with a Human Agent
+                </button>
+            </div>
+
             <div class="flex space-x-2">
                 <input v-model="currentMessage" @keypress.enter="sendMessage" :disabled="isTyping" type="text"
                     placeholder="Type your message..."
@@ -85,7 +126,7 @@
 </template>
 
 <script setup>
-import { ref, nextTick } from 'vue'
+import { ref, nextTick, computed, onMounted, onUnmounted } from 'vue'
 
 const props = defineProps({
     chatbotId: {
@@ -105,6 +146,18 @@ const isTyping = ref(false)
 const error = ref('')
 const sessionId = ref('')
 const messagesContainer = ref(null)
+const conversationId = ref(null)
+
+// Handover state
+const handoverStatus = ref(null) // null, 'requested', 'active', 'rejected'
+const isHandoverRequested = ref(false)
+const agentName = ref(null)
+
+// WebSocket setup
+const { $echo } = useNuxtApp()
+let conversationChannel = null
+
+const isHandoverActive = computed(() => handoverStatus.value === 'active')
 
 // Generate session ID
 const generateSessionId = () => {
@@ -123,6 +176,127 @@ const scrollToBottom = async () => {
         messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight
     }
 }
+
+// Request human agent
+const requestHumanAgent = async () => {
+    if (isHandoverRequested.value) return
+
+    // Check if we have a conversation ID
+    if (!conversationId.value) {
+        error.value = 'Please send at least one message before requesting an agent'
+        return
+    }
+
+    isHandoverRequested.value = true
+    error.value = ''
+
+    // Add user message
+    messages.value.push({
+        role: 'user',
+        message: 'I would like to speak with a human agent',
+        timestamp: new Date().toISOString()
+    })
+
+    scrollToBottom()
+    isTyping.value = true
+
+    try {
+        const config = useRuntimeConfig()
+
+        const response = await $fetch(`${config.public.apiBase}/api/handover/request`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: {
+                conversation_id: conversationId.value, // ✅ Now this is set!
+                session_id: sessionId.value,
+                chatbot_id: props.chatbotId,
+                user_message: 'Customer requested human agent'
+            }
+        })
+
+        if (response.success) {
+            handoverStatus.value = 'requested'
+
+            // Add system message
+            messages.value.push({
+                role: 'system',
+                message: 'Connecting you with an agent. This may take a moment...',
+                timestamp: new Date().toISOString()
+            })
+
+            // Setup WebSocket listener for this conversation
+            if (conversationId.value) {
+                setupConversationListener()
+            }
+        } else {
+            throw new Error(response.message || 'Failed to request handover')
+        }
+
+    } catch (err) {
+        console.error('Handover request error:', err)
+        error.value = 'Failed to connect to an agent. Please try again.'
+        isHandoverRequested.value = false
+    } finally {
+        isTyping.value = false
+        scrollToBottom()
+    }
+}
+
+// Setup WebSocket listener for conversation
+const setupConversationListener = () => {
+    if (!conversationId.value || conversationChannel) return
+
+    conversationChannel = $echo.channel(`conversation.${conversationId.value}`)
+
+    // Listen for handover accepted
+    conversationChannel.listen('.handover.accepted', (event) => {
+        console.log('Handover accepted:', event)
+        handoverStatus.value = 'active'
+        agentName.value = event.agent?.name || 'Agent'
+
+        messages.value.push({
+            role: 'system',
+            message: `You are now connected with ${agentName.value}. They will assist you shortly.`,
+            timestamp: new Date().toISOString()
+        })
+
+        scrollToBottom()
+    })
+
+    // Listen for handover rejected
+    conversationChannel.listen('.handover.rejected', (event) => {
+        console.log('Handover rejected:', event)
+
+        if (event.all_rejected) {
+            handoverStatus.value = 'rejected'
+            messages.value.push({
+                role: 'system',
+                message: 'All agents are currently busy. You can continue chatting with our AI assistant.',
+                timestamp: new Date().toISOString()
+            })
+        }
+
+        scrollToBottom()
+    })
+
+    // Listen for agent messages
+    conversationChannel.listen('.agent.message', (event) => {
+        console.log('Agent message:', event)
+
+        messages.value.push({
+            role: 'agent',
+            message: event.message.message,
+            timestamp: event.message.timestamp,
+            metadata: {
+                agent_id: event.agent.id,
+                agent_name: event.agent.name
+            }
+        })
+
+        scrollToBottom()
+    })
+}
+
 
 // Send message
 const sendMessage = async () => {
@@ -146,6 +320,31 @@ const sendMessage = async () => {
         const config = useRuntimeConfig()
         const authStore = useAuthStore()
 
+        // ✅ FIX: If handover is active AND user is authenticated, send as agent message
+        if (isHandoverActive.value && authStore.token) {
+            const response = await $fetch(`${config.public.apiBase}/api/agent-handover/message`, {
+                method: 'POST',
+                headers: {
+                    Authorization: `Bearer ${authStore.token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: {
+                    conversation_id: conversationId.value,
+                    message: messageText
+                }
+            })
+
+            if (response.success) {
+                // Message was sent successfully - don't add AI response
+                isTyping.value = false
+                scrollToBottom()
+                return
+            } else {
+                throw new Error(response.message || 'Failed to send agent message')
+            }
+        }
+
+        // Normal chat flow (not in handover, or widget user in handover)
         const payload = {
             message: messageText,
             chatbot_id: props.chatbotId,
@@ -162,19 +361,43 @@ const sendMessage = async () => {
         })
 
         if (response.success) {
+            // ✅ Capture conversation_id from response
+            if (response.conversation_id) {
+                conversationId.value = response.conversation_id
+                console.log('📝 Conversation ID set:', conversationId.value)
+            }
+
             // Update session ID if new
             if (response.session_id) {
                 sessionId.value = response.session_id
             }
 
-            // Add assistant response
-            messages.value.push({
-                role: 'assistant',
-                message: response.data.response.text,
-                timestamp: new Date().toISOString(),
-                sources: response.data.response.sources || [],
-                metadata: response.data.response.metadata || {}
-            })
+            // Check if handover was requested by AI
+            const handoverRequested = response.data?.response?.metadata?.handover_requested
+
+            if (handoverRequested && !isHandoverRequested.value) {
+                // Show AI message first
+                messages.value.push({
+                    role: 'assistant',
+                    message: response.data.response.text,
+                    timestamp: new Date().toISOString(),
+                    sources: response.data.response.sources || []
+                })
+
+                // Auto-trigger handover request
+                setTimeout(() => {
+                    requestHumanAgent()
+                }, 500)
+            } else if (!isHandoverActive.value) {
+                // Only add AI response if NOT in active handover
+                messages.value.push({
+                    role: 'assistant',
+                    message: response.data.response.text,
+                    timestamp: new Date().toISOString(),
+                    sources: response.data.response.sources || [],
+                    metadata: response.data.response.metadata || {}
+                })
+            }
         } else {
             throw new Error(response.message || 'Failed to send message')
         }
@@ -199,11 +422,29 @@ const sendMessage = async () => {
 
 // Reset chat
 const resetChat = () => {
+    if (conversationChannel) {
+        $echo.leave(`conversation.${conversationId.value}`)
+        conversationChannel = null
+    }
+
     messages.value = []
     sessionId.value = generateSessionId()
+    conversationId.value = null
     error.value = ''
+    handoverStatus.value = null
+    isHandoverRequested.value = false
+    agentName.value = null
 }
 
+// Cleanup on unmount
+onUnmounted(() => {
+    if (conversationChannel) {
+        $echo.leave(`conversation.${conversationId.value}`)
+    }
+})
+
 // Initialize
-sessionId.value = generateSessionId()
+onMounted(() => {
+    sessionId.value = generateSessionId()
+})
 </script>

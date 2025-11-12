@@ -7,13 +7,13 @@ export const useWebSocketStore = defineStore('websocket', {
         connected: false,
         businessChannel: null,
         userChannel: null,
-        eventHandlers: new Map(), // Store handlers by page/component
-        notifications: [], // Store notifications for display
+        eventHandlers: new Map(),
+        notifications: [],
     }),
 
     actions: {
         /**
-         * Initialize WebSocket connection - Call this on app mount or login
+         * Initialize WebSocket connection
          */
         initialize() {
             const { $echo } = useNuxtApp()
@@ -50,60 +50,76 @@ export const useWebSocketStore = defineStore('websocket', {
         },
 
         /**
-         * Set up global event listeners that persist across all pages
+         * Set up global event listeners
          */
         _setupGlobalListeners() {
-            const channels = [this.businessChannel, this.userChannel]
+            console.log('🎧 Setting up global WebSocket listeners...')
 
-            channels.forEach(channel => {
-                // FAQ Processing Events
-                channel.listen('.faq.processing.completed', (event) => {
-                    this._handleEvent('faq.processing.completed', event)
-                })
+            // FAQ Processing Events
+            this.businessChannel.listen('.faq.processing.completed', (event) => {
+                this._handleEvent('faq.processing.completed', event)
+            })
 
-                channel.listen('.faq.processing.failed', (event) => {
-                    this._handleEvent('faq.processing.failed', event)
-                })
+            this.businessChannel.listen('.faq.processing.failed', (event) => {
+                this._handleEvent('faq.processing.failed', event)
+            })
 
-                channel.listen('.faq.embedding.completed', (event) => {
-                    this._handleEvent('faq.embedding.completed', event)
-                })
+            this.businessChannel.listen('.faq.embedding.completed', (event) => {
+                this._handleEvent('faq.embedding.completed', event)
+            })
 
-                channel.listen('.faq.embedding.failed', (event) => {
-                    this._handleEvent('faq.embedding.failed', event)
-                })
+            this.businessChannel.listen('.faq.embedding.failed', (event) => {
+                this._handleEvent('faq.embedding.failed', event)
+            })
 
-                channel.listen('.faq.deletion.completed', (event) => {
-                    this._handleEvent('faq.deletion.completed', event)
-                })
+            this.businessChannel.listen('.faq.deletion.completed', (event) => {
+                this._handleEvent('faq.deletion.completed', event)
+            })
 
-                channel.listen('.job.progress.updated', (event) => {
-                    this._handleEvent('job.progress.updated', event)
-                })
+            this.businessChannel.listen('.job.progress.updated', (event) => {
+                this._handleEvent('job.progress.updated', event)
+            })
 
-                // Add more global events as needed
-                // channel.listen('.notification.new', (event) => {
-                //     this._handleEvent('notification.new', event)
-                // })
+            // ✅ ADD: Agent Handover Events
+            this.businessChannel.listen('.handover.requested', (event) => {
+                console.log('🔔 [WebSocket] Handover Requested:', event)
+                this._handleEvent('handover.requested', event)
+            })
+
+            this.businessChannel.listen('.handover.accepted', (event) => {
+                console.log('✅ [WebSocket] Handover Accepted:', event)
+                this._handleEvent('handover.accepted', event)
+            })
+
+            this.businessChannel.listen('.handover.rejected', (event) => {
+                console.log('❌ [WebSocket] Handover Rejected:', event)
+                this._handleEvent('handover.rejected', event)
+            })
+
+            // User channel listeners (if needed)
+            this.userChannel.listen('.notification.new', (event) => {
+                this._handleEvent('notification.new', event)
             })
         },
 
         /**
          * Handle incoming WebSocket events
-         * FIXED: Now correctly calls handler.handler(eventData) instead of handler(eventData)
          */
         _handleEvent(eventType, eventData) {
             console.log(`📡 WebSocket Event: ${eventType}`, eventData)
 
-            // Store notification for persistence
+            // Store notification
             this.addNotification(eventType, eventData)
 
             // Call registered handlers
             const handlers = this.eventHandlers.get(eventType) || []
+
+            if (handlers.length === 0) {
+                console.warn(`⚠️ No handlers registered for event: ${eventType}`)
+            }
+
             handlers.forEach(handlerObj => {
                 try {
-                    // FIX: Access the handler function from the handlerObj object
-                    // Each handlerObj has structure: { handler: Function, componentId: String }
                     if (typeof handlerObj.handler === 'function') {
                         handlerObj.handler(eventData)
                     } else {
@@ -116,13 +132,12 @@ export const useWebSocketStore = defineStore('websocket', {
         },
 
         /**
-         * Register event handler for a specific component/page
-         * Returns unsubscribe function
+         * Register event handler
          */
         on(eventType, handler, componentId = 'default') {
             if (typeof handler !== 'function') {
                 console.error('Handler must be a function', { eventType, handler })
-                return () => { } // Return no-op unsubscribe
+                return () => { }
             }
 
             if (!this.eventHandlers.has(eventType)) {
@@ -134,7 +149,6 @@ export const useWebSocketStore = defineStore('websocket', {
 
             console.log(`✅ Registered handler for ${eventType} (component: ${componentId})`)
 
-            // Return unsubscribe function
             return () => this.off(eventType, handler, componentId)
         },
 
@@ -156,7 +170,7 @@ export const useWebSocketStore = defineStore('websocket', {
         },
 
         /**
-         * Unregister all handlers for a component (call in onUnmounted)
+         * Unregister all handlers for a component
          */
         offAll(componentId) {
             let removedCount = 0
@@ -173,7 +187,7 @@ export const useWebSocketStore = defineStore('websocket', {
         },
 
         /**
-         * Add notification to store (for future notification center)
+         * Add notification
          */
         addNotification(eventType, eventData) {
             const notification = {
@@ -186,7 +200,6 @@ export const useWebSocketStore = defineStore('websocket', {
 
             this.notifications.unshift(notification)
 
-            // Keep only last 50 notifications
             if (this.notifications.length > 50) {
                 this.notifications = this.notifications.slice(0, 50)
             }
@@ -231,7 +244,7 @@ export const useWebSocketStore = defineStore('websocket', {
         },
 
         /**
-         * Reconnect (useful after business switch)
+         * Reconnect
          */
         reconnect() {
             this.disconnect()
