@@ -9,7 +9,7 @@
           <NuxtLink to="/" class="p-6 ">
             <div class="flex items-center px-5">
               <div class="w-8 h-8 rounded-lg flex items-center justify-center">
-                <NuxtImg src="/dashboard_layout_logo.png" alt="dashboard logo" class="w-5 h-5" />
+                <NuxtImg src="/Logo/XeliAi.jpg" alt="dashboard logo" class="w-5 h-5" />
               </div>
               <span class="ml-3 text-xl font-bold text-gray-900">Xeli ai</span>
             </div>
@@ -100,7 +100,7 @@
               <NuxtLink
   to="/dashboard/email-marketing"
   class="flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors"
-  :class="$route.path === '/dashboard/email-marketing'
+  :class="$route.path === '/dashboard/email-marketing/'
     ? 'bg-purple-50 text-[#7F56D9]'
     : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'"
 >
@@ -272,18 +272,18 @@
                 Team Members
               </NuxtLink>
               <NuxtLink
-  to="/dashboard/email-marketing"
-  class="flex items-center px-3 py-2 text-xs sm:text-sm font-medium rounded-lg transition-colors"
-  :class="$route.path === '/dashboard/email-marketing'
-    ? 'bg-purple-50 text-[#7F56D9]'
-    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'"
->
-  <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-      d="M3 8l9 6 9-6M3 8v8a2 2 0 002 2h14a2 2 0 002-2V8M3 8l9 6 9-6" />
-  </svg>
-  Email Marketing
-</NuxtLink>
+                  to="/dashboard/email-marketing"
+                  class="flex items-center px-3 py-2 text-xs sm:text-sm font-medium rounded-lg transition-colors"
+                  :class="$route.path === '/dashboard/email-marketing'
+                    ? 'bg-purple-50 text-[#7F56D9]'
+                    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'"
+                >
+                  <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M3 8l9 6 9-6M3 8v8a2 2 0 002 2h14a2 2 0 002-2V8M3 8l9 6 9-6" />
+                  </svg>
+                  Email Marketing
+              </NuxtLink>
 
               
                 <NuxtLink
