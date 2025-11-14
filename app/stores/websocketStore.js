@@ -96,6 +96,31 @@ export const useWebSocketStore = defineStore('websocket', {
                 this._handleEvent('handover.rejected', event)
             })
 
+            this.businessChannel.listen('.email.stats.updated', (event) => {
+                console.log('📊 [WebSocket] Email Stats Updated:', event)
+                this._handleEvent('email.stats.updated', event)
+
+                // Auto-update email marketing store
+                const emailStore = useEmailMarketingStore()
+                emailStore.handleEmailStatsUpdate(event)
+            })
+
+            this.businessChannel.listen('.email.campaign.sending', (event) => {
+                console.log('📤 [WebSocket] Campaign Started Sending:', event)
+                this._handleEvent('email.campaign.sending', event)
+
+                const emailStore = useEmailMarketingStore()
+                emailStore.handleCampaignStarted(event)
+            })
+
+            this.businessChannel.listen('.email.campaign.sent', (event) => {
+                console.log('✅ [WebSocket] Campaign Completed:', event)
+                this._handleEvent('email.campaign.sent', event)
+
+                const emailStore = useEmailMarketingStore()
+                emailStore.handleCampaignCompleted(event)
+            })
+
             // User channel listeners (if needed)
             this.userChannel.listen('.notification.new', (event) => {
                 this._handleEvent('notification.new', event)
