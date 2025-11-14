@@ -103,6 +103,7 @@
 
                     <!-- Actions -->
                     <div class="flex items-center gap-2 ml-4">
+                        <!-- Analytics -->
                         <button v-if="campaign.status === 'sent'" @click="viewAnalytics(campaign)"
                             class="px-3 py-2 text-sm text-purple-600 hover:bg-purple-50 rounded-lg flex items-center gap-1"
                             title="View Analytics">
@@ -113,6 +114,7 @@
                             Analytics
                         </button>
 
+                        <!-- Edit -->
                         <button v-if="campaign.can_edit" @click="editCampaign(campaign)"
                             class="px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-lg" title="Edit">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -121,26 +123,58 @@
                             </svg>
                         </button>
 
+                        <!-- Pause -->
                         <button v-if="campaign.status === 'sending'" @click="pauseCampaign(campaign)"
-                            class="px-3 py-2 text-sm text-orange-600 hover:bg-orange-50 rounded-lg" title="Pause">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            :disabled="actionLoading[campaign.id]"
+                            class="px-3 py-2 text-sm text-orange-600 hover:bg-orange-50 rounded-lg disabled:opacity-50"
+                            title="Pause">
+                            <div v-if="actionLoading[campaign.id]"
+                                class="animate-spin rounded-full h-4 w-4 border-b-2 border-orange-600"></div>
+                            <svg v-else class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
                         </button>
 
-                        <button v-if="campaign.can_send" @click="sendCampaign(campaign)"
-                            class="px-4 py-2 text-sm bg-green-600 text-white hover:bg-green-700 rounded-lg flex items-center gap-1"
-                            title="Send Now">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-                            </svg>
-                            Send
+                        <!-- Resume (for paused campaigns) -->
+                        <button v-if="campaign.status === 'paused'" @click="resumeCampaign(campaign)"
+                            :disabled="actionLoading[campaign.id]"
+                            class="px-4 py-2 text-sm bg-blue-600 text-white hover:bg-blue-700 rounded-lg flex items-center gap-1 disabled:opacity-50"
+                            title="Resume Campaign">
+                            <div v-if="actionLoading[campaign.id]"
+                                class="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                            <template v-else>
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                Resume
+                            </template>
                         </button>
 
+                        <!-- Send -->
+                        <button v-if="campaign.can_send" @click="sendCampaign(campaign)"
+                            :disabled="actionLoading[campaign.id]"
+                            class="px-4 py-2 text-sm bg-green-600 text-white hover:bg-green-700 rounded-lg flex items-center gap-1 disabled:opacity-50"
+                            title="Send Now">
+                            <div v-if="actionLoading[campaign.id]"
+                                class="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                            <template v-else>
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                                </svg>
+                                Send
+                            </template>
+                        </button>
+
+                        <!-- Delete -->
                         <button v-if="campaign.can_edit" @click="deleteCampaign(campaign)"
-                            class="px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg" title="Delete">
+                            :disabled="actionLoading[campaign.id]"
+                            class="px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg disabled:opacity-50"
+                            title="Delete">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -162,19 +196,20 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, reactive } from 'vue'
 import CampaignEditorModal from './CampaignEditorModal.vue'
 import CampaignAnalyticsModal from './CampaignAnalyticsModal.vue'
 import { useToast } from 'vue-toastification'
 
 const emailStore = useEmailMarketingStore()
-const $toast  = useToast()
+const $toast = useToast()
 
 const searchQuery = ref('')
 const statusFilter = ref('')
 const showEditorModal = ref(false)
 const showAnalyticsModal = ref(false)
 const selectedCampaign = ref(null)
+const actionLoading = reactive({}) // Track loading state per campaign
 
 const filteredCampaigns = computed(() => {
     let campaigns = emailStore.campaigns
@@ -219,27 +254,66 @@ const sendCampaign = async (campaign) => {
         return
     }
 
+    actionLoading[campaign.id] = true
+
     try {
         await emailStore.sendCampaign(campaign.id)
         $toast.success(`Campaign "${campaign.name}" is being sent`)
-        await emailStore.fetchCampaigns() // Refresh the list
+        await emailStore.fetchCampaigns()
     } catch (error) {
         console.error('Send campaign error:', error)
-        // Access error message safely
         const errorMessage = error?.response?.data?.message || error?.message || 'Failed to send campaign'
         $toast.error(errorMessage)
+    } finally {
+        actionLoading[campaign.id] = false
     }
 }
+
 const pauseCampaign = async (campaign) => {
     if (!confirm(`Pause "${campaign.name}"?`)) {
         return
     }
 
+    actionLoading[campaign.id] = true
+
     try {
         await emailStore.pauseCampaign(campaign.id)
         $toast.success('Campaign paused')
+        await emailStore.fetchCampaigns()
     } catch (error) {
         $toast.error('Failed to pause campaign')
+    } finally {
+        actionLoading[campaign.id] = false
+    }
+}
+
+const resumeCampaign = async (campaign) => {
+    if (!confirm(`Resume sending "${campaign.name}"?`)) {
+        return
+    }
+
+    actionLoading[campaign.id] = true
+
+    try {
+        // Call new resume endpoint
+        const config = useRuntimeConfig()
+        const authStore = useAuthStore()
+
+        const response = await $fetch(`${config.public.apiBase}/api/email/campaigns/${campaign.id}/resume`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${authStore.token}`,
+                'Content-Type': 'application/json'
+            },
+            body: { send_immediately: true }
+        })
+
+        $toast.success('Campaign resumed and sending')
+        await emailStore.fetchCampaigns()
+    } catch (error) {
+        $toast.error('Failed to resume campaign')
+    } finally {
+        actionLoading[campaign.id] = false
     }
 }
 
@@ -248,11 +322,15 @@ const deleteCampaign = async (campaign) => {
         return
     }
 
+    actionLoading[campaign.id] = true
+
     try {
         await emailStore.deleteCampaign(campaign.id)
         $toast.success('Campaign deleted')
     } catch (error) {
         $toast.error('Failed to delete campaign')
+    } finally {
+        delete actionLoading[campaign.id]
     }
 }
 

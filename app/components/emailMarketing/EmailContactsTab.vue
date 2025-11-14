@@ -21,6 +21,10 @@
                 </select>
             </div>
             <div class="flex items-center gap-2">
+                <button @click="showHelp = !showHelp"
+                    class="px-4 py-2 text-blue-600 border border-blue-300 rounded-lg hover:bg-blue-50">
+                    {{ showHelp ? 'Hide' : 'Show' }} Help
+                </button>
                 <button @click="showImportModal = true"
                     class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
                     Import
@@ -33,6 +37,104 @@
                 </button>
             </div>
         </div>
+
+        <!-- Help Section (Collapsible) -->
+        <transition name="slide-down">
+            <div v-if="showHelp" class="mb-6">
+                <div class="bg-gradient-to-br from-blue-50 to-purple-50 rounded-lg border border-blue-200 p-6">
+                    <div class="flex items-start gap-4">
+                        <div class="p-3 bg-blue-100 rounded-lg">
+                            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-3">Custom Fields Guide</h3>
+
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <!-- Manual Entry -->
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <h4 class="font-medium text-gray-900 mb-2 flex items-center gap-2">
+                                        <span class="text-2xl">✍️</span>
+                                        Manual Entry
+                                    </h4>
+                                    <p class="text-sm text-gray-600 mb-2">
+                                        Click "Add Contact" and use "Add Field" button to create custom fields like:
+                                    </p>
+                                    <div class="space-y-1 text-sm">
+                                        <div class="flex items-center gap-2">
+                                            <span class="w-2 h-2 bg-purple-500 rounded-full"></span>
+                                            <span>Company → Acme Corp</span>
+                                        </div>
+                                        <div class="flex items-center gap-2">
+                                            <span class="w-2 h-2 bg-purple-500 rounded-full"></span>
+                                            <span>Job Title → CEO</span>
+                                        </div>
+                                        <div class="flex items-center gap-2">
+                                            <span class="w-2 h-2 bg-purple-500 rounded-full"></span>
+                                            <span>Industry → Technology</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- CSV Import -->
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <h4 class="font-medium text-gray-900 mb-2 flex items-center gap-2">
+                                        <span class="text-2xl">📊</span>
+                                        CSV Import
+                                    </h4>
+                                    <p class="text-sm text-gray-600 mb-2">
+                                        Extra columns automatically become custom fields:
+                                    </p>
+                                    <div class="bg-gray-50 rounded p-2 font-mono text-xs overflow-x-auto">
+                                        <div class="text-gray-500">email, name, Company, Title</div>
+                                        <div class="text-gray-700">john@ex.com, John, Acme, CEO</div>
+                                    </div>
+                                    <p class="text-xs text-gray-500 mt-2">
+                                        → Company and Title saved as custom fields ✓
+                                    </p>
+                                </div>
+
+                                <!-- Email Personalization -->
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <h4 class="font-medium text-gray-900 mb-2 flex items-center gap-2">
+                                        <span class="text-2xl">💌</span>
+                                        Email Usage
+                                    </h4>
+                                    <p class="text-sm text-gray-600 mb-2">
+                                        Use custom fields in email templates:
+                                    </p>
+                                    @verbatim
+                                    <div class="bg-purple-50 rounded p-2 text-sm">
+                                        <code class="text-purple-700">Hi {{ first_name }}</code><br>
+                                        <code class="text-purple-700">from {{ Company }}</code>
+                                    </div>
+                                    @endverbatim
+
+                                </div>
+
+                                <!-- Common Fields -->
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <h4 class="font-medium text-gray-900 mb-2 flex items-center gap-2">
+                                        <span class="text-2xl">💡</span>
+                                        Popular Fields
+                                    </h4>
+                                    <div class="grid grid-cols-2 gap-1 text-sm text-gray-700">
+                                        <div>• Company</div>
+                                        <div>• Job Title</div>
+                                        <div>• Industry</div>
+                                        <div>• Location</div>
+                                        <div>• Website</div>
+                                        <div>• Lead Source</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </transition>
 
         <!-- Loading State -->
         <div v-if="emailStore.contactsLoading" class="flex items-center justify-center py-12">
@@ -72,6 +174,9 @@
                             List
                         </th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Custom Fields
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Tags
                         </th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -95,20 +200,35 @@
                             {{ contact.list_name }}
                         </td>
                         <td class="px-6 py-4">
+                            <div v-if="contact.custom_fields && Object.keys(contact.custom_fields).length > 0"
+                                class="flex flex-wrap gap-1">
+                                <span v-for="(value, key) in getDisplayCustomFields(contact.custom_fields)" :key="key"
+                                    class="px-2 py-1 bg-blue-50 text-blue-700 text-xs rounded"
+                                    :title="`${key}: ${value}`">
+                                    {{ key }}
+                                </span>
+                                <span v-if="Object.keys(contact.custom_fields).length > 3"
+                                    class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded">
+                                    +{{ Object.keys(contact.custom_fields).length - 3 }} more
+                                </span>
+                            </div>
+                            <span v-else class="text-sm text-gray-400">No custom fields</span>
+                        </td>
+                        <td class="px-6 py-4">
                             <div class="flex flex-wrap gap-1">
-                                <span v-for="tag in contact.tags?.slice(0, 3)" :key="tag"
+                                <span v-for="tag in contact.tags?.slice(0, 2)" :key="tag"
                                     class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded">
                                     {{ tag }}
+                                </span>
+                                <span v-if="contact.tags?.length > 2"
+                                    class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded">
+                                    +{{ contact.tags.length - 2 }}
                                 </span>
                             </div>
                         </td>
                         <td class="px-6 py-4">
-                            <span :class="[
-                                'px-2 py-1 text-xs font-medium rounded-full',
-                                contact.status === 'active' ? 'bg-green-100 text-green-700' :
-                                    contact.status === 'unsubscribed' ? 'bg-yellow-100 text-yellow-700' :
-                                        'bg-red-100 text-red-700'
-                            ]">
+                            <span
+                                :class="['px-2 py-1 text-xs font-medium rounded-full',contact.status === 'active' ? 'bg-green-100 text-green-700' : contact.status === 'unsubscribed' ? 'bg-yellow-100 text-yellow-700' : 'bg-red-100 text-red-700']">
                                 {{ contact.status }}
                             </span>
                         </td>
@@ -140,7 +260,7 @@
                 </button>
                 <span class="text-sm text-gray-600">
                     Page {{ emailStore.contactsPagination.current_page }} of {{
-                        emailStore.contactsPagination.last_page }}
+                    emailStore.contactsPagination.last_page }}
                 </span>
                 <button @click="changePage(emailStore.contactsPagination.current_page + 1)"
                     :disabled="emailStore.contactsPagination.current_page === emailStore.contactsPagination.last_page"
@@ -175,6 +295,14 @@ const statusFilter = ref('')
 const showImportModal = ref(false)
 const showContactModal = ref(false)
 const selectedContact = ref(null)
+const showHelp = ref(false)
+
+// Get first 3 custom fields for display
+const getDisplayCustomFields = (customFields) => {
+    if (!customFields) return {}
+    const entries = Object.entries(customFields)
+    return Object.fromEntries(entries.slice(0, 3))
+}
 
 // Debounced search
 const handleSearch = debounce(() => {
@@ -227,7 +355,6 @@ const deleteContact = async (contact) => {
 const exportContacts = async () => {
     try {
         const data = await emailStore.exportContacts(listFilter.value)
-        // Download CSV
         const blob = new Blob([JSON.stringify(data)], { type: 'application/json' })
         const url = URL.createObjectURL(blob)
         const a = document.createElement('a')
@@ -247,12 +374,26 @@ const handleImported = () => {
 }
 
 onMounted(async () => {
-    // Load lists first
     if (emailStore.lists.length === 0) {
         await emailStore.fetchLists()
     }
-
-    // Always fetch contacts on mount (no filter required)
     await emailStore.fetchContacts()
 })
 </script>
+
+<style scoped>
+.slide-down-enter-active,
+.slide-down-leave-active {
+    transition: all 0.3s ease;
+}
+
+.slide-down-enter-from {
+    opacity: 0;
+    transform: translateY(-10px);
+}
+
+.slide-down-leave-to {
+    opacity: 0;
+    transform: translateY(-10px);
+}
+</style>

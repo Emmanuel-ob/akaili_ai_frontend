@@ -33,15 +33,15 @@
         <div class="grid grid-cols-3 gap-4 mb-6">
             <div class="bg-white rounded-lg border border-gray-200 p-4">
                 <p class="text-sm text-gray-600 mb-1">Total Templates</p>
-                <p class="text-2xl font-bold text-gray-900">{{ emailStore.templateStats.total }}</p>
+                <p class="text-2xl font-bold text-gray-900">{{ totalTemplatesCount }}</p>
             </div>
             <div class="bg-white rounded-lg border border-gray-200 p-4">
                 <p class="text-sm text-gray-600 mb-1">My Templates</p>
-                <p class="text-2xl font-bold text-purple-600">{{ emailStore.templateStats.my_templates }}</p>
+                <p class="text-2xl font-bold text-purple-600">{{ myTemplatesCount }}</p>
             </div>
             <div class="bg-white rounded-lg border border-gray-200 p-4">
                 <p class="text-sm text-gray-600 mb-1">Global Templates</p>
-                <p class="text-2xl font-bold text-blue-600">{{ emailStore.templateStats.global_templates }}</p>
+                <p class="text-2xl font-bold text-blue-600">{{ globalTemplatesCount }}</p>
             </div>
         </div>
 
@@ -69,15 +69,26 @@
         <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <div v-for="template in emailStore.templates" :key="template.id"
                 class="border border-gray-200 rounded-lg overflow-hidden hover:border-purple-300 hover:shadow-lg transition-all group bg-white">
-                <!-- Thumbnail -->
-                <div class="aspect-video bg-gray-100 relative overflow-hidden">
+                <!-- Thumbnail with better fallback -->
+                <div class="aspect-video bg-gradient-to-br from-purple-50 to-blue-50 relative overflow-hidden">
+                    <!-- Try to show thumbnail -->
                     <img v-if="template.thumbnail" :src="template.thumbnail" :alt="template.name"
-                        class="w-full h-full object-cover group-hover:scale-105 transition-transform" />
-                    <div v-else class="w-full h-full flex items-center justify-center">
-                        <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        class="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                        @error="handleImageError" />
+
+                    <!-- Show rendered preview from HTML if no thumbnail -->
+                    <iframe v-else-if="template.html_content" :srcdoc="getPreviewHTML(template)"
+                        class="w-full h-full pointer-events-none border-0 scale-50 origin-top-left"
+                        style="width: 200%; height: 200%;" sandbox=""></iframe>
+
+                    <!-- Fallback icon -->
+                    <div v-else class="w-full h-full flex flex-col items-center justify-center">
+                        <svg class="w-16 h-16 text-purple-300 mb-2" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                         </svg>
+                        <p class="text-sm text-purple-400">{{ template.name }}</p>
                     </div>
 
                     <!-- Badges -->
@@ -117,9 +128,10 @@
 
                     <!-- Actions -->
                     <div class="flex items-center gap-2">
-                        <button @click="previewTemplate(template)"
-                            class="flex-1 px-3 py-2 text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50">
-                            Preview
+                        <button @click="previewTemplate(template)" :disabled="actionLoading[template.id]"
+                            class="flex-1 px-3 py-2 text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50">
+                            <span v-if="actionLoading[template.id]">Loading...</span>
+                            <span v-else>Preview</span>
                         </button>
 
                         <template v-if="template.is_editable !== false && !template.is_global">
@@ -133,8 +145,8 @@
                             </button>
                         </template>
 
-                        <button @click="duplicateTemplate(template)"
-                            class="px-3 py-2 text-sm text-blue-600 border border-blue-300 rounded-lg hover:bg-blue-50"
+                        <button @click="duplicateTemplate(template)" :disabled="actionLoading[template.id]"
+                            class="px-3 py-2 text-sm text-blue-600 border border-blue-300 rounded-lg hover:bg-blue-50 disabled:opacity-50"
                             title="Duplicate">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -143,7 +155,8 @@
                         </button>
 
                         <button v-if="!template.is_global" @click="deleteTemplate(template)"
-                            class="px-3 py-2 text-sm text-red-600 border border-red-300 rounded-lg hover:bg-red-50"
+                            :disabled="actionLoading[template.id]"
+                            class="px-3 py-2 text-sm text-red-600 border border-red-300 rounded-lg hover:bg-red-50 disabled:opacity-50"
                             title="Delete">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -155,11 +168,11 @@
             </div>
         </div>
 
-        <!-- Template Editor Modal -->
-        <TemplateEditorModal v-if="showEditorModal" :template="selectedTemplate" @close="closeEditor"
+        <!-- Fullscreen Template Editor -->
+        <TemplateEditorFullscreen v-if="showEditorModal" :template="selectedTemplate" @close="closeEditor"
             @saved="handleTemplateSaved" />
 
-        <!-- Preview Modal -->
+        <!-- Preview Modal (Scrollable) -->
         <EmailPreviewModal v-if="showPreviewModal" :html-content="previewHtml" :subject="previewSubject"
             @close="closePreview" />
 
@@ -178,13 +191,13 @@
                     <button @click="showDuplicateModal = false" class="px-4 py-2 text-gray-600 hover:text-gray-900">
                         Cancel
                     </button>
-                    <button @click="confirmDuplicate" :disabled="!duplicateName" :class="[
+                    <button @click="confirmDuplicate" :disabled="!duplicateName || duplicating" :class="[
                         'px-4 py-2 rounded-lg',
-                        duplicateName
+                        duplicateName && !duplicating
                             ? 'bg-purple-600 text-white hover:bg-purple-700'
                             : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                     ]">
-                        Duplicate
+                        {{ duplicating ? 'Duplicating...' : 'Duplicate' }}
                     </button>
                 </div>
             </div>
@@ -193,14 +206,14 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed, reactive } from 'vue'
 import { debounce } from 'lodash-es'
-import TemplateEditorModal from './TemplateEditorModal.vue'
+import TemplateEditorFullscreen from './TemplateEditorFullscreen.vue'
 import EmailPreviewModal from './EmailPreviewModal.vue'
 import { useToast } from 'vue-toastification'
 
 const emailStore = useEmailMarketingStore()
-const $toast  = useToast()
+const $toast = useToast()
 
 const showEditorModal = ref(false)
 const showPreviewModal = ref(false)
@@ -210,10 +223,37 @@ const previewHtml = ref('')
 const previewSubject = ref('')
 const duplicateName = ref('')
 const templateToDuplicate = ref(null)
+const actionLoading = reactive({})
+const duplicating = ref(false)
+
+// Computed counts from actual displayed templates
+const totalTemplatesCount = computed(() => emailStore.templates.length)
+const myTemplatesCount = computed(() => emailStore.templates.filter(t => !t.is_global).length)
+const globalTemplatesCount = computed(() => emailStore.templates.filter(t => t.is_global).length)
 
 const debouncedSearch = debounce(() => {
     emailStore.fetchTemplates()
 }, 500)
+
+const getPreviewHTML = (template) => {
+    // Return a scaled-down version of the HTML for preview
+    return `
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <style>
+                body { margin: 0; padding: 10px; transform-origin: top left; }
+            </style>
+        </head>
+        <body>${template.html_content}</body>
+        </html>
+    `
+}
+
+const handleImageError = (event) => {
+    event.target.style.display = 'none'
+}
 
 const createTemplate = () => {
     selectedTemplate.value = null
@@ -237,6 +277,7 @@ const handleTemplateSaved = () => {
 }
 
 const previewTemplate = async (template) => {
+    actionLoading[template.id] = true
     try {
         const data = await emailStore.previewTemplate(template.id)
         previewHtml.value = data.html_content
@@ -244,6 +285,8 @@ const previewTemplate = async (template) => {
         showPreviewModal.value = true
     } catch (error) {
         $toast.error('Failed to load preview')
+    } finally {
+        actionLoading[template.id] = false
     }
 }
 
@@ -262,6 +305,7 @@ const duplicateTemplate = (template) => {
 const confirmDuplicate = async () => {
     if (!duplicateName.value) return
 
+    duplicating.value = true
     try {
         await emailStore.duplicateTemplate(templateToDuplicate.value.id, duplicateName.value)
         $toast.success('Template duplicated successfully')
@@ -270,6 +314,8 @@ const confirmDuplicate = async () => {
         templateToDuplicate.value = null
     } catch (error) {
         $toast.error('Failed to duplicate template')
+    } finally {
+        duplicating.value = false
     }
 }
 
@@ -278,11 +324,14 @@ const deleteTemplate = async (template) => {
         return
     }
 
+    actionLoading[template.id] = true
     try {
         await emailStore.deleteTemplate(template.id)
         $toast.success('Template deleted')
     } catch (error) {
         $toast.error(error.response?.data?.message || 'Failed to delete template')
+    } finally {
+        delete actionLoading[template.id]
     }
 }
 </script>
