@@ -1,486 +1,514 @@
 <template>
   <div class="p-6 bg-gray-50 min-h-screen">
-    <h1 class="text-2xl font-bold text-gray-800 mb-6">Team Members</h1>
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-6">
+      <div>
+        <h1 class="text-2xl font-bold text-gray-800">Team Members</h1>
+        <p class="text-sm text-gray-500 mt-1">Manage your team and assign roles</p>
+      </div>
+      <button @click="showAddModal = true"
+        class="bg-[#7F56D9] text-white px-5 py-2 rounded-lg shadow hover:bg-[#6C47B5] flex items-center gap-2">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+        </svg>
+        Add Team Member
+      </button>
+    </div>
 
-    <!-- Add Member Card -->
-    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 mb-6">
-      <h2 class="text-lg font-semibold mb-4">Add Admin Account</h2>
-      <form @submit.prevent="addMember" class="grid gap-3 md:grid-cols-2">
-        <input
-          v-model="newMember.name"
-          type="text"
-          placeholder="Admin Name"
-          class="border border-gray-300 rounded-lg p-2 w-full focus:ring-2 focus:ring-purple-500 outline-none"
-          required
-        />
-        <input
-          v-model="newMember.email"
-          type="email"
-          placeholder="Admin Email"
-          class="border border-gray-300 rounded-lg p-2 w-full focus:ring-2 focus:ring-purple-500 outline-none"
-          required
-        />
-        <input
-          v-model="newMember.password"
-          type="password"
-          placeholder="Password"
-          class="border border-gray-300 rounded-lg p-2 w-full focus:ring-2 focus:ring-purple-500 outline-none"
-          required
-        />
-        <select
-          v-model="newMember.accountType"
-          class="border border-gray-300 rounded-lg p-2 w-full focus:ring-2 focus:ring-purple-500 outline-none"
-        >
-          <option value="internal">Internal</option>
-          <option value="external">External</option>
-        </select>
-
-        <!-- Roles column spanning 2 columns on mobile -->
-        <div class="md:col-span-2 pt-3 mt-3">
-          <label class="block font-medium mb-2">Assign Roles</label>
-
-          <div class="flex items-center gap-4 mb-3">
-            <label class="flex items-center gap-2">
-              <input
-                type="checkbox"
-                v-model="newMember.roles.superAdmin"
-                @change="onNewSuperAdminChange"
-                class="w-4 h-4"
-              />
-              <span class="text-sm">Super Admin</span>
-            </label>
-
-            <label class="flex items-center gap-2">
-              <input
-                type="checkbox"
-                v-model="newMember.roles.admin"
-                :disabled="newMember.roles.superAdmin"
-                @change="onNewAdminToggle"
-                class="w-4 h-4"
-              />
-              <span class="text-sm">Admin</span>
-            </label>
+    <!-- Statistics Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+      <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm text-gray-500">Total Members</p>
+            <p class="text-2xl font-bold text-gray-800">{{ teamStore.statistics.total_users || 0 }}</p>
           </div>
-
-          <!-- Permissions panel (only visible if admin is checked and superAdmin is not) -->
-          <div v-if="newMember.roles.admin && !newMember.roles.superAdmin" class="pl-3 border-l">
-            <p class="text-sm text-gray-600 mb-2">Admin Permissions</p>
-            <div class="flex flex-wrap gap-3">
-              <label class="flex items-center gap-2 text-sm">
-                <input type="checkbox" v-model="newMember.roles.permissions.view" class="w-4 h-4" />
-                View admins
-              </label>
-              <label class="flex items-center gap-2 text-sm">
-                <input type="checkbox" v-model="newMember.roles.permissions.create" class="w-4 h-4" />
-                Create admins
-              </label>
-              <label class="flex items-center gap-2 text-sm">
-                <input type="checkbox" v-model="newMember.roles.permissions.edit" class="w-4 h-4" />
-                Edit admins
-              </label>
-              <label class="flex items-center gap-2 text-sm">
-                <input type="checkbox" v-model="newMember.roles.permissions.delete" class="w-4 h-4" />
-                Delete admins
-              </label>
-            </div>
+          <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
+            <svg class="w-6 h-6 text-[#7F56D9]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M17 20h5v-2a4 4 0 00-4-4h-1M9 20H4v-2a4 4 0 014-4h1m4-9a4 4 0 11-8 0 4 4 0 018 0zm8 4a4 4 0 11-8 0 4 4 0 018 0z" />
+            </svg>
           </div>
-
         </div>
+      </div>
 
-        <div class="md:col-span-2 flex justify-end gap-3 mt-4">
-          <button type="reset" @click="resetNew" class="px-4 py-2 border rounded-lg text-gray-700 hover:bg-gray-50">
-            Reset
-          </button>
-          <button type="submit" class="bg-[#7F56D9] text-white px-5 py-2 rounded-lg shadow hover:bg-[#6C47B5]">
-            Add Admin
-          </button>
+      <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm text-gray-500">Active Roles</p>
+            <p class="text-2xl font-bold text-gray-800">{{ teamStore.statistics.total_roles || 0 }}</p>
+          </div>
+          <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+            </svg>
+          </div>
         </div>
-      </form>
+      </div>
+
+      <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm text-gray-500">Customer Reps</p>
+            <p class="text-2xl font-bold text-gray-800">{{ teamStore.roleDistribution.customer_rep || 0 }}</p>
+          </div>
+          <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div v-if="teamStore.loading" class="flex items-center justify-center py-12">
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-[#7F56D9]"></div>
     </div>
 
     <!-- Members List -->
-    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 mb-8">
-      <div class="flex items-center justify-between mb-3">
-        <h2 class="text-lg font-semibold text-gray-700">Current Admins</h2>
-        <div class="text-sm text-gray-500">Total: {{ members.length }}</div>
+    <div v-else class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+      <div class="p-4 border-b border-gray-200">
+        <h2 class="text-lg font-semibold text-gray-700">Team Members</h2>
       </div>
 
-      <div v-if="members.length === 0" class="text-gray-500 text-sm">No admins added yet.</div>
+      <div v-if="teamStore.sortedMembers.length === 0" class="p-8 text-center">
+        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M17 20h5v-2a4 4 0 00-4-4h-1M9 20H4v-2a4 4 0 014-4h1m4-9a4 4 0 11-8 0 4 4 0 018 0zm8 4a4 4 0 11-8 0 4 4 0 018 0z" />
+        </svg>
+        <p class="mt-2 text-gray-500">No team members yet. Add your first member to get started.</p>
+      </div>
 
-      <ul v-else class="divide-y divide-gray-200">
-        <li
-          v-for="(member, index) in members"
-          :key="member.id"
-          class="flex flex-col md:flex-row justify-between items-start md:items-center py-4"
-        >
-          <div>
-            <p class="text-gray-900 font-medium">{{ member.name }}</p>
-            <p class="text-gray-500 text-sm">{{ member.email }} • <span class="capitalize">{{ member.accountType }}</span></p>
+      <div v-else class="divide-y divide-gray-200">
+        <div v-for="member in teamStore.sortedMembers" :key="member.id" class="p-4 hover:bg-gray-50 transition-colors">
+          <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div class="flex-1">
+              <div class="flex items-center gap-2">
+                <h3 class="text-gray-900 font-medium">{{ member.name }}</h3>
+                <span v-if="member.is_owner"
+                  class="text-xs px-2 py-1 rounded bg-amber-100 text-amber-700 font-semibold">
+                  Owner
+                </span>
+              </div>
+              <p class="text-gray-500 text-sm">{{ member.email }}</p>
 
-            <div class="mt-2 flex flex-wrap gap-2">
-              <span
-                v-if="member.roles.superAdmin"
-                class="text-xs px-2 py-1 rounded bg-indigo-100 text-indigo-700"
-              >Super Admin</span>
+              <!-- Roles Display - FIXED: changed member.role to member.roles -->
+              <div v-if="member.roles && Object.keys(member.roles).length > 0" class="mt-2 flex flex-wrap gap-2">
+                <template v-for="(permissions, roleName) in member.roles" :key="roleName">
+                  <div class="font-bold text-gray-700 mt-3">{{ formatRoleName(roleName) }}</div>
 
-              <span v-else-if="member.roles.admin" class="text-xs px-2 py-1 rounded bg-yellow-100 text-yellow-800">
-                Admin
-              </span>
+                  <ul class="ml-4 text-sm text-gray-500">
+                    <li v-for="perm in permissions" :key="perm">
+                      {{ formatRoleName(perm) }}
+                    </li>
+                  </ul>
+                </template>
 
-              <template v-if="member.roles.admin && !member.roles.superAdmin">
-                <span v-if="member.roles.permissions.view" class="text-xs px-2 py-1 rounded bg-gray-100 text-gray-800">view</span>
-                <span v-if="member.roles.permissions.create" class="text-xs px-2 py-1 rounded bg-gray-100 text-gray-800">create</span>
-                <span v-if="member.roles.permissions.edit" class="text-xs px-2 py-1 rounded bg-gray-100 text-gray-800">edit</span>
-                <span v-if="member.roles.permissions.delete" class="text-xs px-2 py-1 rounded bg-gray-100 text-gray-800">delete</span>
-              </template>
+              </div>
+              <div v-else class="mt-2">
+                <span class="text-xs text-gray-400">No roles assigned</span>
+              </div>
+            </div>
+
+            <div class="flex gap-2">
+              <button v-if="!member.is_owner" @click="openManageRoles(member)"
+                class="px-3 py-1.5 text-sm rounded-lg border border-purple-300 text-purple-700 hover:bg-purple-50 transition">
+                Manage Roles
+              </button>
+              <button v-if="!member.is_owner" @click="openEdit(member)"
+                class="px-3 py-1.5 text-sm rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 transition">
+                Edit
+              </button>
+              <button v-if="!member.is_owner" @click="confirmDelete(member)"
+                class="px-3 py-1.5 text-sm rounded-lg bg-red-500 text-white hover:bg-red-600 transition">
+                Delete
+              </button>
             </div>
           </div>
-
-          <div class="flex gap-2 mt-3 md:mt-0">
-            <button
-              @click="openEdit(index)"
-              class="px-3 py-1 text-sm rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 transition"
-            >
-              Edit
-            </button>
-            <button
-              @click="deleteMember(index)"
-              class="px-3 py-1 text-sm rounded-lg bg-red-500 text-white hover:bg-red-600 transition"
-            >
-              Delete
-            </button>
-          </div>
-        </li>
-      </ul>
+        </div>
+      </div>
     </div>
 
-    <!-- Edit Modal -->
-    <div v-if="editIndex !== null" class="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
-      <div class="bg-white rounded-xl p-6 w-[95%] md:w-[520px] shadow-lg">
-        <div class="flex justify-between items-center mb-4">
-          <h3 class="text-lg font-semibold">Edit Admin</h3>
-          <button @click="cancelEdit" class="text-gray-500 hover:text-gray-700">&times;</button>
-        </div>
-
-        <form @submit.prevent="updateMember" class="grid gap-3">
-          <input
-            v-model="editMemberData.name"
-            type="text"
-            placeholder="Admin Name"
-            class="border border-gray-300 rounded-lg p-2 w-full focus:ring-2 focus:ring-purple-500 outline-none"
-            required
-          />
-
-          <input
-            v-model="editMemberData.email"
-            type="email"
-            placeholder="Admin Email"
-            class="border border-gray-300 rounded-lg p-2 w-full focus:ring-2 focus:ring-purple-500 outline-none"
-            required
-          />
-
-          <input
-            v-model="editMemberData.password"
-            type="password"
-            placeholder="Password (leave blank to keep current)"
-            class="border border-gray-300 rounded-lg p-2 w-full focus:ring-2 focus:ring-purple-500 outline-none"
-          />
-
-          <select
-            v-model="editMemberData.accountType"
-            class="border border-gray-300 rounded-lg p-2 w-full focus:ring-2 focus:ring-purple-500 outline-none"
-          >
-            <option value="internal">Internal</option>
-            <option value="external">External</option>
-          </select>
+    <!-- Add Member Modal -->
+    <BaseModal :show="showAddModal" @close="closeAddModal">
+      <template #header>
+        <h3 class="text-lg font-semibold">Add Team Member</h3>
+      </template>
+      <template #body>
+        <form @submit.prevent="addMember" class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Name</label>
+            <input v-model="newMember.name" type="text" required
+              class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-purple-500 outline-none"
+              placeholder="Enter name" />
+          </div>
 
           <div>
-            <label class="block font-medium mb-2">Assign Roles</label>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+            <input v-model="newMember.email" type="email" required
+              class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-purple-500 outline-none"
+              placeholder="Enter email" />
+          </div>
 
-            <div class="flex items-center gap-4 mb-3">
-              <label class="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  v-model="editMemberData.roles.superAdmin"
-                  @change="onEditSuperAdminChange"
-                  class="w-4 h-4"
-                />
-                <span class="text-sm">Super Admin</span>
-              </label>
+          <!-- Roles Selection -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Assign Roles</label>
+            <div class="space-y-3 max-h-96 overflow-y-auto border border-gray-200 rounded-lg p-3">
+              <div v-for="role in teamStore.rolesList" :key="role.name"
+                class="border-b border-gray-100 pb-3 last:border-0">
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <input type="checkbox" v-model="newMember.roles[role.name].enabled"
+                    @change="toggleRole(newMember.roles, role.name)" class="w-4 h-4 text-purple-600" />
+                  <span class="font-medium">{{ role.label }}</span>
+                </label>
 
-              <label class="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  v-model="editMemberData.roles.admin"
-                  :disabled="editMemberData.roles.superAdmin"
-                  @change="onEditAdminToggle"
-                  class="w-4 h-4"
-                />
-                <span class="text-sm">Admin</span>
-              </label>
+                <!-- Subroles -->
+                <div v-if="role.subroles.length > 0 && newMember.roles[role.name].enabled" class="ml-6 mt-2 space-y-2">
+                  <label v-for="subrole in role.subroles" :key="subrole.name"
+                    class="flex items-center gap-2 cursor-pointer">
+                    <input type="checkbox" v-model="newMember.roles[role.name].permissions[subrole.name]"
+                      class="w-4 h-4" />
+                    <span class="text-sm text-gray-700">{{ subrole.label }}</span>
+                  </label>
+                </div>
+              </div>
             </div>
+          </div>
 
-            <div v-if="editMemberData.roles.admin && !editMemberData.roles.superAdmin" class="pl-3 border-l">
-              <p class="text-sm text-gray-600 mb-2">Admin Permissions</p>
-              <div class="flex flex-wrap gap-3">
-                <label class="flex items-center gap-2 text-sm">
-                  <input type="checkbox" v-model="editMemberData.roles.permissions.view" class="w-4 h-4" />
-                  View admins
-                </label>
-                <label class="flex items-center gap-2 text-sm">
-                  <input type="checkbox" v-model="editMemberData.roles.permissions.create" class="w-4 h-4" />
-                  Create admins
-                </label>
-                <label class="flex items-center gap-2 text-sm">
-                  <input type="checkbox" v-model="editMemberData.roles.permissions.edit" class="w-4 h-4" />
-                  Edit admins
-                </label>
-                <label class="flex items-center gap-2 text-sm">
-                  <input type="checkbox" v-model="editMemberData.roles.permissions.delete" class="w-4 h-4" />
-                  Delete admins
+          <div class="flex justify-end gap-2 pt-4">
+            <button type="button" @click="closeAddModal"
+              class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
+              Cancel
+            </button>
+            <button type="submit" :disabled="teamStore.loading"
+              class="px-4 py-2 bg-[#7F56D9] text-white rounded-lg hover:bg-[#6C47B5] disabled:opacity-50">
+              {{ teamStore.loading ? 'Adding...' : 'Add Member' }}
+            </button>
+          </div>
+        </form>
+      </template>
+    </BaseModal>
+
+    <!-- Edit Member Modal -->
+    <BaseModal :show="showEditModal" @close="closeEditModal">
+      <template #header>
+        <h3 class="text-lg font-semibold">Edit Team Member</h3>
+      </template>
+      <template #body>
+        <form @submit.prevent="updateMember" class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Name</label>
+            <input v-model="editMember.name" type="text" required
+              class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-purple-500 outline-none" />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+            <input v-model="editMember.email" type="email" required
+              class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-purple-500 outline-none" />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              New Password (leave blank to keep current)
+            </label>
+            <input v-model="editMember.password" type="password"
+              class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-purple-500 outline-none"
+              placeholder="Leave blank to keep current password" />
+          </div>
+
+          <div class="flex justify-end gap-2 pt-4">
+            <button type="button" @click="closeEditModal"
+              class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
+              Cancel
+            </button>
+            <button type="submit" :disabled="teamStore.loading"
+              class="px-4 py-2 bg-[#7F56D9] text-white rounded-lg hover:bg-[#6C47B5] disabled:opacity-50">
+              {{ teamStore.loading ? 'Updating...' : 'Update Member' }}
+            </button>
+          </div>
+        </form>
+      </template>
+    </BaseModal>
+
+    <!-- Manage Roles Modal -->
+    <BaseModal :show="showRolesModal" @close="closeRolesModal">
+      <template #header>
+        <h3 class="text-lg font-semibold">Manage Roles - {{ rolesMember?.name }}</h3>
+      </template>
+      <template #body>
+        <form @submit.prevent="updateRoles" class="space-y-4">
+          <div class="space-y-3 max-h-96 overflow-y-auto border border-gray-200 rounded-lg p-4">
+            <div v-for="role in teamStore.rolesList" :key="role.name" class="border border-gray-200 rounded-lg p-3">
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" v-model="editRoles[role.name].enabled" @change="toggleRole(editRoles, role.name)"
+                  class="w-4 h-4 text-purple-600" />
+                <span class="font-medium text-gray-800">{{ role.label }}</span>
+              </label>
+
+              <!-- Subroles -->
+              <div v-if="role.subroles.length > 0 && editRoles[role.name].enabled"
+                class="ml-6 mt-3 space-y-2 pl-3 border-l-2 border-gray-200">
+                <p class="text-xs text-gray-500 mb-2">Permissions:</p>
+                <label v-for="subrole in role.subroles" :key="subrole.name"
+                  class="flex items-center gap-2 cursor-pointer">
+                  <input type="checkbox" v-model="editRoles[role.name].permissions[subrole.name]" class="w-4 h-4" />
+                  <span class="text-sm text-gray-700">{{ subrole.label }}</span>
                 </label>
               </div>
             </div>
           </div>
 
-          <div class="flex justify-end gap-2 mt-2">
-            <button type="button" @click="cancelEdit" class="px-4 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-100">
+          <div class="flex justify-end gap-2 pt-4">
+            <button type="button" @click="closeRolesModal"
+              class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
               Cancel
             </button>
-            <button type="submit" class="px-4 py-2 bg-[#7F56D9] text-white rounded-lg hover:bg-[#6C47B5]">Save</button>
+            <button type="submit" :disabled="teamStore.loading"
+              class="px-4 py-2 bg-[#7F56D9] text-white rounded-lg hover:bg-[#6C47B5] disabled:opacity-50">
+              {{ teamStore.loading ? 'Updating...' : 'Update Roles' }}
+            </button>
           </div>
         </form>
-      </div>
+      </template>
+    </BaseModal>
+
+    <!-- Error Toast -->
+    <div v-if="teamStore.error"
+      class="fixed bottom-4 right-4 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-3 z-50">
+      <span>{{ teamStore.error }}</span>
+      <button @click="teamStore.clearError()" class="text-white hover:text-gray-200">
+        ×
+      </button>
     </div>
 
+    <!-- Success Toast -->
+    <div v-if="successMessage"
+      class="fixed bottom-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-3 z-50">
+      <span>{{ successMessage }}</span>
+      <button @click="successMessage = ''" class="text-white hover:text-gray-200">
+        ×
+      </button>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
-import { nanoid } from 'nanoid' // optional, generates small unique ids. `npm i nanoid` or remove and use Date.now()
+import { ref, onMounted, reactive } from 'vue'
+import { useTeamStore } from '~/stores/teamStore'
 
 definePageMeta({
   layout: 'dashboard'
 })
 
-const members = ref([
-  {
-    id: nanoid(),
-    name: 'John Doe',
-    email: 'john@example.com',
-    password: '', 
-    accountType: 'internal',
-    roles: {
-      superAdmin: true,
-      admin: false,
-      permissions: { view: true, create: true, edit: true, delete: true }
-    }
-  },
-  {
-    id: nanoid(),
-    name: 'Sarah Smith',
-    email: 'sarah@company.com',
-    password: '',
-    accountType: 'internal',
-    roles: {
-      superAdmin: false,
-      admin: true,
-      permissions: { view: true, create: false, edit: true, delete: false }
-    }
-  }
-])
+const teamStore = useTeamStore()
+const successMessage = ref('')
 
-// reactive prototypes
+// Modal states
+const showAddModal = ref(false)
+const showEditModal = ref(false)
+const showRolesModal = ref(false)
+
+
+// Initialize roles structure
+const initializeRoles = () => {
+  const rolesObj = {}
+  teamStore.rolesList.forEach(role => {
+    rolesObj[role.name] = {
+      enabled: false,
+      permissions: {}
+    }
+    role.subroles.forEach(sub => {
+      rolesObj[role.name].permissions[sub.name] = false
+    })
+  })
+  return rolesObj
+}
+
+// Form data
 const newMember = reactive({
   name: '',
   email: '',
-  password: '',
-  accountType: 'internal',
-  roles: {
-    superAdmin: false,
-    admin: false,
-    permissions: { view: false, create: false, edit: false, delete: false }
-  }
+  roles: initializeRoles()
 })
 
-const editIndex = ref(null) // index in members[] being edited
-const editMemberData = reactive({
-  id: '',
+const editMember = reactive({
+  id: null,
   name: '',
   email: '',
-  password: '',
-  accountType: 'internal',
-  roles: {
-    superAdmin: false,
-    admin: false,
-    permissions: { view: false, create: false, edit: false, delete: false }
-  }
+  password: ''
 })
 
-// helpers
-function resetNew() {
+const editRoles = reactive({})
+const rolesMember = ref(null)
+
+
+
+// Toggle role and handle subroles
+const toggleRole = (rolesObj, roleName) => {
+  if (!rolesObj[roleName].enabled) {
+    // Disable all permissions when role is disabled
+    Object.keys(rolesObj[roleName].permissions).forEach(key => {
+      rolesObj[roleName].permissions[key] = false
+    })
+  }
+}
+
+// Format role name for display
+const formatRoleName = (name) => {
+  if (typeof name !== 'string') return ''
+  return name
+    .split('_')
+    .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(' ')
+}
+
+// Convert roles object to API format
+const convertRolesToApiFormat = (rolesObj) => {
+  const apiRoles = {}
+  Object.entries(rolesObj).forEach(([roleName, roleData]) => {
+    if (roleData.enabled) {
+      const hasSubroles = Object.keys(roleData.permissions).length > 0
+      if (hasSubroles) {
+        const enabledPermissions = {}
+        Object.entries(roleData.permissions).forEach(([permName, value]) => {
+          if (value) {
+            enabledPermissions[permName] = true
+          }
+        })
+        if (Object.keys(enabledPermissions).length > 0) {
+          apiRoles[roleName] = enabledPermissions
+        }
+      } else {
+        apiRoles[roleName] = true
+      }
+    }
+  })
+  return apiRoles
+}
+
+// Convert API roles to form format - FIXED: changed parameter name from apiRoles to match usage
+const convertApiRolesToFormFormat = (memberRoles) => {
+  const formRoles = initializeRoles()
+  if (!memberRoles) return formRoles
+
+  Object.entries(memberRoles).forEach(([roleName, permissions]) => {
+    if (formRoles[roleName]) {
+      formRoles[roleName].enabled = true
+      if (typeof permissions === 'object') {
+        Object.entries(permissions).forEach(([permName, value]) => {
+          if (formRoles[roleName].permissions[permName] !== undefined) {
+            formRoles[roleName].permissions[permName] = !!value
+          }
+        })
+      }
+    }
+  })
+  return formRoles
+}
+
+// Modal handlers
+const closeAddModal = () => {
+  showAddModal.value = false
   newMember.name = ''
   newMember.email = ''
-  newMember.password = ''
-  newMember.accountType = 'internal'
-  newMember.roles.superAdmin = false
-  newMember.roles.admin = false
-  newMember.roles.permissions.view = false
-  newMember.roles.permissions.create = false
-  newMember.roles.permissions.edit = false
-  newMember.roles.permissions.delete = false
+  newMember.roles = initializeRoles()
 }
 
-function onNewSuperAdminChange() {
-  if (newMember.roles.superAdmin) {
-    // grant full permissions
-    newMember.roles.admin = false
-    newMember.roles.permissions.view = true
-    newMember.roles.permissions.create = true
-    newMember.roles.permissions.edit = true
-    newMember.roles.permissions.delete = true
-  } else {
-    // remove super powers but keep existing admin flag off
-    newMember.roles.permissions.view = false
-    newMember.roles.permissions.create = false
-    newMember.roles.permissions.edit = false
-    newMember.roles.permissions.delete = false
+const closeEditModal = () => {
+  showEditModal.value = false
+  editMember.id = null
+  editMember.name = ''
+  editMember.email = ''
+  editMember.password = ''
+}
+
+const closeRolesModal = () => {
+  showRolesModal.value = false
+  rolesMember.value = null
+  Object.assign(editRoles, {})
+}
+
+const openEdit = (member) => {
+  editMember.id = member.id
+  editMember.name = member.name
+  editMember.email = member.email
+  editMember.password = ''
+  showEditModal.value = true
+}
+
+// FIXED: changed member.role to member.roles
+const openManageRoles = (member) => {
+  rolesMember.value = member
+  Object.assign(editRoles, convertApiRolesToFormFormat(member.roles))
+  showRolesModal.value = true
+}
+
+// CRUD operations
+const addMember = async () => {
+  try {
+    const apiRoles = convertRolesToApiFormat(newMember.roles)
+    await teamStore.addTeamMember({
+      name: newMember.name,
+      email: newMember.email,
+      roles: apiRoles
+    })
+    successMessage.value = 'Team member invited successfully! They will receive an email with login credentials.'
+    closeAddModal()
+    setTimeout(() => { successMessage.value = '' }, 5000)
+  } catch (error) {
+    console.error('Failed to add member:', error)
   }
 }
 
-function onNewAdminToggle() {
-  if (newMember.roles.admin) {
-    // ensure at least view is selected for convenience (optional)
-    if (!Object.values(newMember.roles.permissions).some(Boolean)) {
-      newMember.roles.permissions.view = true
+const updateMember = async () => {
+  try {
+    const data = {
+      name: editMember.name,
+      email: editMember.email
     }
-  } else {
-    newMember.roles.permissions.view = false
-    newMember.roles.permissions.create = false
-    newMember.roles.permissions.edit = false
-    newMember.roles.permissions.delete = false
-  }
-}
-
-function addMember() {
-  // basic client-side validation
-  if (!newMember.name || !newMember.email || !newMember.password) return
-
-  // if superAdmin selected set full perms regardless of admin box
-  const roles = {
-    superAdmin: !!newMember.roles.superAdmin,
-    admin: !!newMember.roles.admin && !newMember.roles.superAdmin,
-    permissions: { ...newMember.roles.permissions }
-  }
-  if (roles.superAdmin) {
-    roles.admin = false
-    roles.permissions = { view: true, create: true, edit: true, delete: true }
-  }
-
-  const payload = {
-    id: nanoid(),
-    name: newMember.name,
-    email: newMember.email,
-    password: newMember.password, // demo only
-    accountType: newMember.accountType,
-    roles
-  }
-
-  members.value.push(payload)
-  resetNew()
-  // In production you'd call an API to create/auth user and persist roles server-side
-}
-
-function deleteMember(index) {
-  // optional: confirm
-  if (!confirm('Delete this admin?')) return
-  members.value.splice(index, 1)
-}
-
-function openEdit(index) {
-  editIndex.value = index
-  const m = members.value[index]
-  // deep-copy into editMemberData
-  editMemberData.id = m.id
-  editMemberData.name = m.name
-  editMemberData.email = m.email
-  editMemberData.password = '' // blank => keep existing
-  editMemberData.accountType = m.accountType || 'internal'
-  editMemberData.roles.superAdmin = !!m.roles.superAdmin
-  editMemberData.roles.admin = !!m.roles.admin
-  editMemberData.roles.permissions = { ...m.roles.permissions }
-}
-
-function cancelEdit() {
-  editIndex.value = null
-  editMemberData.id = ''
-  editMemberData.name = ''
-  editMemberData.email = ''
-  editMemberData.password = ''
-  editMemberData.accountType = 'internal'
-  editMemberData.roles.superAdmin = false
-  editMemberData.roles.admin = false
-  editMemberData.roles.permissions = { view: false, create: false, edit: false, delete: false }
-}
-
-function onEditSuperAdminChange() {
-  if (editMemberData.roles.superAdmin) {
-    editMemberData.roles.admin = false
-    editMemberData.roles.permissions.view = true
-    editMemberData.roles.permissions.create = true
-    editMemberData.roles.permissions.edit = true
-    editMemberData.roles.permissions.delete = true
-  } else {
-    editMemberData.roles.permissions.view = false
-    editMemberData.roles.permissions.create = false
-    editMemberData.roles.permissions.edit = false
-    editMemberData.roles.permissions.delete = false
-  }
-}
-
-function onEditAdminToggle() {
-  if (editMemberData.roles.admin) {
-    if (!Object.values(editMemberData.roles.permissions).some(Boolean)) {
-      editMemberData.roles.permissions.view = true
+    if (editMember.password) {
+      data.password = editMember.password
     }
-  } else {
-    editMemberData.roles.permissions.view = false
-    editMemberData.roles.permissions.create = false
-    editMemberData.roles.permissions.edit = false
-    editMemberData.roles.permissions.delete = false
+    await teamStore.updateTeamMember(editMember.id, data)
+    successMessage.value = 'Team member updated successfully!'
+    closeEditModal()
+    setTimeout(() => { successMessage.value = '' }, 3000)
+  } catch (error) {
+    console.error('Failed to update member:', error)
   }
 }
 
-function updateMember() {
-  if (editIndex.value === null) return
-
-  const idx = editIndex.value
-  const original = members.value[idx]
-
-  // merge changes (if password blank, keep old)
-  const updated = {
-    ...original,
-    name: editMemberData.name,
-    email: editMemberData.email,
-    accountType: editMemberData.accountType,
-    password: editMemberData.password ? editMemberData.password : original.password,
-    roles: {
-      superAdmin: !!editMemberData.roles.superAdmin,
-      admin: !!editMemberData.roles.admin && !editMemberData.roles.superAdmin,
-      permissions: { ...editMemberData.roles.permissions }
-    }
+const updateRoles = async () => {
+  try {
+    const apiRoles = convertRolesToApiFormat(editRoles)
+    await teamStore.updateMemberRoles(rolesMember.value.id, apiRoles)
+    successMessage.value = 'Roles updated successfully!'
+    closeRolesModal()
+    setTimeout(() => { successMessage.value = '' }, 3000)
+  } catch (error) {
+    console.error('Failed to update roles:', error)
   }
-
-  if (updated.roles.superAdmin) {
-    updated.roles.admin = false
-    updated.roles.permissions = { view: true, create: true, edit: true, delete: true }
-  }
-
-  members.value[idx] = updated
-  cancelEdit()
-  // persist to backend in production
 }
 
+const confirmDelete = async (member) => {
+  if (!confirm(`Are you sure you want to remove ${member.name} from the team?`)) return
 
+  try {
+    await teamStore.deleteTeamMember(member.id)
+    successMessage.value = 'Team member removed successfully!'
+    setTimeout(() => { successMessage.value = '' }, 3000)
+  } catch (error) {
+    console.error('Failed to delete member:', error)
+  }
+}
+
+// Initialize
+onMounted(async () => {
+  await teamStore.fetchTeamMembers()
+  newMember.roles = initializeRoles()
+})
 </script>

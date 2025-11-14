@@ -16,11 +16,11 @@ export const useChatbotStore = defineStore('chatbot', {
 
             this.loading = true
             try {
-                const data = await $fetch(`${config.public.apiBase}/api/chatbots`, {
+                const response = await $fetch(`${config.public.apiBase}/api/chatbots`, {
                     headers: { Authorization: `Bearer ${token}` }
                 })
-                this.chatbots = data.chatbots || []
-                return data
+                this.chatbots = response.chatbots || []
+                return response
             } catch (error) {
                 throw error.data || error
             } finally {
@@ -34,14 +34,14 @@ export const useChatbotStore = defineStore('chatbot', {
 
             this.saving = true
             try {
-                const data = await $fetch(`${config.public.apiBase}/api/chatbots`, {
+                const response = await $fetch(`${config.public.apiBase}/api/chatbots`, {
                     method: 'POST',
                     body: chatbotData,
                     headers: { Authorization: `Bearer ${token}` }
                 })
 
-                await this.fetchChatbots()
-                return { success: true, data }
+                // await this.fetchChatbots()
+                return { success: true, data: response.data || response }
             } catch (error) {
                 return { success: false, message: error.data?.message || 'Failed to create chatbot' }
             } finally {
@@ -55,14 +55,14 @@ export const useChatbotStore = defineStore('chatbot', {
 
             this.saving = true
             try {
-                const data = await $fetch(`${config.public.apiBase}/api/chatbots/${chatbotId}`, {
+                const response = await $fetch(`${config.public.apiBase}/api/chatbots/${chatbotId}`, {
                     method: 'PUT',
                     body: chatbotData,
                     headers: { Authorization: `Bearer ${token}` }
                 })
 
                 await this.fetchChatbots()
-                return { success: true, data }
+                return { success: true, data: response.data || response }
             } catch (error) {
                 return { success: false, message: error.data?.message || 'Failed to update chatbot' }
             } finally {
@@ -75,13 +75,13 @@ export const useChatbotStore = defineStore('chatbot', {
             const { token } = useAuthStore()
 
             try {
-                await $fetch(`${config.public.apiBase}/api/chatbots/${chatbotId}`, {
+                const response = await $fetch(`${config.public.apiBase}/api/chatbots/${chatbotId}`, {
                     method: 'DELETE',
                     headers: { Authorization: `Bearer ${token}` }
                 })
 
                 await this.fetchChatbots()
-                return { success: true }
+                return { success: response.success || true }
             } catch (error) {
                 return { success: false, message: error.data?.message || 'Failed to delete chatbot' }
             }
@@ -92,12 +92,12 @@ export const useChatbotStore = defineStore('chatbot', {
             const { token } = useAuthStore()
 
             try {
-                const data = await $fetch(`${config.public.apiBase}/api/chatbots/${chatbotId}/embed-code`, {
+                const response = await $fetch(`${config.public.apiBase}/api/chatbots/${chatbotId}/embed-code`, {
                     method: 'POST',
                     headers: { Authorization: `Bearer ${token}` }
                 })
 
-                return { success: true, data }
+                return { success: true, data: response.data || response }
             } catch (error) {
                 return { success: false, message: error.data?.message || 'Failed to generate embed code' }
             }

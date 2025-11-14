@@ -1,344 +1,250 @@
 <template>
-  <div class="min-h-screen bg-black text-white">
-    <!-- Skip Option Header -->
-    <div class="absolute top-4 right-4">
-      <button 
-      class="px-4 py-2 text-sm text-gray-400 hover:text-white border border-gray-600 rounded-lg hover:border-gray-500 transition-colors"
-        @click="goToDashboard"
-      >
-        Skip Setup
-      </button>
-    </div>
-
-    <!-- Loading State -->
-    <div v-if="loading" class="flex items-center justify-center min-h-screen">
-      <div class="text-center">
-        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-[#7F56D9] mx-auto mb-4"/>
-        <p class="text-gray-400">Loading...</p>
-      </div>
-    </div>
-
-    <!-- Company Setup Step -->
-    <div v-else-if="currentStep === 'company_setup'" class="container mx-auto px-4 py-8">
-      <div class="flex items-center justify-center mb-8">
-        <div class="w-8 h-8 bg-[#7F56D9] rounded-full flex items-center justify-center mr-2">
-          <span class="text-white font-bold text-sm">A</span>
-        </div>
-        <h1 class="text-xl font-semibold text-purple-400">Company Setup</h1>
-      </div>
-
-      <div class="text-center mb-8">
-        <h2 class="text-2xl font-bold mb-2">Tell us about your company</h2>
-        <p class="text-gray-400">We'll personalize your experience based on your business</p>
-      </div>
-
-      <!-- Progress Steps -->
-      <OnboardingProgress :current="1" />
-
-      <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 mt-12">
-        <!-- Company Information -->
-        <div class="bg-gray-900 border border-gray-700 rounded-lg p-6">
-          <h3 class="text-lg font-semibold mb-4">Company Information</h3>
-          <p class="text-gray-400 text-sm mb-6">Basic details about your organization</p>
-          
-          <div class="space-y-4">
-            <div>
-             
-             <FormInput
-  v-model="companyForm.company_name"
-  label="Company Name"
-  placeholder="Enter your company name"
-  variant="dark"
-  required
-/>
-            </div>
-            
-            <div>
-              
-              <FormSelect
-  v-model="companyForm.industry"
-  label="Industry"
-  placeholder="Select your industry"
-  variant="dark"
-  :options="industryOptions"
-  required
-/>
-              
-            </div>
-          </div>
-        </div>
-
-        <!-- Plan Selection -->
-        <div class="bg-gray-900 border border-gray-700 rounded-lg p-6">
-          <h3 class="text-lg font-semibold mb-4">Choose Your Plan</h3>
-          <p class="text-gray-400 text-sm mb-6">Start with our free plan and upgrade anytime</p>
-          
-          <div class="space-y-3">
-            <label class="flex items-center p-3 border border-gray-600 rounded-lg cursor-pointer hover:border-purple-500 transition-colors">
-              <input 
-                v-model="companyForm.plan" 
-                type="radio" 
-                value="free" 
-                class="text-[#7F56D9]"
-              >
-              <div class="ml-3">
-                <div class="font-medium">Free Plan</div>
-                <div class="text-sm text-gray-400">Perfect for getting started</div>
-              </div>
-            </label>
-            
-            <label class="flex items-center p-3 border border-gray-600 rounded-lg cursor-pointer hover:border-purple-500 transition-colors">
-              <input 
-                v-model="companyForm.plan" 
-                type="radio" 
-                value="starter" 
-                class="text-[#7F56D9]"
-              >
-              <div class="ml-3">
-                <div class="font-medium">Starter Plan</div>
-                <div class="text-sm text-gray-400">For growing businesses</div>
-              </div>
-            </label>
-          </div>
-        </div>
-      </div>
-
-      <!-- Error Message -->
-      <div v-if="error" class="max-w-md mx-auto mt-6">
-        <div class="bg-red-900/20 border border-red-700 text-red-300 px-4 py-3 rounded-lg text-sm">
-          {{ error }}
-        </div>
-      </div>
-
-      <div class="flex justify-center mt-8">
-        <button 
-        class="px-8 py-3 bg-[#7F56D9] text-white rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-        :disabled="isSubmitting || !companyForm.company_name || !companyForm.industry"
-          @click="handleCompanySetup" 
-        >
-          {{ isSubmitting ? 'Setting up...' : 'Continue' }}
+  <div class="min-h-screen bg-gray-50 flex flex-col">
+    <!-- Header -->
+    <header class="bg-white border-b border-gray-200 py-4 px-6" role="banner">
+      <div class="max-w-4xl mx-auto flex justify-between items-center">
+        <NuxtLink to="/" aria-label="Xeli AI Home">
+          <NuxtImg src="/Logo.png" alt="Xeli AI Logo" width="120" height="32" loading="eager" />
+        </NuxtLink>
+        <button @click="handleLogout"
+          class="text-sm text-gray-600 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 rounded px-3 py-1"
+          aria-label="Logout">
+          Logout
         </button>
       </div>
-    </div>
+    </header>
 
-    <!-- Create Chatbot Step -->
-    <div v-else-if="currentStep === 'create_chatbot'" class="container mx-auto px-4 py-8">
-      <div class="flex items-center justify-center mb-8">
-        <div class="w-8 h-8 bg-[#7F56D9] rounded-full flex items-center justify-center mr-2">
-          <span class="text-white font-bold text-sm">A</span>
+    <!-- Main Content -->
+    <main class="flex-1 py-12 px-6" role="main">
+      <div class="max-w-4xl mx-auto">
+        <!-- Progress Indicator -->
+        <div class="mb-12" role="region" aria-label="Onboarding progress">
+          <OnboardingProgress :current="currentStepNumber" />
         </div>
-        <h1 class="text-xl font-semibold text-purple-400">Create Your Chatbot</h1>
-      </div>
 
-      <div class="text-center mb-8">
-        <h2 class="text-2xl font-bold mb-2">Set up your AI assistant</h2>
-        <p class="text-gray-400">Configure your chatbot's personality and purpose</p>
-      </div>
+        <!-- Loading State -->
+        <div v-if="loading" class="flex justify-center py-12" role="status" aria-live="polite">
+          <div class="w-8 h-8 border-4 border-purple-600 border-t-transparent rounded-full animate-spin"
+            aria-label="Loading"></div>
+        </div>
 
-      <OnboardingProgress :current="2" />
+        <!-- Step 1: Company Setup -->
+        <div v-else-if="currentStep === 'business_setup'"
+          class="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+          <h2 class="text-2xl font-bold text-gray-900 mb-6">Setup Your Company</h2>
 
-      <div class="max-w-4xl mx-auto mt-12">
-        <div class="bg-gray-900 border border-gray-700 rounded-lg p-6">
-          <h3 class="text-lg font-semibold mb-4">Chatbot Configuration</h3>
-          <p class="text-gray-400 text-sm mb-6">Give your AI assistant an identity</p>
-          
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-             
-              <FormInput
-    v-model="chatbotForm.name"
-    label="Chatbot Name"
-    placeholder="e.g., Support Assistant"
-    variant="dark"
-    required
-  />
+          <form @submit.prevent="handleCompanySetup" class="space-y-6">
+            <FormInput v-model="companyForm.company_name" label="Company Name" placeholder="Enter your company name"
+              required aria-required="true" />
+
+            <FormInput v-model="companyForm.business_email" label="Business Email" type="email"
+              placeholder="Enter business email" required aria-required="true" />
+
+            <FormInput v-model="companyForm.business_phone" label="Business Phone" type="tel"
+              placeholder="Enter phone number" required aria-required="true" />
+
+            <FormInput v-model="companyForm.address" label="Business Address" placeholder="Enter business address"
+              required aria-required="true" />
+
+            <div v-if="error" class="p-4 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm" role="alert">
+              {{ error }}
             </div>
-            
+
+            <button type="submit" :disabled="setupLoading"
+              class="w-full bg-[#7F56D9] text-white py-3 px-4 rounded-lg hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-colors">
+              {{ setupLoading ? 'Setting up...' : 'Continue' }}
+            </button>
+          </form>
+        </div>
+
+        <!-- Step 2: Chatbot Creation -->
+        <div v-else-if="currentStep === 'chatbot_creation'"
+          class="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+          <h2 class="text-2xl font-bold text-gray-900 mb-6">Create Your Chatbot</h2>
+
+          <form @submit.prevent="handleChatbotCreation" class="space-y-6">
+            <FormInput v-model="chatbotForm.name" label="Chatbot Name" placeholder="Enter chatbot name" required
+              aria-required="true" />
+
             <div>
-              
-              <FormSelect
-    v-model="chatbotForm.type"
-    label="Chatbot Type"
-    variant="dark"
-    :options="chatbotTypeOptions"
-  />
+              <label class="block text-sm font-medium text-gray-700 mb-1">Welcome Message</label>
+              <textarea v-model="chatbotForm.welcome_message" rows="4"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                placeholder="Enter welcome message for your chatbot" required aria-required="true"></textarea>
             </div>
-          </div>
-          
-          <div class="mt-4">
-            <label class="block text-sm font-medium mb-2">Description</label>
-            <textarea 
-              v-model="chatbotForm.description" 
-              class="w-full px-3 py-2 bg-gray-800 border border-gray-600 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 h-24 resize-none"
-              placeholder="Describe what your chatbot will help with..."
-            />
-          </div>
+
+            <div v-if="error" class="p-4 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm" role="alert">
+              {{ error }}
+            </div>
+
+            <div class="flex space-x-4">
+              <button type="button" @click="goBack"
+                class="flex-1 border border-gray-300 text-gray-700 py-3 px-4 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors">
+                Back
+              </button>
+              <button type="submit" :disabled="setupLoading"
+                class="flex-1 bg-[#7F56D9] text-white py-3 px-4 rounded-lg hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-colors">
+                {{ setupLoading ? 'Creating...' : 'Complete Setup' }}
+              </button>
+            </div>
+          </form>
         </div>
 
-        <!-- Error Message -->
-        <div v-if="error" class="mt-6">
-          <div class="bg-red-900/20 border border-red-700 text-red-300 px-4 py-3 rounded-lg text-sm">
-            {{ error }}
-          </div>
-        </div>
-
-        <div class="flex justify-between mt-8">
-          <button 
-          class="px-6 py-3 bg-gray-700 text-gray-300 rounded-lg hover:bg-gray-600 transition-colors"
-            @click="goToDashboard" 
-          >
-            Skip for Now
-          </button>
-          <button 
-          class="px-8 py-3 bg-[#7F56D9] text-white rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          :disabled="isSubmitting || !chatbotForm.name"
-            @click="handleChatbotCreation" 
-          >
-            {{ isSubmitting ? 'Creating...' : 'Create Chatbot' }}
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Completion Step -->
-    <div v-else-if="currentStep === 'completed'" class="container mx-auto px-4 py-8">
-      <div class="text-center">
-        <OnboardingProgress :current="3" />
-        
-        <div class="mt-12 max-w-2xl mx-auto">
-          <div class="w-20 h-20 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
-            <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+        <!-- Completed State -->
+        <div v-else-if="currentStep === 'completed'"
+          class="bg-white rounded-lg shadow-sm border border-gray-200 p-8 text-center">
+          <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+              aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
             </svg>
           </div>
-          
-          <h1 class="text-3xl font-bold mb-4">Welcome to Akili AI!</h1>
-          <p class="text-gray-400 text-lg mb-8">
-            Your account is set up and ready to go. Let's start building your intelligent chatbot.
-          </p>
-          
-          <button 
-          class="px-8 py-3 bg-[#7F56D9] text-white rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors text-lg"
-            @click="goToDashboard"
-          >
+          <h2 class="text-2xl font-bold text-gray-900 mb-2">Setup Complete!</h2>
+          <p class="text-gray-600 mb-6">Your account is ready to use.</p>
+          <button @click="finishOnboarding"
+            class="bg-[#7F56D9] text-white py-3 px-8 rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-colors">
             Go to Dashboard
           </button>
         </div>
       </div>
-    </div>
+    </main>
   </div>
 </template>
 
 <script setup>
+definePageMeta({
+  layout: 'empty',
+  middleware: 'auth'
+})
 
-
-// Redirect if not authenticated
 const authStore = useAuthStore()
+const onboardingStore = useOnboardingStore()
+const businessStore = useBusinessStore()
+const chatbotStore = useChatbotStore()
 const router = useRouter()
 
-const industryOptions = [
-  { value: 'technology', label: 'Technology' },
-  { value: 'healthcare', label: 'Healthcare' },
-  { value: 'finance', label: 'Finance' },
-  { value: 'retail', label: 'Retail' },
-  { value: 'education', label: 'Education' },
-  { value: 'manufacturing', label: 'Manufacturing' },
-  { value: 'consulting', label: 'Consulting' },
-  { value: 'real_estate', label: 'Real Estate' },
-  { value: 'other', label: 'Other' }
+const loading = ref(true)
+const setupLoading = ref(false)
+const error = ref('')
+const currentStep = ref('business_setup')
+
+const companyForm = ref({
+  company_name: '',
+  business_email: '',
+  business_phone: '',
+  address: ''
+})
+
+const chatbotForm = ref({
+  name: '',
+  welcome_message: 'Hello! How can I help you today?'
+})
+
+// Options
+const companySizeOptions = [
+  { value: '1-10', label: '1-10 employees' },
+  { value: '11-50', label: '11-50 employees' },
+  { value: '51-200', label: '51-200 employees' },
+  { value: '201-500', label: '201-500 employees' },
+  { value: '500+', label: '500+ employees' }
 ]
 
-
 const chatbotTypeOptions = [
-  { value: 'general', label: 'General Assistant' },
+  { value: 'general', label: 'General Purpose' },
   { value: 'customer_service', label: 'Customer Service' },
-  { value: 'sales', label: 'Sales Support' },
+  { value: 'sales', label: 'Sales' },
   { value: 'support', label: 'Technical Support' }
 ]
 
-onMounted(() => {
-  authStore.initializeAuth()
-  if (!authStore.isLoggedIn) {
-    router.push('/dashboard/login')
-    return
-  }
+// Computed
+const currentStepNumber = computed(() => {
+  if (currentStep.value === 'business_setup') return 1
+  if (currentStep.value === 'chatbot_creation') return 2
+  return 3
 })
 
-const onboardingStore = useOnboardingStore()
-
-const currentStep = computed(() => onboardingStore.currentStep)
-console.log(currentStep.value)
-const loading = ref(true)
-const isSubmitting = ref(false)
-const error = ref('')
-
-const companyForm = reactive({
-  company_name: '',
-  industry: '',
-  plan: 'free'
-})
-
-const chatbotForm = reactive({
-  name: '',
-  description: '',
-  type: 'general'
-})
+const handleLogout = async () => {
+  await authStore.logout()
+  router.push('/login')
+}
 
 const handleCompanySetup = async () => {
-  if (!companyForm.company_name || !companyForm.industry) {
-    error.value = 'Please fill in all required fields'
-    return
-  }
-
-  isSubmitting.value = true
+  setupLoading.value = true
   error.value = ''
-  
-  const result = await onboardingStore.setupCompany(companyForm)
-  isSubmitting.value = false
-  
-  if (!result.success) {
-    error.value = result.message || 'Setup failed. Please try again.'
+
+  try {
+    const result = await businessStore.createBusiness(companyForm.value)
+
+    if (result.success) {
+      await onboardingStore.getStatus()
+      currentStep.value = 'chatbot_creation'
+    } else {
+      error.value = result.message || 'Failed to setup company'
+    }
+  } catch (err) {
+    error.value = err.message || 'An error occurred'
+  } finally {
+    setupLoading.value = false
   }
 }
 
 const handleChatbotCreation = async () => {
-  if (!chatbotForm.name) {
-    error.value = 'Please enter a chatbot name'
-    return
-  }
-
-  isSubmitting.value = true
+  setupLoading.value = true
   error.value = ''
-  
-  const result = await onboardingStore.createChatbot(chatbotForm)
-  isSubmitting.value = false
-  
-  if (!result.success) {
-    error.value = result.message || 'Chatbot creation failed. Please try again.'
+
+  try {
+    const result = await chatbotStore.createChatbot(chatbotForm.value)
+
+    if (result.success) {
+      await onboardingStore.getStatus()
+      currentStep.value = 'completed'
+    } else {
+      error.value = result.message || 'Failed to create chatbot'
+    }
+  } catch (err) {
+    error.value = err.message || 'An error occurred'
+  } finally {
+    setupLoading.value = false
   }
 }
 
-const goToDashboard = async () => {
-  await navigateTo('/dashboard')
+// Rename to match template's "goBack" handler
+const goBack = () => {
+  if (currentStep.value === 'chatbot_creation') {
+    currentStep.value = 'business_setup'
+  }
 }
 
-// Initialize onboarding status
+// Single initialization lifecycle hook (async) to avoid nested onMounted calls
 onMounted(async () => {
   try {
+    // await authStore.initializeAuth()
+
+    if (!authStore.isLoggedIn) {
+      router.push('/login')
+      return
+    }
+
+    const user = authStore.user
+
+    // Set current step based on user's onboarding progress
+    if (user && user.onboarding_step) {
+      currentStep.value = user.onboarding_step
+    }
+
+    // Initialize onboarding status
     await onboardingStore.getStatus()
+
+    // If user already has a business, skip to chatbot creation
+    if (user && user.current_business_id && currentStep.value === 'business_setup') {
+      currentStep.value = 'chatbot_creation'
+    }
   } catch (err) {
-    console.error('Failed to get onboarding status:', err)
+    console.error('Failed to get onboarding status or initialize auth:', err)
     // If there's an error, redirect to login
-    router.push('/dashboard/login')
+    router.push('/login')
   } finally {
     loading.value = false
   }
 })
 </script>
-
-<!-- <style scoped>
-/* Custom radio button styling */
-input[type="radio"] {
-  @apply w-4 h-4 text-[#7F56D9] bg-gray-800 border-gray-600 focus:ring-purple-500 focus:ring-2;
-}
-</style> -->

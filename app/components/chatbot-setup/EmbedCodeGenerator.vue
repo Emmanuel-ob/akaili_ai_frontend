@@ -21,100 +21,39 @@
 
         <div v-if="embedCode" class="p-6">
             <!-- Basic Embed Code Section -->
-            <div class="mb-8">
+            <div class="mb-6">
                 <div class="flex items-center justify-between mb-3">
-                    <h4 class="text-lg font-medium text-gray-900">Basic Embed Code (Recommended)</h4>
+                    <h4 class="text-lg font-medium text-gray-900">Embed Code</h4>
                     <button @click="copyToClipboard(embedCode, 'basic')"
                         class="text-sm text-gray-700 hover:text-gray-900 font-medium border border-gray-300 px-3 py-1.5 hover:border-gray-400 transition-colors rounded">
                         {{ copied.basic ? '✓ Copied!' : 'Copy Code' }}
                     </button>
                 </div>
                 <CodeBlock :code="embedCode" language="html" />
-                <div class="mt-2 p-3 bg-blue-50 border border-blue-200 rounded text-blue-800 text-sm">
-                    <strong>Best for:</strong> Most websites. Works on any framework and loads asynchronously.
-                </div>
-            </div>
-
-            <!-- Implementation Methods -->
-            <div class="space-y-8">
-                <!-- Method 1: Anonymous Users -->
-                <div>
-                    <div class="flex items-center justify-between mb-3">
-                        <h4 class="text-lg font-medium text-gray-900">Method 1: Anonymous Users</h4>
-                        <button @click="copyToClipboard(embedCode, 'method1')"
-                            class="text-sm text-gray-700 hover:text-gray-900 font-medium border border-gray-300 px-3 py-1.5 hover:border-gray-400 transition-colors rounded">
-                            {{ copied.method1 ? '✓ Copied!' : 'Copy Code' }}
-                        </button>
-                    </div>
-                    <p class="text-gray-600 mb-4">Basic setup for anonymous users or when you don't need user
-                        identification.</p>
-                    <CodeBlock :code="embedCode" language="html" />
-                </div>
-
-                <!-- Method 2: With User Context -->
-                <div>
-                    <div class="flex items-center justify-between mb-3">
-                        <h4 class="text-lg font-medium text-gray-900">Method 2: With User Context</h4>
-                        <button @click="copyToClipboard(userContextExample, 'method2')"
-                            class="text-sm text-gray-700 hover:text-gray-900 font-medium border border-gray-300 px-3 py-1.5 hover:border-gray-400 transition-colors rounded">
-                            {{ copied.method2 ? '✓ Copied!' : 'Copy Code' }}
-                        </button>
-                    </div>
-                    <p class="text-gray-600 mb-4">Pass logged-in user information for personalized responses.</p>
-                    <CodeBlock :code="userContextExample" language="html" />
-                    <div class="mt-4 p-3 bg-blue-50 border border-blue-200 rounded text-blue-800 text-sm">
-                        <strong>Note:</strong> Replace PHP variables with your framework's equivalent
-                        (React: &#123;user.email&#125;, Vue: &#123;&#123; user.email &#125;&#125;, etc.)
-                    </div>
-                </div>
-
-                <!-- Method 3: With Authentication -->
-                <div>
-                    <div class="flex items-center justify-between mb-3">
-                        <h4 class="text-lg font-medium text-gray-900">Method 3: With Authentication Endpoint</h4>
-                        <button @click="copyToClipboard(authEndpointExample, 'method3')"
-                            class="text-sm text-gray-700 hover:text-gray-900 font-medium border border-gray-300 px-3 py-1.5 hover:border-gray-400 transition-colors rounded">
-                            {{ copied.method3 ? '✓ Copied!' : 'Copy Code' }}
-                        </button>
-                    </div>
-                    <p class="text-gray-600 mb-4">Enable authentication for sensitive queries. Configure your auth
-                        endpoint in chatbot settings.</p>
-
-                    <div class="mb-4 p-3 bg-blue-50 border border-blue-200 rounded text-blue-800 text-sm">
-                        <strong>Setup Required:</strong> First configure your authentication endpoint URL in the chatbot
-                        behavior settings.
-                    </div>
-
-                    <h5 class="font-medium text-gray-800 mb-2">1. Widget Code (same as Method 2):</h5>
-                    <CodeBlock :code="userContextExample" language="html" class="mb-4" />
-
-                    <h5 class="font-medium text-gray-800 mb-2">2. Create Authentication Endpoint on Your Server:</h5>
-                    <CodeBlock :code="authEndpointExample" language="javascript" />
-
-                    <div class="mt-4 p-3 bg-amber-50 border border-amber-200 rounded text-amber-800 text-sm">
-                        <strong>How it works:</strong> When users ask sensitive questions, the widget calls your
-                        configured auth endpoint to verify the user. Set the endpoint URL in chatbot behavior settings.
-                    </div>
+                <div class="mt-3 p-3 bg-blue-50 border border-blue-200 rounded text-blue-800 text-sm">
+                    <strong>Installation:</strong> Copy this code and paste it before the closing &lt;/body&gt; tag in
+                    your HTML.
                 </div>
             </div>
 
             <!-- Installation Steps -->
-            <div class="mt-8 p-4 border border-gray-200 rounded-lg bg-gray-50">
+            <div class="mt-6 p-4 border border-gray-200 rounded-lg bg-gray-50">
                 <h4 class="text-lg font-medium text-gray-900 mb-3">Installation Steps</h4>
                 <ol class="text-gray-700 space-y-2 list-decimal list-inside">
-                    <li>Copy the embed code above (Method 1 recommended for most cases)</li>
-                    <li>Add the code before the closing &lt;/body&gt; tag in your HTML</li>
-                    <li>If using Method 2, replace the PHP variables with your framework's syntax</li>
-                    <li>If using Method 3, create the authentication endpoint on your server</li>
-                    <li>Test the widget on your website</li>
+                    <li>Copy the embed code above</li>
+                    <li>Open your website's HTML file</li>
+                    <li>Paste the code before the closing &lt;/body&gt; tag</li>
+                    <li>Save and refresh your website</li>
+                    <li>The chat widget will appear in the bottom right corner</li>
                 </ol>
             </div>
 
             <!-- Widget Token Info -->
             <div class="mt-6 p-4 bg-gray-50 border border-gray-200 rounded-lg">
                 <h4 class="text-lg font-medium text-gray-900 mb-2">Widget Token</h4>
-                <div class="font-mono text-sm text-gray-600 mb-2 break-all bg-white p-2 rounded border">{{ widgetToken
-                    }}</div>
+                <div class="font-mono text-sm text-gray-600 mb-2 break-all bg-white p-2 rounded border">
+                    {{ widgetToken }}
+                </div>
                 <p class="text-sm text-gray-600">This token identifies your chatbot. Keep it secure and regenerate if
                     compromised.</p>
                 <p class="text-xs text-gray-500 mt-1">Generated: {{ tokenGeneratedAt }}</p>
@@ -123,8 +62,9 @@
             <!-- Performance Notice -->
             <div class="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg">
                 <h4 class="text-lg font-medium text-green-900 mb-2">✅ Optimized for Performance</h4>
-                <p class="text-sm text-green-800">Your widget script loads asynchronously and won't block your page
-                    rendering. The entire chat functionality is self-contained and works on any website or framework.
+                <p class="text-sm text-green-800">
+                    Your widget loads asynchronously and won't block your page rendering.
+                    Works on any website or framework.
                 </p>
             </div>
         </div>
@@ -168,14 +108,8 @@ const tokenGeneratedAt = ref('')
 const isGenerating = ref(false)
 const isRegenerating = ref(false)
 const copied = ref({
-    basic: false,
-    method1: false,
-    method2: false,
-    method3: false
+    basic: false
 })
-
-const userContextExample = ref('')
-const authEndpointExample = ref('')
 
 const loadEmbedCode = async () => {
     isGenerating.value = true
@@ -191,10 +125,8 @@ const loadEmbedCode = async () => {
         })
 
         if (response.success) {
-            widgetToken.value = response.widget_token
-            embedCode.value = response.embed_code
-            userContextExample.value = response.examples.with_user_data
-            authEndpointExample.value = response.examples.auth_endpoint_example
+            widgetToken.value = response.data.widget_token
+            embedCode.value = response.data.embed_code
             tokenGeneratedAt.value = new Date().toLocaleString()
         }
     } catch (error) {
@@ -222,10 +154,8 @@ const regenerateToken = async () => {
         })
 
         if (response.success) {
-            widgetToken.value = response.widget_token
-            embedCode.value = response.embed_code
-            userContextExample.value = response.examples.with_user_data
-            authEndpointExample.value = response.examples.auth_endpoint_example
+            widgetToken.value = response.data.widget_token
+            embedCode.value = response.data.embed_code
             tokenGeneratedAt.value = new Date().toLocaleString()
 
             alert('Token regenerated successfully! Please update your website with the new embed code.')
@@ -257,8 +187,7 @@ const copyToClipboard = async (text, type = 'basic') => {
     }
 }
 
-// Auto-load on mount
 onMounted(() => {
     loadEmbedCode()
-});
+})
 </script>

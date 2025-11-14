@@ -108,6 +108,11 @@
 </template>
 
 <script setup>
+
+definePageMeta({
+    'layout': 'dashboard'
+})
+
 import { ref, reactive, onMounted, computed } from 'vue'
 import BasicChatbotSetup from '~/components/chatbot-setup/BasicChatbotSetup.vue'
 import AppearanceChatbotSetup from '~/components/chatbot-setup/AppearanceChatbotSetup.vue'

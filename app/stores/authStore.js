@@ -1,37 +1,94 @@
-// stores/auth.js
+// stores/authStore.js
 import { defineStore } from 'pinia'
+
+// Centralized cookie configuration
+const COOKIE_CONFIG = {
+    maxAge: 60 * 60 * 24 * 7, // 7 days
+    path: '/',
+    sameSite: 'lax',
+    secure: process.env.NODE_ENV === 'production'
+}
 
 export const useAuthStore = defineStore('auth', {
     state: () => ({
         user: null,
         token: null,
-        isLoggedIn: false
+        isLoggedIn: false,
+        currentBusinessId: null,
     }),
+
+    getters: {
+        isAuthenticated: (state) => state.isLoggedIn && !!state.token && !!state.user,
+        userName: (state) => state.user?.name || '',
+        userEmail: (state) => state.user?.email || '',
+        needsOnboarding: (state) => state.user && !state.user.onboarding_completed,
+        needsBusinessSelection: (state) => state.user && !state.user.current_business_id,
+    },
 
     actions: {
         async register(userData) {
             const config = useRuntimeConfig()
             try {
-                return await $fetch(`${config.public.apiBase}/api/register`, {
+                const data = await $fetch(`${config.public.apiBase}/api/register`, {
                     method: 'POST',
-                    body: userData
+                    body: userData,
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
                 })
+
+                // Set auth and mark as needing onboarding
+                this.setAuth(data.token, {
+                    ...data.data.user,
+                    onboarding_completed: false
+                })
+
+                return { success: true, data }
             } catch (error) {
-                throw error.data || error
+                console.error('[AUTH STORE] Registration error:', error)
+                return {
+                    success: false,
+                    error: error.data?.message || error.message || 'Registration failed'
+                }
             }
         },
 
         async login(credentials) {
             const config = useRuntimeConfig()
             try {
-                const data = await $fetch(`${config.public.apiBase}/api/login`, {
+                const response = await $fetch(`${config.public.apiBase}/api/login`, {
                     method: 'POST',
-                    body: credentials
+                    body: credentials,
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
                 })
-                this.setAuth(data.token, data.user)
-                return data
+
+                // Handle different response formats
+                const userData = response.data?.user || response.user
+                const token = response.token
+
+                if (!userData || !token) {
+                    throw new Error('Invalid response format from server')
+                }
+
+                this.setAuth(token, userData)
+
+                console.log('[AUTH STORE] Login successful:', {
+                    userId: userData.id,
+                    email: userData.email,
+                    businessId: userData.current_business_id
+                })
+
+                return { success: true, data: response }
             } catch (error) {
-                throw error.data || error
+                console.error('[AUTH STORE] Login error:', error)
+                return {
+                    success: false,
+                    error: error.data?.message || error.message || 'Login failed'
+                }
             }
         },
 
@@ -39,10 +96,9 @@ export const useAuthStore = defineStore('auth', {
             const config = useRuntimeConfig()
             try {
                 const data = await $fetch(`${config.public.apiBase}/api/auth/${provider}`)
-                // Open in popup or redirect
-                const popup = window.open(data.url, 'social-auth', 'width=600,height=600')
 
-                // Listen for the callback
+                const popup = window.open(data.data.url, 'social-auth', 'width=600,height=600')
+
                 return new Promise((resolve, reject) => {
                     const checkClosed = setInterval(() => {
                         if (popup.closed) {
@@ -51,7 +107,6 @@ export const useAuthStore = defineStore('auth', {
                         }
                     }, 1000)
 
-                    // Listen for message from popup
                     const handleMessage = (event) => {
                         if (event.origin !== window.location.origin) return
 
@@ -62,8 +117,8 @@ export const useAuthStore = defineStore('auth', {
 
                             this.setAuth(event.data.token, event.data.user)
                             resolve({
+                                success: true,
                                 ...event.data,
-                                isNewUser: !event.data.user.business_id, // Determine if user needs onboarding
                                 verified: event.data.verified
                             })
                         } else if (event.data.type === 'social-auth-error') {
@@ -77,75 +132,95 @@ export const useAuthStore = defineStore('auth', {
                     window.addEventListener('message', handleMessage)
                 })
             } catch (error) {
-                throw error.data || error
+                console.error('[AUTH STORE] Social auth error:', error)
+                return {
+                    success: false,
+                    error: error.data?.message || error.message || 'Social authentication failed'
+                }
             }
-        }   ,
+        },
 
         setAuth(token, user) {
+            console.log('[AUTH STORE] Setting auth with token:', token ? 'exists' : 'missing')
+
             this.token = token
             this.user = user
             this.isLoggedIn = true
+            this.currentBusinessId = user?.current_business_id || null
 
-            // Use cookies for SSR compatibility
-            const tokenCookie = useCookie('auth_token', {
-                httpOnly: false,
-                secure: true,
-                sameSite: 'lax',
-                maxAge: 60 * 60 * 24 * 7 // 7 days
-            })
-            const userCookie = useCookie('user', {
-                httpOnly: false,
-                secure: true,
-                sameSite: 'lax',
-                maxAge: 60 * 60 * 24 * 7
-            })
+            // Set cookie with consistent configuration
+            this.setTokenCookie(token)
 
+            console.log('[AUTH STORE] Auth state updated:', {
+                userId: user?.id,
+                email: user?.email,
+                businessId: this.currentBusinessId,
+                onboardingCompleted: user?.onboarding_completed
+            })
+        },
+
+        setTokenCookie(token) {
+            // Use consistent cookie configuration
+            const tokenCookie = useCookie('auth_token', COOKIE_CONFIG)
             tokenCookie.value = token
-            userCookie.value = user
+            console.log('[AUTH STORE] Cookie set with config:', COOKIE_CONFIG)
         },
 
         async logout() {
             const config = useRuntimeConfig()
 
-            try {
-                await $fetch(`${config.public.apiBase}/api/logout`, {
-                    method: 'POST',
-                    headers: { Authorization: `Bearer ${this.token}` }
-                })
-            } catch (error) {
-                console.log(error)
-                // Continue with logout even if API call fails
+            if (this.token) {
+                try {
+                    await $fetch(`${config.public.apiBase}/api/logout`, {
+                        method: 'POST',
+                        headers: {
+                            Authorization: `Bearer ${this.token}`,
+                            'Accept': 'application/json'
+                        }
+                    })
+                    console.log('[AUTH STORE] Logout API call successful')
+                } catch (error) {
+                    console.error('[AUTH STORE] Logout API error:', error)
+                }
             }
 
-            this.user = null
-            this.token = null
-            this.isLoggedIn = false
+            this.clearAuth()
 
-            const tokenCookie = useCookie('auth_token')
-            const userCookie = useCookie('user')
-            tokenCookie.value = null
-            userCookie.value = null
+            // Navigate to login
+            await navigateTo('/login')
         },
 
         clearAuth() {
+            console.log('[AUTH STORE] Clearing auth state')
+
             this.user = null
             this.token = null
             this.isLoggedIn = false
+            this.currentBusinessId = null
 
-            const tokenCookie = useCookie('auth_token')
-            const userCookie = useCookie('user')
+            // Clear cookie with same configuration
+            const tokenCookie = useCookie('auth_token', COOKIE_CONFIG)
             tokenCookie.value = null
-            userCookie.value = null
         },
 
-        initializeAuth() {
-            const tokenCookie = useCookie('auth_token')
-            const userCookie = useCookie('user')
+        // Update user data (used after profile updates)
+        updateUser(userData) {
+            this.user = { ...this.user, ...userData }
+            this.currentBusinessId = userData.current_business_id || this.currentBusinessId
 
-            if (tokenCookie.value && userCookie.value) {
-                this.token = tokenCookie.value
-                this.user = userCookie.value
-                this.isLoggedIn = true
+            console.log('[AUTH STORE] User data updated:', {
+                userId: this.user?.id,
+                businessId: this.currentBusinessId
+            })
+        },
+
+        // Switch business (update current_business_id)
+        switchBusiness(businessId) {
+            if (this.user) {
+                this.user.current_business_id = businessId
+                this.currentBusinessId = businessId
+
+                console.log('[AUTH STORE] Business switched:', businessId)
             }
         }
     }

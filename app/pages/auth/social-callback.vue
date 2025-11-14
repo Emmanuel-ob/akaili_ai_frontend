@@ -1,67 +1,116 @@
-<!-- pages/auth/social-callback.vue -->
 <template>
-  <div class="min-h-screen bg-white flex items-center justify-center">
+  <div class="min-h-screen flex items-center justify-center bg-gray-50">
     <div class="text-center">
-      <div class="animate-spin rounded-full h-32 w-32 border-b-2 border-purple-600 mx-auto"/>
-      <p class="mt-4 text-gray-600">Completing authentication...</p>
+      <div class="w-16 h-16 border-4 border-purple-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"
+        aria-label="Loading"></div>
+      <p class="text-gray-600" role="status" aria-live="polite">{{ statusMessage }}</p>
     </div>
   </div>
 </template>
 
 <script setup>
-// This page handles the social auth callback
+definePageMeta({
+  layout: 'empty',
+  middleware: [] // No middleware, we'll handle auth manually
+})
+
+const route = useRoute()
+const authStore = useAuthStore()
+const statusMessage = ref('Processing authentication...')
+
 onMounted(async () => {
-  const route = useRoute()
-  
-  // Check if we have auth data in the URL or handle the callback
-  if (route.query.token && route.query.user) {
-    // Send data to parent window (popup opener)
+  try {
+    const token = route.query.token
+    const userParam = route.query.user
+    const verified = route.query.verified === 'true'
+
+    if (!token || !userParam) {
+      statusMessage.value = 'Invalid authentication data'
+
+      // Send error to opener
+      if (window.opener) {
+        window.opener.postMessage({
+          type: 'social-auth-error',
+          message: 'Invalid authentication data'
+        }, window.location.origin)
+        window.close()
+      } else {
+        // If not in popup, redirect to login
+        setTimeout(() => {
+          navigateTo('/login?error=' + encodeURIComponent('Invalid authentication data'))
+        }, 2000)
+      }
+      return
+    }
+
+    // Parse user data
+    let user
+    try {
+      user = JSON.parse(decodeURIComponent(userParam))
+    } catch (parseError) {
+      console.error('Failed to parse user data:', parseError)
+      throw new Error('Invalid user data format')
+    }
+
+    // Validate user data has required fields
+    if (!user || !user.id || !user.email) {
+      throw new Error('Incomplete user data')
+    }
+
+    statusMessage.value = 'Setting up your account...'
+
+    // Set auth in store
+    authStore.setAuth(token, user)
+
+    // Verify auth was set correctly
+    if (!authStore.isLoggedIn || !authStore.user) {
+      throw new Error('Failed to set authentication')
+    }
+
+    statusMessage.value = 'Redirecting...'
+
+    // If in popup, send success message to opener
     if (window.opener) {
       window.opener.postMessage({
         type: 'social-auth-success',
-        token: route.query.token,
-        user: JSON.parse(decodeURIComponent(route.query.user)),
-        verified: route.query.verified === 'true'
+        token: token,
+        user: user,
+        verified: verified
       }, window.location.origin)
-      window.close()
+
+      // Close popup after a short delay
+      setTimeout(() => {
+        window.close()
+      }, 500)
     } else {
-      // Not in popup, redirect normally
-      const authStore = useAuthStore()
-      const user = JSON.parse(decodeURIComponent(route.query.user))
-     await  authStore.setAuth(route.query.token, user)
-      
-      // If this is email verification, go to onboarding
-      if (route.query.verified === 'true') {
+      // If not in popup, redirect based on user state
+      await nextTick()
+
+      if (!user.onboarding_completed) {
         navigateTo('/dashboard/onboarding')
+      } else if (!user.current_business_id) {
+        navigateTo('/select-business')
       } else {
-        // For social auth, check if user needs onboarding
-        if (!user.business_id) {
-          navigateTo('/dashboard/onboarding')
-        } else {
-          navigateTo('/dashboard')
-        }
+        navigateTo('/dashboard')
       }
     }
-  } else if (route.query.error) {
+  } catch (error) {
+    console.error('Social auth callback error:', error)
+    statusMessage.value = 'Authentication failed'
+
     if (window.opener) {
       window.opener.postMessage({
         type: 'social-auth-error',
-        message: route.query.error
+        message: error.message || 'Authentication failed'
       }, window.location.origin)
-      window.close()
+
+      setTimeout(() => {
+        window.close()
+      }, 2000)
     } else {
-      navigateTo('/login?error=' + encodeURIComponent(route.query.error))
-    }
-  } else {
-    // No valid callback data
-    if (window.opener) {
-      window.opener.postMessage({
-        type: 'social-auth-error',
-        message: 'Authentication failed'
-      }, window.location.origin)
-      window.close()
-    } else {
-      navigateTo('/login?error=auth_failed')
+      setTimeout(() => {
+        navigateTo('/login?error=' + encodeURIComponent(error.message || 'Authentication failed'))
+      }, 2000)
     }
   }
 })
