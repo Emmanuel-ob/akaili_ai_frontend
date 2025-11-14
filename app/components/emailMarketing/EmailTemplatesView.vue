@@ -10,12 +10,12 @@
         v-model="searchTerm" 
         type="text" 
         placeholder="Search templates by name, subject, or content..." 
-        class="p-2 text-sm sm:text-base border border-gray-300 rounded-md w-full shadow-sm focus:ring-[#7F56D9] focus:border-[#7F56D9]"
+        class="p-2 text-sm sm:text-base border border-gray-300 rounded-md w-full shadow-sm focus:ring-[#9E4CFF] focus:border-[#9E4CFF]"
       />
 
       <select 
         v-model="selectedCategory" 
-        class="p-2 text-sm sm:text-base border border-gray-300 rounded-md shadow-sm focus:ring-[#7F56D9] focus:border-[#7F56D9]"
+        class="p-2 text-sm sm:text-base border border-gray-300 rounded-md shadow-sm focus:ring-[#9E4CFF] focus:border-[#9E4CFF]"
       >
         <option value="">All Categories</option>
         <option v-for="tag in uniqueTags" :key="tag" :value="tag" class="capitalize">
@@ -32,7 +32,7 @@
     <!-- No templates -->
     <div v-else-if="filteredTemplates.length === 0" class="text-center py-12 text-gray-500">
       <p class="text-xl">No templates found matching your criteria. 😔</p>
-      <button @click="searchTerm=''; selectedCategory=''" class="mt-4 text-[#7F56D9] hover:underline">
+      <button @click="searchTerm=''; selectedCategory=''" class="mt-4 text-[#9E4CFF] hover:underline">
         Clear Search/Filters
       </button>
     </div>
@@ -46,7 +46,7 @@
         v-for="t in filteredTemplates"
         :key="t.id"
         class="bg-white rounded-xl p-3 sm:p-4 shadow-lg border border-gray-100
-               flex flex-col justify-between hover:border-[#7F56D9] transition duration-300"
+               flex flex-col justify-between hover:border-[#9E4CFF] transition duration-300"
       >
         <!-- HTML Preview -->
         <div class="relative mb-3 sm:mb-4">
@@ -94,7 +94,7 @@
         <div class="mt-3 sm:mt-4 flex justify-between items-center space-x-2">
           <button
             @click="proceedToEditor(t)"
-            class="flex-1 text-xs sm:text-sm text-white bg-[#7F56D9] hover:bg-[#6c48c4]
+            class="flex-1 text-xs sm:text-sm text-white bg-[#9E4CFF] hover:bg-[#6c48c4]
                    px-3 sm:px-4 py-2 rounded-lg font-medium transition duration-200"
           >
             Use Template
@@ -102,8 +102,8 @@
 
           <button
             @click="openPreview(t)"
-            class="px-2 sm:px-3 py-2 text-xs sm:text-sm text-[#7F56D9]
-                   border border-[#7F56D9] hover:bg-[#F2F4F7] rounded-lg"
+            class="px-2 sm:px-3 py-2 text-xs sm:text-sm text-[#9E4CFF]
+                   border border-[#9E4CFF] hover:bg-[#F2F4F7] rounded-lg"
           >
             Preview
           </button>

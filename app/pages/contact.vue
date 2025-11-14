@@ -3,7 +3,7 @@
     <div class="max-w-7xl pt-19 mx-auto px-6 lg:px-8">
       <!-- Header -->
       <div class="text-center mb-12">
-        <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight" style="background: linear-gradient(90deg,#7F56D9,#ffffff); -webkit-background-clip: text; background-clip: text; color: transparent;">
+        <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight" style="background: linear-gradient(90deg,#9E4CFF,#ffffff); -webkit-background-clip: text; background-clip: text; color: transparent;">
           Get in Touch
         </h1>
         <p class="mt-3 text-lg text-gray-300 max-w-2xl mx-auto">Have a question about our AI chatbots or want a demo? Fill the form or reach us directly — we typically respond within one business day.</p>

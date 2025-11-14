@@ -28,11 +28,29 @@
         </div>
 
         <div>
-          <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
-          <input id="password" v-model="form.password" type="password" required autocomplete="current-password"
-            class="w-full px-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-            placeholder="Enter your password" aria-required="true">
-        </div>
+  <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+
+  <div class="relative">
+    <input
+      v-model="form.password"
+      :type="showPassword ? 'text' : 'password'"
+      required
+      minlength="8"
+      class="w-full px-3 py-3 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+      placeholder="Create a password (min. 8 characters)"
+    />
+
+    <!-- Toggle Icon -->
+    <button
+      type="button"
+      @click="showPassword = !showPassword"
+      class="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-gray-700"
+    >
+      <Eye v-if="!showPassword" class="w-5 h-5" />
+      <EyeOff v-else class="w-5 h-5" />
+    </button>
+  </div>
+</div>
 
         <div class="flex items-center justify-between">
           <div class="flex items-center">
@@ -43,13 +61,13 @@
             </label>
           </div>
           <NuxtLink to="/forgot-password"
-            class="text-sm font-medium text-[#7F56D9] hover:text-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 rounded">
+            class="text-sm font-medium text-[#9E4CFF] hover:text-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 rounded">
             Forgot password?
           </NuxtLink>
         </div>
 
         <button type="submit" :disabled="loading"
-          class="w-full bg-[#7F56D9] text-white py-3 px-4 rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          class="w-full bg-[#9E4CFF] text-white py-3 px-4 rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           :aria-busy="loading">
           {{ loading ? 'Signing in...' : 'Sign In' }}
         </button>
@@ -77,7 +95,7 @@
       <p class="mt-6 text-center text-sm text-gray-600">
         Don't have an account?
         <NuxtLink to="/register"
-          class="font-medium text-[#7F56D9] hover:text-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 rounded">
+          class="font-medium text-[#9E4CFF] hover:text-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 rounded">
           Sign up
         </NuxtLink>
       </p>
@@ -86,6 +104,7 @@
 </template>
 
 <script setup>
+import { Eye, EyeOff } from "lucide-vue-next";
 definePageMeta({
   layout: 'empty',
   middleware: 'guest'
@@ -106,6 +125,7 @@ const success = ref('')
 const verificationExpired = ref(false)
 const expiredEmail = ref('')
 const resendLoading = ref(false)
+const showPassword = ref(false)
 
 const handleLogin = async () => {
   loading.value = true

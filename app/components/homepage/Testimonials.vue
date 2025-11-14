@@ -2,7 +2,7 @@
   <section >
     <div class="max-w-7xl mx-auto px-6">
       <div class="text-center mb-8">
-          <h2 class="text-4xl sm:text-5xl font-extrabold tracking-tight bg-clip-text text-transparent" style="background-image: linear-gradient(90deg,#7F56D9, #ffffff);">
+          <h2 class="text-4xl sm:text-5xl font-extrabold tracking-tight bg-clip-text text-transparent" style="background-image: linear-gradient(90deg,#9E4CFF, #ffffff);">
           Customer Testimonies
         </h2>
         <p class="main_subheader">Join thousands of satisfied customers who've transformed their customer support</p>

@@ -19,7 +19,7 @@
     <div>
         <NuxtImg src="/product_icon.png" format="webp" class="w-20 mb-6" alt="Wxeli ai Logo"  data-aos="zoom-in-right" />
       <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight" data-aos="zoom-in-right">
-       Wxeli ai
+       Xeli ai
         
       </h1>
 

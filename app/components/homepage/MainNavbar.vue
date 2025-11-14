@@ -58,7 +58,7 @@ onUnmounted(() => {
     <div class="flex items-center h-full md:w-[95%] lg:w-[95%] justify-between sm:w-[80%] mx-[2rem]">
       <!-- LOGO -->
       <NuxtLink to="/" class="font-bold text-2xl sm:text-3xl" aria-label="Xeli AI Home">
-        <NuxtImg width="150" height="40" src="/Logo.png" format="webp" alt="Xeli AI Logo" loading="eager" />
+        <NuxtImg width="100" height="80" src="/logo-small.png" format="webp" alt="Xeli AI Logo" loading="eager" />
       </NuxtLink>
 
       <!-- Desktop Nav -->
@@ -133,7 +133,7 @@ onUnmounted(() => {
 
     <!-- Mobile Nav Drawer -->
     <aside
-      class="fixed top-0 left-0 h-full w-[80%] sm:w-[60%] bg-[#7F56D9] text-white flex flex-col space-y-10 pt-20 pl-12 transform transition-transform duration-500 z-[1050]"
+      class="fixed top-0 left-0 h-full w-[80%] sm:w-[60%] bg-[#9E4CFF] text-white flex flex-col space-y-10 pt-20 pl-12 transform transition-transform duration-500 z-[1050]"
       :class="navOpen ? 'translate-x-0' : '-translate-x-full'" role="dialog" aria-modal="true"
       aria-label="Mobile navigation">
       <!-- Close Button -->

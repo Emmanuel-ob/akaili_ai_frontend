@@ -13,7 +13,7 @@
           <input 
             v-model="form.name" 
             type="text" 
-            class="w-full border rounded-lg px-3 py-2 focus:ring-[#7F56D9]" 
+            class="w-full border rounded-lg px-3 py-2 focus:ring-[#9E4CFF]" 
             required 
           />
         </div>
@@ -22,7 +22,7 @@
           <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
           <textarea 
             v-model="form.description" 
-            class="w-full border rounded-lg px-3 py-2 focus:ring-[#7F56D9]" 
+            class="w-full border rounded-lg px-3 py-2 focus:ring-[#9E4CFF]" 
             placeholder="Write a short description of the campaign..."
           ></textarea>
         </div>
@@ -37,7 +37,7 @@
           </button>
           <button 
             type="submit" 
-            class="bg-[#7F56D9] text-white px-5 py-2 rounded-lg hover:bg-[#6C47B5] transition"
+            class="bg-[#9E4CFF] text-white px-5 py-2 rounded-lg hover:bg-[#6C47B5] transition"
           >
             Create
           </button>

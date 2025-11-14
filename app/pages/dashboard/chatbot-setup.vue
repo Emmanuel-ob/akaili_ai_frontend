@@ -31,7 +31,7 @@
         <header class="bg-white px-6 py-4">
             <div class="flex justify-between items-center">
                 <div>
-                    <h1 class="text-[#7F56D9] text-2xl font-bold">
+                    <h1 class="text-[#9E4CFF] text-2xl font-bold">
                         {{ isEditing ? 'Edit Chatbot' : 'Create Chatbot' }}
                     </h1>
                     <p class="text-sm lg:text-base text-[#6B7280]">

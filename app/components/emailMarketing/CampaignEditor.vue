@@ -6,19 +6,19 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
       <!-- Column 1: Settings -->
       <div class="lg:col-span-1 bg-white p-6 rounded-xl shadow-lg space-y-5 border border-gray-200">
-        <h2 class="text-xl font-bold text-[#7F56D9] mb-4">The Campaign Facts</h2>
+        <h2 class="text-xl font-bold text-[#9E4CFF] mb-4">The Campaign Facts</h2>
 
         <form @submit.prevent="doTheSaving" class="space-y-4">
           <!-- Campaign Name -->
           <div>
             <label class="font-semibold text-gray-700 block mb-1">Name of the Campaign</label>
-            <input v-model="emailData.name" class="w-full border border-gray-300 rounded-lg p-3 text-sm focus:ring-[#7F56D9] focus:border-[#7F56D9]" required />
+            <input v-model="emailData.name" class="w-full border border-gray-300 rounded-lg p-3 text-sm focus:ring-[#9E4CFF] focus:border-[#9E4CFF]" required />
           </div>
 
           <!-- Subject -->
           <div>
             <label class="font-semibold text-gray-700 block mb-1">Subject Line (IMPORTANT)</label>
-            <input v-model="emailData.subject" class="w-full border border-gray-300 rounded-lg p-3 text-sm focus:ring-[#7F56D9] focus:border-[#7F56D9]" required />
+            <input v-model="emailData.subject" class="w-full border border-gray-300 rounded-lg p-3 text-sm focus:ring-[#9E4CFF] focus:border-[#9E4CFF]" required />
           </div>
 
           <!-- From -->
@@ -52,7 +52,7 @@
             <!-- Choose List -->
             <div>
               <label class="font-semibold text-gray-700 block mb-1">Select List</label>
-              <select v-model="selectedListId" class="w-full border border-gray-300 rounded-lg p-3 text-sm focus:ring-[#7F56D9] focus:border-[#7F56D9] bg-white">
+              <select v-model="selectedListId" class="w-full border border-gray-300 rounded-lg p-3 text-sm focus:ring-[#9E4CFF] focus:border-[#9E4CFF] bg-white">
                 <option value="">-- choose list --</option>
                 <option v-for="l in lists" :key="l.list_id" :value="l.list_id">
                   {{ l.list_name }} ({{ l.subscribers }} subs)
@@ -71,14 +71,14 @@
               <div class="border border-gray-300 rounded-lg p-3 bg-gray-50 max-h-48 overflow-y-auto shadow-inner">
                 <!-- All subscribers -->
                 <label class="flex items-center gap-2 text-sm mb-2 font-medium border-b pb-1">
-                  <input type="checkbox" :value="ALL_TAG" v-model="selectedTags" class="text-[#7F56D9] focus:ring-[#7F56D9] rounded" /> 
+                  <input type="checkbox" :value="ALL_TAG" v-model="selectedTags" class="text-[#9E4CFF] focus:ring-[#9E4CFF] rounded" /> 
                   <span>All subscribers ({{ selectedList?.subscribers ?? '—' }})</span>
                 </label>
 
                 <!-- Individual Tags -->
                 <div v-if="availableTags.length" class="mt-2">
-                  <label v-for="tag in availableTags" :key="tag" class="flex items-center gap-2 text-sm mb-1.5 cursor-pointer hover:text-[#7F56D9]">
-                    <input type="checkbox" :value="tag" v-model="selectedTags" class="text-[#7F56D9] focus:ring-[#7F56D9] rounded" />
+                  <label v-for="tag in availableTags" :key="tag" class="flex items-center gap-2 text-sm mb-1.5 cursor-pointer hover:text-[#9E4CFF]">
+                    <input type="checkbox" :value="tag" v-model="selectedTags" class="text-[#9E4CFF] focus:ring-[#9E4CFF] rounded" />
                     <span class="capitalize">{{ tag }}</span>
                   </label>
                 </div>
@@ -130,7 +130,7 @@
           <button type="button" @click="goBackHome" class="px-5 py-3 border border-gray-300 text-gray-700 font-medium rounded-xl hover:bg-gray-100 transition-colors shadow-sm">
             Cancel and Forget
           </button>
-          <button type="button" @click="doTheSaving" class="px-5 py-3 bg-[#7F56D9] text-white font-medium rounded-xl hover:bg-[#6C47B5] transition-colors shadow-md">
+          <button type="button" @click="doTheSaving" class="px-5 py-3 bg-[#9E4CFF] text-white font-medium rounded-xl hover:bg-[#6C47B5] transition-colors shadow-md">
             Slam that Save/Schedule Button
           </button>
         </div>

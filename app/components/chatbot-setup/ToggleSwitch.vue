@@ -10,7 +10,7 @@
     <!-- track -->
     <span
       class="relative w-[70px] h-[32px] rounded-full transition-colors duration-300 ease-in-out"
-      :class="internalChecked ? 'bg-[#7F56D9]' : 'bg-[#cccccc]'"
+      :class="internalChecked ? 'bg-[#9E4CFF]' : 'bg-[#cccccc]'"
       :style="trackStyle"
       aria-hidden="true"
     >

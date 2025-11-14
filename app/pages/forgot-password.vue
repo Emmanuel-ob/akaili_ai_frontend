@@ -20,7 +20,7 @@
                 </div>
 
                 <button type="submit" :disabled="loading"
-                    class="w-full bg-[#7F56D9] text-white py-3 px-4 rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+                    class="w-full bg-[#9E4CFF] text-white py-3 px-4 rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
                     {{ loading ? 'Sending...' : 'Send Reset Link' }}
                 </button>
             </form>
@@ -36,7 +36,7 @@
                     If an account exists with that email, you'll receive a password reset link shortly.
                 </p>
                 <button @click="emailSent = false; email = ''; error = ''"
-                    class="text-[#7F56D9] hover:text-purple-700 font-medium">
+                    class="text-[#9E4CFF] hover:text-purple-700 font-medium">
                     Send another link
                 </button>
             </div>
@@ -49,7 +49,7 @@
             <!-- Back to Login -->
             <p class="mt-6 text-center text-sm text-gray-600">
                 Remember your password?
-                <NuxtLink to="/login" class="font-medium text-[#7F56D9] hover:text-purple-500">
+                <NuxtLink to="/login" class="font-medium text-[#9E4CFF] hover:text-purple-500">
                     Sign in
                 </NuxtLink>
             </p>

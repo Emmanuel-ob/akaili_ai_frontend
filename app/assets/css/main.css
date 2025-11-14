@@ -28,7 +28,7 @@ html, body {
 }
 
 .nav_primary_btn {
-  @apply bg-[#7F56D9] hover:bg-purple-700;
+  @apply bg-[#9E4CFF] hover:bg-purple-700;
 }
 .font_color {
   @apply text-[#111827];
@@ -40,5 +40,5 @@ html, body {
   @apply mt-5 text-xl text-gray-500;
 }
 .active_chatbot_setup{
-  @apply bg-purple-100 text-[#7F56D9] rounded-xl hover:bg-[#7F56D9] hover:text-purple-100;
+  @apply bg-purple-100 text-[#9E4CFF] rounded-xl hover:bg-[#9E4CFF] hover:text-purple-100;
 }

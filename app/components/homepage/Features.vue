@@ -16,8 +16,8 @@ const featuresList = features
       <svg class="absolute -left-20 top-8 w-[600px] h-[600px] opacity-30" viewBox="0 0 600 600" fill="none" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <radialGradient id="g1" cx="0.5" cy="0.5">
-            <stop offset="0%" stop-color="#7F56D9" stop-opacity="0.45" />
-            <stop offset="100%" stop-color="#7F56D9" stop-opacity="0" />
+            <stop offset="0%" stop-color="#9E4CFF" stop-opacity="0.45" />
+            <stop offset="100%" stop-color="#9E4CFF" stop-opacity="0" />
           </radialGradient>
         </defs>
         <rect width="600" height="600" fill="url(#g1)" />
@@ -26,8 +26,8 @@ const featuresList = features
       <svg class="absolute right-0 -bottom-24 w-[700px] h-[700px] opacity-20" viewBox="0 0 700 700" fill="none" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <radialGradient id="g2" cx="0.5" cy="0.5">
-            <stop offset="0%" stop-color="#7F56D9" stop-opacity="0.35" />
-            <stop offset="100%" stop-color="#7F56D9" stop-opacity="0" />
+            <stop offset="0%" stop-color="#9E4CFF" stop-opacity="0.35" />
+            <stop offset="100%" stop-color="#9E4CFF" stop-opacity="0" />
           </radialGradient>
         </defs>
         <rect width="700" height="700" fill="url(#g2)" />
@@ -36,7 +36,7 @@ const featuresList = features
 
     <div class="relative max-w-7xl mx-auto px-6">
       <div class="text-center mb-12">
-        <h2 class="text-4xl sm:text-5xl font-extrabold tracking-tight bg-clip-text text-transparent" style="background-image: linear-gradient(90deg,#7F56D9, #ffffff);">
+        <h2 class="text-4xl sm:text-5xl font-extrabold tracking-tight bg-clip-text text-transparent" style="background-image: linear-gradient(90deg,#9E4CFF, #ffffff);">
           Powerful Features
         </h2>
         <p class="mt-3 text-lg text-gray-300">Everything you need to create intelligent, responsive chatbots</p>

@@ -11,7 +11,7 @@
         :class="[
           'px-4 py-2 text-sm font-semibold rounded-t-lg transition-colors duration-200',
           whichTabIsActive === tab
-            ? 'bg-white text-[#6C47B5] border-t-2 border-x-2 border-b-0 border-[#7F56D9]'
+            ? 'bg-white text-[#6C47B5] border-t-2 border-x-2 border-b-0 border-[#9E4CFF]'
             : 'text-gray-600 hover:bg-gray-100'
         ]"
       >
@@ -34,7 +34,7 @@
 
       <!-- LINKS Tab -->
       <div v-show="whichTabIsActive === 'links'" class="text-gray-700">
-        <p class="mb-4 text-md font-semibold text-[#7F56D9]">Links You Can Edit:</p>
+        <p class="mb-4 text-md font-semibold text-[#9E4CFF]">Links You Can Edit:</p>
 
         <div v-if="foundLinks.length">
           <div
@@ -78,7 +78,7 @@
           v-model="currentHtmlCopy"
           @input="saveDraftAnyway"
           rows="15"
-          class="w-full border border-gray-400 rounded-lg p-3 font-mono text-sm resize-none focus:border-[#7F56D9] focus:ring-[#7F56D9]"
+          class="w-full border border-gray-400 rounded-lg p-3 font-mono text-sm resize-none focus:border-[#9E4CFF] focus:ring-[#9E4CFF]"
         ></textarea>
       </div>
     </div>
@@ -96,7 +96,7 @@
         </button>
         <button
           @click="tryToSaveChanges"
-          class="px-5 py-2 text-sm bg-[#6C47B5] text-white rounded-lg hover:bg-[#7F56D9] transition-colors shadow-md font-medium"
+          class="px-5 py-2 text-sm bg-[#6C47B5] text-white rounded-lg hover:bg-[#9E4CFF] transition-colors shadow-md font-medium"
         >
           Finalize Changes
         </button>

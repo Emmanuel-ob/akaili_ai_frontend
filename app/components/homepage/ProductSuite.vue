@@ -4,18 +4,19 @@ import {productsuite} from '../../utils/data'
 
 <template>
 <section class="relative overflow-hidden py-20" style="background:#111827;">
+    <!-- #7F56D9 -->
 <!-- background accents -->
 <div class="pointer-events-none absolute inset-0 -z-10">
 <div class="absolute inset-0" style="background: linear-gradient(180deg, rgba(127,86,217,0.05), rgba(17,24,39,0.5)); mix-blend-mode: overlay;"></div>
 <!-- purple glow spots -->
-<div class="absolute top-20 left-1/4 w-[500px] h-[500px] rounded-full bg-[#7F56D9] opacity-20 blur-3xl"></div>
-<div class="absolute bottom-10 right-1/4 w-[600px] h-[600px] rounded-full bg-[#7F56D9] opacity-10 blur-3xl"></div>
+<div class="absolute top-20 left-1/4 w-[500px] h-[500px] rounded-full bg-[#9E4CFF] opacity-20 blur-3xl"></div>
+<div class="absolute bottom-10 right-1/4 w-[600px] h-[600px] rounded-full bg-[#9E4CFF] opacity-10 blur-3xl"></div>
 </div>
 
 
 <div class="relative w-[95%] flex flex-col items-center mx-auto px-6 lg:px-8">
 <div class="text-center max-w-3xl mx-auto mb-14">
-<h2 class="text-4xl sm:text-5xl font-extrabold bg-clip-text text-transparent" style="background-image:linear-gradient(90deg,#7F56D9, #ffffff);">AI-Powered Product Suite</h2>
+<h2 class="text-4xl sm:text-5xl font-extrabold bg-clip-text text-transparent" style="background-image:linear-gradient(90deg,#9E4CFF, #ffffff);">AI-Powered Product Suite</h2>
 <p class="mt-4 text-lg text-gray-300">
 Explore a suite of AI-powered tools designed to streamline support,
 simplify operations, and scale your business effortlessly
@@ -35,7 +36,7 @@ data-aos="zoom-in-up"
 <div class="relative w-full h-60 flex items-center justify-center overflow-hidden">
 <img :src="`/${p.image}`" :alt="p.title" class="object-contain max-h-full" />
 <!-- glow overlay -->
-<div class="absolute inset-0 bg-gradient-to-br from-[#7F56D9]/20 to-transparent"></div>
+<div class="absolute inset-0 bg-gradient-to-br from-[#9E4CFF]/20 to-transparent"></div>
 </div>
 
 
@@ -53,7 +54,7 @@ class="flex items-start gap-2"
 data-aos="fade-left"
 :data-aos-delay="i * p.id * 60"
 >
-<span class="w-2 h-2 mt-2 rounded-full bg-gradient-to-r from-[#7F56D9] to-white"></span>
+<span class="w-2 h-2 mt-2 rounded-full bg-gradient-to-r from-[#9E4CFF] to-white"></span>
 <p class="text-base">{{ feature }}</p>
 </li>
 </ul>

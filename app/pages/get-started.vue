@@ -13,13 +13,13 @@
       <div class="space-y-4">
         <NuxtLink 
           to="/register" 
-          class="block w-full bg-[#7F56D9] text-white py-4 px-8 rounded-lg text-lg font-medium hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-colors"
+          class="block w-full bg-[#9E4CFF] text-white py-4 px-8 rounded-lg text-lg font-medium hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-colors"
         >
           Get Started
         </NuxtLink>
         <NuxtLink 
           to="/login" 
-          class="block w-full border-2 border-[#7F56D9] text-[#7F56D9] py-4 px-8 rounded-lg text-lg font-medium hover:bg-purple-100 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-colors"
+          class="block w-full border-2 border-[#9E4CFF] text-[#9E4CFF] py-4 px-8 rounded-lg text-lg font-medium hover:bg-purple-100 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-colors"
         >
           Sign In
         </NuxtLink>

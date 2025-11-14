@@ -10,7 +10,7 @@
 
         <!-- Chatbot Selection -->
         <div v-if="chatbotStore.loading" class="flex items-center justify-center py-12">
-            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-[#7F56D9]"></div>
+            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-[#9E4CFF]"></div>
             <span class="ml-2 text-gray-600">Loading chatbots...</span>
         </div>
 
@@ -21,7 +21,7 @@
                     You need to create a chatbot first before you can test it.
                 </p>
                 <NuxtLink to="/dashboard/chatbot-setup"
-                    class="inline-flex items-center px-4 py-2 bg-[#7F56D9] text-white rounded-lg hover:bg-purple-700">
+                    class="inline-flex items-center px-4 py-2 bg-[#9E4CFF] text-white rounded-lg hover:bg-purple-700">
                     Create Your First Chatbot
                 </NuxtLink>
             </div>

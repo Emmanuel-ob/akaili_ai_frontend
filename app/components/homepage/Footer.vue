@@ -3,32 +3,38 @@
     <div class="max-w-6xl mx-auto px-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-10">
       <!-- 1: logo + blurb + icons -->
       <div>
-        <div class="text-3xl font-bold">
-            <h3 class=" text-white text-xl font-bold">Xeli ai</h3>
-        </div>
+        <NuxtLink to="/" class="font-bold text-2xl sm:text-3xl" aria-label="Xeli AI Home">
+        <NuxtImg width="100" height="80" src="/logo-footer.png" format="webp" alt="Xeli AI Logo" loading="eager" />
+      </NuxtLink>
 
         <p class="mt-5 text-base font-semibold text-[#9CA3AF]">
           Intelligent chatbots that connect to your data and provide exceptional customer experiences
         </p>
 
-        <div class="flex items-center space-x-4 mt-6">
-          <NuxtLink to="#" aria-label="facebook" class="w-8 h-8 rounded-full flex items-center justify-center overflow-hidden">
-            <NuxtImg :custom="true" src="facebook-footer-icon.png" format="webp" v-slot="{ src, imgAttrs }">
-              <img :src="src" v-bind="imgAttrs" alt="facebook" class="w-full h-full object-contain" />
-            </NuxtImg>
-          </NuxtLink>
+        <div class="flex items-center space-x-4 mt-6"> <NuxtLink 
+    to="#" 
+    aria-label="facebook" 
+    class="w-8 h-8 rounded-full flex items-center justify-center bg-gray-100 hover:bg-gray-200"
+  >
+    <Facebook class="w-5 h-5 text-[#1877F2]" />
+  </NuxtLink>
 
-          <NuxtLink to="#" aria-label="instagram" class="w-8 h-8 rounded-full flex items-center justify-center overflow-hidden">
-            <NuxtImg :custom="true" src="instagram-footer-icon.png" format="webp" v-slot="{ src, imgAttrs }">
-              <img :src="src" v-bind="imgAttrs" alt="instagram" class="w-full h-full object-contain" />
-            </NuxtImg>
-          </NuxtLink>
+  <NuxtLink 
+    to="#" 
+    aria-label="instagram" 
+    class="w-8 h-8 rounded-full flex items-center justify-center bg-gray-100 hover:bg-gray-200"
+  >
+    <Instagram class="w-5 h-5 text-[#8A42FF]" />
+  </NuxtLink>
 
-          <NuxtLink to="#" aria-label="youtube" class="w-8 h-8 rounded-full flex items-center justify-center overflow-hidden">
-            <NuxtImg :custom="true" src="youtube-footer-icon.png" format="webp" v-slot="{ src, imgAttrs }">
-              <img :src="src" v-bind="imgAttrs" alt="youtube" class="w-full h-full object-contain" />
-            </NuxtImg>
-          </NuxtLink>
+  <NuxtLink 
+    to="#" 
+    aria-label="youtube" 
+    class="w-8 h-8 rounded-full flex items-center justify-center bg-gray-100 hover:bg-gray-200"
+  >
+    <Youtube class="w-5 h-5 text-red-600" />
+  </NuxtLink>
+
 
          
         </div>
@@ -71,7 +77,10 @@
 
     <!-- bottom -->
     <div class="mt-8 w-95% mx-auto px-6 border-t border-white/10 pt-8 flex justify-center items-center  text-sm">
-      <p class=" md:w-auto text-center text-lg text-[#9CA3AF]">© 2024 Xeli ai. All rights reserved.</p>
+     <p class="md:w-auto text-center text-lg text-[#9CA3AF]">
+  © {{ new Date().getFullYear() }} Xeli ai. All rights reserved.
+</p>
+
 
      
     </div>
@@ -79,9 +88,5 @@
 </template>
 
 <script setup>
-// No JS required here.
-// Notes:
-// - Place images in `public/` root: e.g. public/logo.png, public/facebook-footer-icon.png, etc.
-// - Nuxt auto-serves files from /public at the app root: src="logo.png" -> /logo.png
-// - Using :custom="true" + v-slot ensures the class is applied to the actual <img> element.
+import { Facebook, Instagram, Youtube } from "lucide-vue-next";
 </script>

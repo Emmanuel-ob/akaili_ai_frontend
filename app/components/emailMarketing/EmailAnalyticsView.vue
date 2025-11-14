@@ -4,7 +4,7 @@
     <!-- HEADER -->
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 sm:mb-10">
       <div>
-        <h1 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#7F56D9] tracking-tight">
+        <h1 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#9E4CFF] tracking-tight">
           Email Marketing Analytics
         </h1>
         <p class="text-gray-500 mt-1 sm:mt-2 text-sm sm:text-base">
@@ -15,7 +15,7 @@
       <div class="flex flex-col sm:flex-row gap-3 mt-4 sm:mt-0 w-full sm:w-auto">
         <button 
           @click="downloadReport"
-          class="bg-[#7F56D9] text-white px-4 sm:px-5 py-2 rounded-xl text-sm sm:text-base
+          class="bg-[#9E4CFF] text-white px-4 sm:px-5 py-2 rounded-xl text-sm sm:text-base
                  hover:bg-[#6C47B5] transition w-full sm:w-auto"
         >
           Download Report
@@ -23,8 +23,8 @@
 
         <button 
           @click="loadAnalytics"
-          class="border border-[#7F56D9] text-[#7F56D9] px-4 sm:px-5 py-2 rounded-xl text-sm sm:text-base
-                 hover:bg-[#7F56D9]/10 transition w-full sm:w-auto"
+          class="border border-[#9E4CFF] text-[#9E4CFF] px-4 sm:px-5 py-2 rounded-xl text-sm sm:text-base
+                 hover:bg-[#9E4CFF]/10 transition w-full sm:w-auto"
         >
           Refresh
         </button>
@@ -44,8 +44,8 @@
             <p class="text-2xl sm:text-4xl font-bold text-gray-900 mt-1 sm:mt-2">{{ card.value }}</p>
             <p class="text-[10px] sm:text-xs text-gray-400 mt-1">{{ card.subtext }}</p>
           </div>
-          <div class="bg-[#7F56D9]/10 p-2 sm:p-3 rounded-xl">
-            <component :is="card.icon" class="text-[#7F56D9]" size="22" sm:size="26" stroke-width="2.2" />
+          <div class="bg-[#9E4CFF]/10 p-2 sm:p-3 rounded-xl">
+            <component :is="card.icon" class="text-[#9E4CFF]" size="22" sm:size="26" stroke-width="2.2" />
           </div>
         </div>
       </div>
@@ -69,14 +69,14 @@
           >
             <template #layers>
               <Grid strokeDasharray="2,2" />
-              <Line :dataKeys="['name', 'open']" :lineStyle="{ stroke: '#7F56D9', strokeWidth: 3 }" />
+              <Line :dataKeys="['name', 'open']" :lineStyle="{ stroke: '#9E4CFF', strokeWidth: 3 }" />
               <Line :dataKeys="['name', 'click']" :lineStyle="{ stroke: '#E45858', strokeWidth: 2.5 }" type="step" />
             </template>
             <template #widgets>
               <Tooltip
-                borderColor="#7F56D9"
+                borderColor="#9E4CFF"
                 :config="{
-                  open: { label: 'Open Rate', color: '#7F56D9' },
+                  open: { label: 'Open Rate', color: '#9E4CFF' },
                   click: { label: 'Click Rate', color: '#E45858' }
                 }"
               />
@@ -100,14 +100,14 @@
           >
             <template #layers>
               <Grid strokeDasharray="2,2" />
-              <Bar :dataKeys="['name', 'open']" :barStyle="{ fill: '#7F56D9', rx: 6 }" />
+              <Bar :dataKeys="['name', 'open']" :barStyle="{ fill: '#9E4CFF', rx: 6 }" />
               <Bar :dataKeys="['name', 'click']" :barStyle="{ fill: '#E45858', rx: 6 }" />
             </template>
             <template #widgets>
               <Tooltip
                 borderColor="#E45858"
                 :config="{
-                  open: { label: 'Open Rate', color: '#7F56D9' },
+                  open: { label: 'Open Rate', color: '#9E4CFF' },
                   click: { label: 'Click Rate', color: '#E45858' }
                 }"
               />

@@ -3,7 +3,7 @@
         <header class="bg-white px-6 py-4 border-b border-gray-200">
             <div class="flex justify-between items-center">
                 <div>
-                    <h1 class="text-[#7F56D9] text-2xl font-bold">Knowledge Base</h1>
+                    <h1 class="text-[#9E4CFF] text-2xl font-bold">Knowledge Base</h1>
                     <p class="text-sm lg:text-base text-[#6B7280]">
                         Manage your chatbot's FAQ sources and training data
                     </p>

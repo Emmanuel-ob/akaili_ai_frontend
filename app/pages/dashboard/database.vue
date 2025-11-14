@@ -4,7 +4,7 @@
     <header class="bg-white px-6 py-4">
       <div class="flex justify-between items-center">
         <div>
-          <h1 class="text-[#7F56D9] text-2xl font-bold">Database Connections</h1>
+          <h1 class="text-[#9E4CFF] text-2xl font-bold">Database Connections</h1>
           <p class="text-sm lg:text-base text-[#6B7280]">
             Manage your chatbot's data sources and connections
           </p>
@@ -34,7 +34,7 @@
         description="Get started by connecting your first database." icon="database" variant="card">
         <template #action>
           <button
-            class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-[#7F56D9] hover:bg-purple-700"
+            class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-[#9E4CFF] hover:bg-purple-700"
             @click="showAddModal = true">
             Add Database
           </button>
@@ -52,7 +52,7 @@
         <label v-for="table in selectedConnection?.available_tables" :key="table"
           class="flex items-center p-2 border border-gray-200 rounded-md hover:bg-gray-50 cursor-pointer">
           <input v-model="selectedTables" type="checkbox" :value="table"
-            class="mr-3 text-[#7F56D9] focus:ring-purple-500">
+            class="mr-3 text-[#9E4CFF] focus:ring-purple-500">
           <span class="text-sm text-gray-900">{{ table }}</span>
         </label>
       </div>
@@ -63,7 +63,7 @@
           Cancel
         </button>
         <button :disabled="databaseStore.updating"
-          class="px-4 py-2 text-sm text-white bg-[#7F56D9] hover:bg-purple-700 rounded-md disabled:opacity-50"
+          class="px-4 py-2 text-sm text-white bg-[#9E4CFF] hover:bg-purple-700 rounded-md disabled:opacity-50"
           @click="updateTables">
           {{ databaseStore.updating ? 'Updating...' : 'Update Tables' }}
         </button>

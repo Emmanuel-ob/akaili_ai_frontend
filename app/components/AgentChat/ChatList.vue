@@ -5,7 +5,7 @@
       <h2 class="text-xl font-bold text-gray-800">Chats</h2>
       <button
         @click="$emit('open-modal')"
-        class="bg-[#7F56D9] hover:bg-purple-700 text-white px-3 py-1 rounded-lg text-sm transition"
+        class="bg-[#9E4CFF] hover:bg-purple-700 text-white px-3 py-1 rounded-lg text-sm transition"
       >
         + New
       </button>
@@ -19,7 +19,7 @@
           v-model="search"
           type="text"
           placeholder="Search user..."
-          class="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#7F56D9] focus:outline-none text-sm"
+          class="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#9E4CFF] focus:outline-none text-sm"
         />
       </div>
     </div>

@@ -27,7 +27,7 @@
                 </div>
 
                 <button type="submit" :disabled="loading"
-                    class="w-full bg-[#7F56D9] text-white py-3 px-4 rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+                    class="w-full bg-[#9E4CFF] text-white py-3 px-4 rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
                     {{ loading ? 'Resetting...' : 'Reset Password' }}
                 </button>
             </form>
@@ -42,7 +42,7 @@
                 <h3 class="text-lg font-semibold text-gray-800">Password Reset Successful!</h3>
                 <p class="text-gray-600">You can now login with your new password.</p>
                 <NuxtLink to="/login"
-                    class="inline-block bg-[#7F56D9] text-white py-3 px-6 rounded-lg hover:bg-purple-700 transition-colors">
+                    class="inline-block bg-[#9E4CFF] text-white py-3 px-6 rounded-lg hover:bg-purple-700 transition-colors">
                     Go to Login
                 </NuxtLink>
             </div>

@@ -216,7 +216,7 @@
         <button
           type="submit"
           :disabled="loading || !canSubmit"
-          class="px-4 py-2 text-sm text-white bg-[#7F56D9] hover:bg-purple-700 rounded-lg disabled:opacity-50"
+          class="px-4 py-2 text-sm text-white bg-[#9E4CFF] hover:bg-purple-700 rounded-lg disabled:opacity-50"
         >
           {{ loading ? 'Connecting...' : 'Connect Database' }}
         </button>

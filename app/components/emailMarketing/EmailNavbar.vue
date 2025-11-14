@@ -7,7 +7,7 @@
       :class="[
         'text-sm font-medium transition-colors pb-2',
         activeTab === tab.key
-          ? 'text-[#7F56D9] border-b-2 border-[#7F56D9]'
+          ? 'text-[#9E4CFF] border-b-2 border-[#9E4CFF]'
           : 'text-gray-500 hover:text-gray-700'
       ]"
       @click="$emit('change-tab', tab.key)"

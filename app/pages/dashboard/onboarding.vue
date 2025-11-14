@@ -51,7 +51,7 @@
             </div>
 
             <button type="submit" :disabled="setupLoading"
-              class="w-full bg-[#7F56D9] text-white py-3 px-4 rounded-lg hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-colors">
+              class="w-full bg-[#9E4CFF] text-white py-3 px-4 rounded-lg hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-colors">
               {{ setupLoading ? 'Setting up...' : 'Continue' }}
             </button>
           </form>
@@ -83,7 +83,7 @@
                 Back
               </button>
               <button type="submit" :disabled="setupLoading"
-                class="flex-1 bg-[#7F56D9] text-white py-3 px-4 rounded-lg hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-colors">
+                class="flex-1 bg-[#9E4CFF] text-white py-3 px-4 rounded-lg hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-colors">
                 {{ setupLoading ? 'Creating...' : 'Complete Setup' }}
               </button>
             </div>
@@ -102,7 +102,7 @@
           <h2 class="text-2xl font-bold text-gray-900 mb-2">Setup Complete!</h2>
           <p class="text-gray-600 mb-6">Your account is ready to use.</p>
           <button @click="finishOnboarding"
-            class="bg-[#7F56D9] text-white py-3 px-8 rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-colors">
+            class="bg-[#9E4CFF] text-white py-3 px-8 rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-colors">
             Go to Dashboard
           </button>
         </div>

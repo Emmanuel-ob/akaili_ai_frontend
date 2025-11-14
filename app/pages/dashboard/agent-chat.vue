@@ -27,7 +27,7 @@
         <button v-for="tab in tabs" :key="tab.key" @click="activeTab = tab.key"
           class="flex-1 px-4 py-3 text-sm font-medium transition relative" :class="[
             activeTab === tab.key
-              ? 'text-[#7F56D9] border-b-2 border-[#7F56D9] bg-white'
+              ? 'text-[#9E4CFF] border-b-2 border-[#9E4CFF] bg-white'
               : 'text-gray-600 hover:text-gray-800'
           ]">
           {{ tab.label }}
@@ -143,7 +143,7 @@
             <div :class="[
               'max-w-xs lg:max-w-md px-4 py-2 rounded-lg text-sm',
               msg.role === 'agent'
-                ? 'bg-[#7F56D9] text-white'
+                ? 'bg-[#9E4CFF] text-white'
                 : msg.role === 'system'
                   ? 'bg-yellow-50 text-yellow-800 border border-yellow-200 text-xs'
                   : 'bg-white text-gray-800 shadow-sm'
@@ -159,9 +159,9 @@
         <!-- Input -->
         <div class="p-3 md:p-4 bg-white border-t border-gray-200 shadow-inner flex items-center space-x-3">
           <input v-model="newMessage" placeholder="Type your message..." @keyup.enter="sendMessage"
-            class="flex-1 border rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#7F56D9] focus:border-[#7F56D9] transition" />
+            class="flex-1 border rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#9E4CFF] focus:border-[#9E4CFF] transition" />
           <button @click="sendMessage" :disabled="!newMessage.trim()"
-            class="p-3 bg-[#7F56D9] text-white rounded-xl hover:bg-purple-700 transition disabled:opacity-50 disabled:cursor-not-allowed">
+            class="p-3 bg-[#9E4CFF] text-white rounded-xl hover:bg-purple-700 transition disabled:opacity-50 disabled:cursor-not-allowed">
             <Send class="w-5 h-5" />
           </button>
         </div>

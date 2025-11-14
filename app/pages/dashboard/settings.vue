@@ -13,7 +13,7 @@
                     <button v-for="tab in tabs" :key="tab.id" @click="activeTab = tab.id" :class="[
                         'px-6 py-4 text-sm font-medium border-b-2 transition-colors',
                         activeTab === tab.id
-                            ? 'border-[#7F56D9] text-[#7F56D9]'
+                            ? 'border-[#9E4CFF] text-[#9E4CFF]'
                             : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                     ]">
                         {{ tab.name }}
@@ -39,7 +39,7 @@
                                     Cancel
                                 </button>
                                 <button type="submit" :disabled="userStore.loading"
-                                    class="px-4 py-2 bg-[#7F56D9] text-white rounded-lg hover:bg-[#6C47B5] disabled:opacity-50">
+                                    class="px-4 py-2 bg-[#9E4CFF] text-white rounded-lg hover:bg-[#6C47B5] disabled:opacity-50">
                                     {{ userStore.loading ? 'Saving...' : 'Save Changes' }}
                                 </button>
                             </div>
@@ -96,7 +96,7 @@
                                         Cancel
                                     </button>
                                     <button type="submit" :disabled="emailChangeLoading"
-                                        class="px-4 py-2 bg-[#7F56D9] text-white rounded-lg hover:bg-[#6C47B5] disabled:opacity-50">
+                                        class="px-4 py-2 bg-[#9E4CFF] text-white rounded-lg hover:bg-[#6C47B5] disabled:opacity-50">
                                         {{ emailChangeLoading ? 'Sending Code...' : 'Send Verification Code' }}
                                     </button>
                                 </div>
@@ -141,7 +141,7 @@
                                         Cancel
                                     </button>
                                     <button type="submit" :disabled="emailChangeLoading"
-                                        class="px-4 py-2 bg-[#7F56D9] text-white rounded-lg hover:bg-[#6C47B5] disabled:opacity-50">
+                                        class="px-4 py-2 bg-[#9E4CFF] text-white rounded-lg hover:bg-[#6C47B5] disabled:opacity-50">
                                         {{ emailChangeLoading ? 'Verifying...' : 'Verify & Change Email' }}
                                     </button>
                                 </div>
@@ -182,7 +182,7 @@
                                     Cancel
                                 </button>
                                 <button type="submit" :disabled="userStore.loading"
-                                    class="px-4 py-2 bg-[#7F56D9] text-white rounded-lg hover:bg-[#6C47B5] disabled:opacity-50">
+                                    class="px-4 py-2 bg-[#9E4CFF] text-white rounded-lg hover:bg-[#6C47B5] disabled:opacity-50">
                                     {{ userStore.loading ? 'Updating...' : 'Update Password' }}
                                 </button>
                             </div>
@@ -273,7 +273,7 @@
                                     Cancel
                                 </button>
                                 <button type="submit" :disabled="businessStore.loading"
-                                    class="px-4 py-2 bg-[#7F56D9] text-white rounded-lg hover:bg-[#6C47B5] disabled:opacity-50">
+                                    class="px-4 py-2 bg-[#9E4CFF] text-white rounded-lg hover:bg-[#6C47B5] disabled:opacity-50">
                                     {{ businessStore.loading ? 'Saving...' : 'Save Changes' }}
                                 </button>
                             </div>

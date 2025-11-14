@@ -33,14 +33,33 @@
         </div>
 
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
-          <input v-model="form.password" type="password" required minlength="8"
-            class="w-full px-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-            placeholder="Create a password (min. 8 characters)">
-        </div>
+  <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+
+  <div class="relative">
+    <input
+      v-model="form.password"
+      :type="showPassword ? 'text' : 'password'"
+      required
+      minlength="8"
+      class="w-full px-3 py-3 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+      placeholder="Create a password (min. 8 characters)"
+    />
+
+    <!-- Toggle Icon -->
+    <button
+      type="button"
+      @click="showPassword = !showPassword"
+      class="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-gray-700"
+    >
+      <Eye v-if="!showPassword" class="w-5 h-5" />
+      <EyeOff v-else class="w-5 h-5" />
+    </button>
+  </div>
+</div>
+
 
         <button type="submit" :disabled="loading"
-          class="w-full bg-[#7F56D9] text-white py-3 px-4 rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+          class="w-full bg-[#9E4CFF] text-white py-3 px-4 rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
           {{ loading ? 'Creating account...' : 'Create Account' }}
         </button>
       </form>
@@ -66,6 +85,8 @@
 </template>
 
 <script setup>
+import { Eye, EyeOff } from "lucide-vue-next";
+
 definePageMeta({
   layout: 'empty',
   middleware: 'guest'
@@ -83,6 +104,7 @@ const form = ref({
 const loading = ref(false)
 const error = ref('')
 const success = ref('')
+const showPassword = ref(false)
 
 const handleRegister = async () => {
   loading.value = true

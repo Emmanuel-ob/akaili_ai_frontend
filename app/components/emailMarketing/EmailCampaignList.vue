@@ -54,7 +54,7 @@
           <td class="px-6 py-4 text-right space-x-3 flex justify-end items-center"> 
             <button 
               @click="viewCampaign(campaign)" 
-              class="text-[#7F56D9] hover:underline text-sm"
+              class="text-[#9E4CFF] hover:underline text-sm"
             >
               View
             </button>

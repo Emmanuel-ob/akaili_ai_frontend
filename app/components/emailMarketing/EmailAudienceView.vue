@@ -12,7 +12,7 @@
       <!-- Dynamic Add/Import Button -->
       <button
         @click="showImportModal = true"
-        class="bg-[#7F56D9] text-white px-5 py-2 rounded-lg shadow hover:bg-[#6C47B5] flex items-center gap-2"
+        class="bg-[#9E4CFF] text-white px-5 py-2 rounded-lg shadow hover:bg-[#6C47B5] flex items-center gap-2"
       >
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
@@ -30,7 +30,7 @@
         :class="[
           'pb-2 border-b-2 font-medium transition',
           activeSubTab === tab
-            ? 'border-[#7F56D9] text-[#7F56D9]'
+            ? 'border-[#9E4CFF] text-[#9E4CFF]'
             : 'border-transparent text-gray-500 hover:text-gray-700'
         ]"
       >
@@ -75,7 +75,7 @@
               @click="activeModalTab = t"
               :class="[ 'text-sm font-medium',
                 activeModalTab === t
-                  ? 'text-[#7F56D9] border-b-2 border-[#7F56D9]'
+                  ? 'text-[#9E4CFF] border-b-2 border-[#9E4CFF]'
                   : 'text-gray-500 hover:text-gray-700'
               ]"
             >
@@ -193,7 +193,7 @@
 
                 <button
                   type="submit"
-                  class="w-full bg-[#7F56D9] text-white py-2 rounded-lg hover:bg-[#6C47B5]"
+                  class="w-full bg-[#9E4CFF] text-white py-2 rounded-lg hover:bg-[#6C47B5]"
                 >
                   Add Contact
                 </button>
@@ -219,7 +219,7 @@
 
                 <button
                   type="submit"
-                  class="w-full bg-[#7F56D9] text-white py-2 rounded-lg hover:bg-[#6C47B5]"
+                  class="w-full bg-[#9E4CFF] text-white py-2 rounded-lg hover:bg-[#6C47B5]"
                 >
                   Create List
                 </button>

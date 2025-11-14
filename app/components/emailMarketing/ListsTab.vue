@@ -27,7 +27,7 @@
       <!-- Buttons -->
       <div class="flex justify-between items-center">
         <button
-          class="text-sm text-[#7F56D9] font-medium hover:underline"
+          class="text-sm text-[#9E4CFF] font-medium hover:underline"
           @click="viewListDetails(list)"
         >
           View Details

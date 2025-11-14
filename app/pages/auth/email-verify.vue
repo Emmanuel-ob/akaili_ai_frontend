@@ -35,7 +35,7 @@
         <p class="text-gray-600 mb-6">{{ error }}</p>
         <NuxtLink 
           to="/login" 
-          class="inline-flex items-center px-4 py-2 bg-[#7F56D9] text-white rounded-lg hover:bg-purple-700 transition-colors"
+          class="inline-flex items-center px-4 py-2 bg-[#9E4CFF] text-white rounded-lg hover:bg-purple-700 transition-colors"
         >
           Back to Login
         </NuxtLink>

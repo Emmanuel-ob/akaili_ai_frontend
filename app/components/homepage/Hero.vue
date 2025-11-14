@@ -21,7 +21,7 @@
             <span class="inline-block mt-2" data-aos="fade-up" data-aos-delay="50" >
               <RotatingText
                 :texts="['Customer-Support', 'Business-Assistant', 'Automation-Tools', 'Personal-Bot']"
-                main-class-name="text-[#7F56D9] overflow-hidden rounded-lg inline-block"
+                main-class-name="text-[#9E4CFF] overflow-hidden rounded-lg inline-block"
                 :stagger-from="'last'"
                 :initial="{ y: '100%' }"
                 :animate="{ y: 0 }"

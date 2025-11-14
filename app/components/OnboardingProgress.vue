@@ -5,7 +5,7 @@
       <div 
         :class="[
           'w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium',
-          current >= 1 ? 'bg-[#7F56D9] text-white' : 'bg-gray-600 text-gray-300'
+          current >= 1 ? 'bg-[#9E4CFF] text-white' : 'bg-gray-600 text-gray-300'
         ]"
       >
         1
@@ -15,13 +15,13 @@
       </span>
     </div>
     
-    <div :class="['w-12 h-0.5', current >= 2 ? 'bg-[#7F56D9]' : 'bg-gray-600']"/>
+    <div :class="['w-12 h-0.5', current >= 2 ? 'bg-[#9E4CFF]' : 'bg-gray-600']"/>
     
     <div class="flex items-center">
       <div 
         :class="[
           'w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium',
-          current >= 2 ? 'bg-[#7F56D9] text-white' : 'bg-gray-600 text-gray-300'
+          current >= 2 ? 'bg-[#9E4CFF] text-white' : 'bg-gray-600 text-gray-300'
         ]"
       >
         2
@@ -31,13 +31,13 @@
       </span>
     </div>
     
-    <div :class="['w-12 h-0.5', current >= 3 ? 'bg-[#7F56D9]' : 'bg-gray-600']"/>
+    <div :class="['w-12 h-0.5', current >= 3 ? 'bg-[#9E4CFF]' : 'bg-gray-600']"/>
     
     <div class="flex items-center">
       <div 
         :class="[
           'w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium',
-          current >= 3 ? 'bg-[#7F56D9] text-white' : 'bg-gray-600 text-gray-300'
+          current >= 3 ? 'bg-[#9E4CFF] text-white' : 'bg-gray-600 text-gray-300'
         ]"
       >
         3

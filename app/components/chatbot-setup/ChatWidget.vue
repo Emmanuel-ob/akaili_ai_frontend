@@ -1,7 +1,7 @@
 <template>
     <div class="bg-white rounded-lg shadow-lg max-w-2xl mx-auto">
         <!-- Chat Header -->
-        <div class="bg-[#7F56D9] text-white px-6 py-4 rounded-t-lg flex justify-between items-center">
+        <div class="bg-[#9E4CFF] text-white px-6 py-4 rounded-t-lg flex justify-between items-center">
             <div>
                 <h3 class="text-lg font-semibold">{{ chatbotName || 'AI Assistant' }}</h3>
                 <p class="text-purple-100 text-sm">
@@ -52,7 +52,7 @@
                 <div :class="[
                     'max-w-xs lg:max-w-md px-4 py-2 rounded-lg text-sm',
                     message.role === 'user'
-                        ? 'bg-[#7F56D9] text-white'
+                        ? 'bg-[#9E4CFF] text-white'
                         : message.role === 'system'
                             ? 'bg-yellow-50 text-yellow-800 border border-yellow-200 text-xs italic'
                             : message.role === 'agent'
@@ -100,7 +100,7 @@
             <!-- Handover Request Button -->
             <div v-if="!handoverStatus && !isHandoverRequested" class="mb-2">
                 <button @click="requestHumanAgent"
-                    class="w-full text-sm text-[#7F56D9] hover:text-purple-700 font-medium py-2 border border-[#7F56D9] rounded-lg hover:bg-purple-50 transition">
+                    class="w-full text-sm text-[#9E4CFF] hover:text-purple-700 font-medium py-2 border border-[#9E4CFF] rounded-lg hover:bg-purple-50 transition">
                     💬 Speak with a Human Agent
                 </button>
             </div>
@@ -110,7 +110,7 @@
                     placeholder="Type your message..."
                     class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:bg-gray-100" />
                 <button @click="sendMessage" :disabled="!currentMessage.trim() || isTyping"
-                    class="px-4 py-2 bg-[#7F56D9] text-white rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:opacity-50 disabled:cursor-not-allowed">
+                    class="px-4 py-2 bg-[#9E4CFF] text-white rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:opacity-50 disabled:cursor-not-allowed">
                     Send
                 </button>
             </div>

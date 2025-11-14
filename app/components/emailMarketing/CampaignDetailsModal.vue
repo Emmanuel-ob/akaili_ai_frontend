@@ -110,7 +110,7 @@
             'px-5 py-2 rounded-lg text-white transition',
             campaign.status === 'Active'
               ? 'bg-red-500 hover:bg-red-600'
-              : 'bg-[#7F56D9] hover:bg-[#6C47B5]'
+              : 'bg-[#9E4CFF] hover:bg-[#6C47B5]'
           ]"
         >
           {{

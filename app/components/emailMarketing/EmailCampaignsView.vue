@@ -11,7 +11,7 @@
       </div>
         <button
         @click="goToTemplates"
-        class="bg-[#7F56D9] text-white px-5 py-2 rounded-lg shadow hover:bg-[#6C47B5] flex items-center gap-2"
+        class="bg-[#9E4CFF] text-white px-5 py-2 rounded-lg shadow hover:bg-[#6C47B5] flex items-center gap-2"
       >
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
