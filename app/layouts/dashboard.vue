@@ -173,10 +173,9 @@
        <div class="border-gray-200 h-full flex flex-col justify-between overflow-y-auto pb-6">
 
           <div class="">
-            <!-- Logo -->
              <!-- LOGO -->
                <NuxtLink to="/" class="font-bold text-2xl w-full flex justify-center items-center sm:text-3xl" aria-label="Xeli AI Home">
-                 <NuxtImg width="150" height="150" src="/logo-small.png" format="webp" alt="Xeli AI Logo" loading="eager" />
+                 <NuxtImg width="100" height="100" src="/logo-small.png" format="webp" alt="Xeli AI Logo" loading="eager" />
                </NuxtLink>
 
 
