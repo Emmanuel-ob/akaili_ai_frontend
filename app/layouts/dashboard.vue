@@ -5,15 +5,11 @@
       <div
         class="lg:w-64 bg-white shadow-sm border-r border-gray-200 fixed h-full hidden lg:grid place-content-between  ">
         <div class="">
-          <!-- Logo -->
-          <NuxtLink to="/" class="p-6 ">
-            <div class="flex items-center px-5">
-              <div class="w-8 h-8 rounded-lg flex items-center justify-center">
-                <NuxtImg src="/dashboard_layout_logo.png" alt="dashboard logo" class="w-5 h-5" />
-              </div>
-              <span class="ml-3 text-xl font-bold text-gray-900">Xeli ai</span>
-            </div>
-          </NuxtLink>
+         <!-- LOGO -->
+               <NuxtLink to="/" class="font-bold text-2xl w-full flex justify-center items-center sm:text-3xl" aria-label="Xeli AI Home">
+                 <NuxtImg width="150" height="150" src="/logo-small.png" format="webp" alt="Xeli AI Logo" loading="eager" />
+               </NuxtLink>
+         
 
           <!-- Navigation -->
           <nav class="mt-6 px-3">
@@ -130,13 +126,14 @@
 
 
 
-              <NuxtLink to="/dashboard/settings"
-                class="flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors" :class="$route.path === '/dashboard/settings'
-                  ? 'bg-purple-50 text-[#9E4CFF]'
-                  : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'">
-                <Icon name="SettingsIcon" class="w-5 h-5 mr-3" />
-                Settings
-              </NuxtLink>
+               <NuxtLink to="/dashboard/settings"
+     class="flex items-center px-3 py-2 text-xs sm:text-sm font-medium rounded-lg transition-colors"
+     :class="$route.path === '/dashboard/settings'
+     ? 'bg-purple-50 text-[#9E4CFF]'
+     : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'">
+    <Icon name="lucide:settings" class="w-5 h-5 mr-3" />
+    Settings
+</NuxtLink>
             </div>
           </nav>
 
@@ -177,14 +174,10 @@
 
           <div class="">
             <!-- Logo -->
-            <NuxtLink to="/" class="p-4">
-  <div class="flex items-center px-3">
-    <div class="w-6 h-6 rounded-lg flex items-center justify-center">
-      <NuxtImg src="/dashboard_layout_logo.png" alt="dashboard logo" class="w-4 h-4" />
-    </div>
-    <span class="ml-2 text-lg font-bold text-gray-900">Xeli ai</span>
-  </div>
-</NuxtLink>
+             <!-- LOGO -->
+               <NuxtLink to="/" class="font-bold text-2xl w-full flex justify-center items-center sm:text-3xl" aria-label="Xeli AI Home">
+                 <NuxtImg width="150" height="150" src="/logo-small.png" format="webp" alt="Xeli AI Logo" loading="eager" />
+               </NuxtLink>
 
 
             <!-- Navigation -->
@@ -304,13 +297,14 @@
   Agent Chat
 </NuxtLink>
 
-                <NuxtLink to="/dashboard/settings"
-                  class="flex items-center px-3 py-2 text-xs sm:text-sm font-medium rounded-lg transition-colors" :class="$route.path === '/dashboard/settings'
-                  ? 'bg-purple-50 text-[#9E4CFF]'
-                  : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'">
-                  <Icon name="SettingsIcon" class="w-5 h-5 mr-3" />
-                  Settings
-                </NuxtLink>
+           <NuxtLink to="/dashboard/settings"
+     class="flex items-center px-3 py-2 text-xs sm:text-sm font-medium rounded-lg transition-colors"
+     :class="$route.path === '/dashboard/settings'
+     ? 'bg-purple-50 text-[#9E4CFF]'
+     : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'">
+    <Icon name="lucide:settings" class="w-5 h-5 mr-3" />
+    Settings
+</NuxtLink>
 
               </div>
             </nav>

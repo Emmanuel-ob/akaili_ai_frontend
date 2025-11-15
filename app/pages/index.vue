@@ -20,7 +20,7 @@
 
 
 <script setup>
-import Hero from '../components/homepage/Hero.vue'
+import  Hero from '../components/homepage/Hero.vue'
 import ProductSuite from '../components/homepage/ProductSuite.vue'
 import Features from '../components/homepage/Features.vue'
 import TestimonialCarousel from '~/components/homepage/TestimonialCarousel.vue'
