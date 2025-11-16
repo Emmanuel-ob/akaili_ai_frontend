@@ -67,7 +67,9 @@ export default defineNuxtConfig({
   ],
   runtimeConfig: {
     public: {
-      apiBase: process.env.API_BASE_URL || 'http://localhost:8000',
+      apiBase: process.env.NODE_ENV === 'production'
+        ? 'https://api.xeliai.com'
+        : (process.env.API_BASE_URL || 'http://localhost:8000'),
       reverbAppKey: process.env.NUXT_PUBLIC_REVERB_APP_KEY || 'your-app-key',
       reverbHost: process.env.NUXT_PUBLIC_REVERB_HOST || 'localhost',
       reverbPort: process.env.NUXT_PUBLIC_REVERB_PORT || '8080',
