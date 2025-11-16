@@ -8,7 +8,7 @@
           to="/" aria-label="Go to homepage">
           <AppLogo size="md" center />
         </NuxtLink>
-        <h1 class="text-2xl font-semibold text-gray-800 mb-2">Welcome back</h1>
+        <h1 class="text-2xl font-semibold text-gray-800 mb-2">Welcome back To Xeli</h1>
         <p class="text-gray-600">Sign in to your account</p>
       </header>
 
