@@ -42,3 +42,4 @@ html, body {
 .active_chatbot_setup{
   @apply bg-purple-100 text-[#9E4CFF] rounded-xl hover:bg-[#9E4CFF] hover:text-purple-100;
 }
+

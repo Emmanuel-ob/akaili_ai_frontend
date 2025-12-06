@@ -1,83 +1,91 @@
-<script setup>
-import {productsuite} from '../../utils/data'
-</script>
-
 <template>
-<section class="relative overflow-hidden py-20" style="background:#111827;">
-    <!-- #7F56D9 -->
-<!-- background accents -->
-<div class="pointer-events-none absolute inset-0 -z-10">
-<div class="absolute inset-0" style="background: linear-gradient(180deg, rgba(127,86,217,0.05), rgba(17,24,39,0.5)); mix-blend-mode: overlay;"></div>
-<!-- purple glow spots -->
-<div class="absolute top-20 left-1/4 w-[500px] h-[500px] rounded-full bg-[#9E4CFF] opacity-20 blur-3xl"></div>
-<div class="absolute bottom-10 right-1/4 w-[600px] h-[600px] rounded-full bg-[#9E4CFF] opacity-10 blur-3xl"></div>
+<section class="py-16 bg-[#0b1020] text-white">
+<div class="max-w-7xl mx-auto px-6 lg:px-8">
+<div class="flex items-center justify-between mb-8">
+<div>
+<h2 class="text-3xl sm:text-4xl font-extrabold gradient-text">Product suite — Unlock the toolbox</h2>
+<p class="mt-2 text-gray-400 max-w-xl">Pick the tools you need. Mix and match. All AI-powered, all low maintenance.</p>
 </div>
 
 
-<div class="relative w-[95%] flex flex-col items-center mx-auto px-6 lg:px-8">
-<div class="text-center max-w-3xl mx-auto mb-14">
-<h2 class="text-4xl sm:text-5xl font-extrabold bg-clip-text text-transparent" style="background-image:linear-gradient(90deg,#9E4CFF, #ffffff);">AI-Powered Product Suite</h2>
-<p class="mt-4 text-lg text-gray-300">
-Explore a suite of AI-powered tools designed to streamline support,
-simplify operations, and scale your business effortlessly
-</p>
+<div class="flex gap-2 items-center">
+<button class="filter-btn">All</button>
+<button class="filter-btn">Support</button>
+<button class="filter-btn">Automation</button>
+</div>
 </div>
 
 
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
 <article
-v-for="p in productsuite"
+v-for="p in products"
 :key="p.id"
-class="revamped-card flex flex-col max-w-sm mx-auto transform transition duration-300 hover:-translate-y-2"
+class="product-card group"
+:style="{ '--accent': p.color || '#9E4CFF' }"
 data-aos="zoom-in-up"
-:data-aos-delay="p.id * 120"
 >
-<!-- image -->
-<div class="relative w-full h-60 flex items-center justify-center overflow-hidden">
-<img :src="`/${p.image}`" :alt="p.title" class="object-contain max-h-full" />
-<!-- glow overlay -->
-<div class="absolute inset-0 bg-gradient-to-br from-[#9E4CFF]/20 to-transparent"></div>
+<div class="card-top flex items-start gap-4">
+<div class="icon-wrap" :aria-hidden>
+
+<img :src="`/${p.image}`" :alt="p.title" class="w-full h-full object-cover rounded-3xl" />
+</div>
+<div class="flex-1">
+<div class="flex items-center gap-3">
+<h3 class="text-lg font-semibold leading-tight">{{ p.title }}</h3>
+<span class="micro-label">{{ p.category }}</span>
+</div>
+<p class="mt-2 text-gray-300 text-sm max-w-[90%]">{{ p.description }}</p>
+</div>
 </div>
 
 
-<!-- content -->
-<div class="p-6 flex flex-col flex-1">
-<h3 class="text-xl font-semibold text-white">{{ p.title }}</h3>
-<p class="mt-3 text-gray-300 text-base leading-relaxed">{{ p.description }}</p>
-
-
-<ul class="mt-6 space-y-3 text-sm text-gray-300 flex-1">
-<li
-v-for="(feature, i) in p.features"
-:key="i"
-class="flex items-start gap-2"
-data-aos="fade-left"
-:data-aos-delay="i * p.id * 60"
->
-<span class="w-2 h-2 mt-2 rounded-full bg-gradient-to-r from-[#9E4CFF] to-white"></span>
-<p class="text-base">{{ feature }}</p>
+<ul class="mt-6 features-list">
+<li v-for="(f, idx) in p.features.slice(0,4)" :key="idx" class="flex items-start gap-3">
+<span class="feature-dot" aria-hidden>✓</span>
+<p class="text-sm text-gray-300">{{ f }}</p>
 </li>
 </ul>
 
+
+<div class="mt-6 flex items-center justify-between">
+<button class="card-cta">Try it free</button>
+<div class="meta text-xs text-gray-400">Avg setup: <strong class="text-white">2 min</strong></div>
 </div>
+
 </article>
 </div>
 </div>
 </section>
 </template>
 
+<script setup>
+import { productsuite } from '~/utils/data.js'
+
+const products = productsuite.map((p, i) => ({ ...p, color: p.color || (['#9E4CFF','#00D4FF','#FF7AB6'][i % 3]), category: p.category || ['Automation','Support','Insight'][i % 3]}))
+</script>
 
 <style scoped>
-.revamped-card{
-background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-border: 1px solid rgba(255,255,255,0.06);
-backdrop-filter: blur(6px);
-border-radius: 1rem;
-}
-.revamped-card:hover{
-box-shadow: 0 10px 30px rgba(2,6,23,0.7), 0 0 30px rgba(127,86,217,0.18);
-border-color: rgba(127,86,217,0.3);
+:root{--brand1:#9E4CFF}
+
+.product-card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border:1px solid rgba(255,255,255,0.04); border-radius:1rem; padding:18px; position:relative; overflow:hidden; transition:transform .35s cubic-bezier(.2,.9,.2,1), box-shadow .35s}
+.product-card:hover{transform:translateY(-10px) rotateX(4deg); box-shadow:0 18px 50px rgba(2,6,23,0.6), 0 0 36px rgba(158,76,255,0.12); border-color: color-mix(in srgb, var(--accent) 20%, rgba(255,255,255,0.06))}
+
+.icon-wrap{width:56px; height:56px; border-radius:14px; display:flex; align-items:center; justify-content:center; background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); box-shadow:0 6px 20px rgba(127,86,217,0.08)}
+.micro-label{background:linear-gradient(90deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02)); color:#e6e6ff; padding:.25rem .6rem; border-radius:9999px; font-size:.72rem}
+
+.features-list li{padding:6px 0}
+.feature-dot{width:28px; height:28px; min-width:28px; border-radius:9999px; display:inline-grid; place-items:center; background:linear-gradient(90deg,var(--accent), #fff 60%); color:#0b1020; font-weight:700; box-shadow:0 6px 18px rgba(127,86,217,0.1)}
+
+.card-cta{background:linear-gradient(90deg,var(--accent), #7F56D9); color:white; padding:.5rem .9rem; border-radius:12px; font-weight:600; box-shadow:0 8px 28px rgba(127,86,217,0.12); transition:transform .2s}
+.card-cta:hover{transform:translateY(-3px)}
+
+.hover-badge{position:absolute; right:12px; bottom:12px; background:transparent; color:rgba(255,255,255,0.5); font-weight:700; border-radius:9999px; padding:.3rem .7rem; border:1px solid rgba(255,255,255,0.04); transform:translateY(10px); opacity:0; transition:all .28s}
+.product-card:hover .hover-badge{transform:translateY(0); opacity:1; background:linear-gradient(90deg,var(--accent), rgba(255,255,255,0.08)); color:white}
+
+/* micro tilt support for 3D feel */
+.product-card{transform-origin:center}
+
+@media(min-width:1024px){
+  .product-card{padding:22px}
 }
 </style>
-
-

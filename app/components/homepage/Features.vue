@@ -1,5 +1,7 @@
+<!-- '../components/homepage/Features.vue' -->
 <script setup>
 import { features } from '~/utils/data.js'
+import { NuxtLink } from '#components';
 
 const featuresList = features
 
@@ -54,7 +56,7 @@ const featuresList = features
             <!-- icon circle -->
             <div class="icon-wrap flex-none w-14 h-14 rounded-full flex items-center justify-center shadow-lg">
               <!-- Use NuxtImg if you have SVG/PNG icons, otherwise swap for inline SVG -->
-              <NuxtImg :src="`/feature_${f.icon}.png`" format="webp" class="w-7 h-7" alt="" />
+              <div class="icon w-7 h-7" v-html="f.icon"></div>
             </div>
 
             <div class="flex-1 min-w-0">
@@ -69,7 +71,8 @@ const featuresList = features
               <span class="badge text-xs font-medium">AI-powered</span>
               <span v-if="f.popular" class="badge-primary text-xs font-medium">Popular</span>
             </div>
-            <button class="text-xs font-medium px-3 py-1 text-white rounded-full bg-white/6 hover:bg-white/12 transition">Learn more</button>
+            
+            <NuxtLink to="/get-started" class="text-xs font-medium px-3 py-1 text-white rounded-full bg-white/6 hover:bg-white/12 transition">Learn more</NuxtLink>
           </div>
         </div>
       </div>

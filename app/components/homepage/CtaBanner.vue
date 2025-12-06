@@ -1,8 +1,8 @@
 <template>
-  <section class="w-full bg-purple-100" >
+  <section class="w-full bg-[#111827] border-" >
     <div class="  px-6 py-20">
       <div class="rounded-lg p-8 text-center" >
-        <h3 class="main_header">{{ cta.heading }}</h3>
+        <h3 class="md:text-4xl text-4xl font-bold text-white">{{ cta.heading }}</h3>
         <p class="mt-5 text-2xl text-gray-500">{{ cta.subheading }}</p>
 
         <div class="mt-6">
