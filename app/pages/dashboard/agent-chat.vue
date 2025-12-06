@@ -181,6 +181,7 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted, nextTick, watch } from 'vue'
 import { Send, ChevronLeft, MessageSquare, RefreshCcw, Inbox, MessageCircle, Clock } from 'lucide-vue-next'
+import { useToast } from 'vue-toastification'
 
 definePageMeta({
   layout: 'dashboard'
