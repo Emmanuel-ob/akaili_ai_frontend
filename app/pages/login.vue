@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen pt-[30vh] sm:pt-[40vh] lg:pt-[6rem] bg-white flex items-center justify-center p-6">
+  <div class="min-h-screen pt-[30vh] sm:pt-[40vh] lg:pt-[6rem] bg-white dark:bg-slate-950 flex items-center justify-center p-6 transition-colors duration-300">
     <main class="max-w-md w-full">
       <!-- Logo -->
       <header class="text-center mb-8">
@@ -8,8 +8,9 @@
           to="/" aria-label="Go to homepage">
           <AppLogo size="md" center />
         </NuxtLink>
-        <h1 class="text-2xl font-semibold text-gray-800 mb-2">Welcome back</h1>
-        <p class="text-gray-600">Sign in to your account</p>
+        <!-- Text Colors -->
+        <h1 class="text-2xl font-semibold text-gray-800 dark:text-white mb-2 transition-colors">Welcome back</h1>
+        <p class="text-gray-600 dark:text-gray-400 transition-colors">Sign in to your account</p>
       </header>
 
       <!-- Social Login -->
@@ -21,47 +22,51 @@
       <!-- Login Form -->
       <form class="space-y-4" @submit.prevent="handleLogin" aria-label="Login form">
         <div>
-          <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+          <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 transition-colors">Email</label>
           <input id="email" v-model="form.email" type="email" required autocomplete="email"
-            class="w-full px-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+            class="w-full px-3 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors
+            bg-white border-gray-300 text-gray-900 placeholder-gray-400
+            dark:bg-slate-900 dark:border-slate-700 dark:text-white dark:placeholder-gray-500"
             placeholder="Enter your email" aria-required="true">
         </div>
 
         <div>
-  <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 transition-colors">Password</label>
 
-  <div class="relative">
-    <input
-      v-model="form.password"
-      :type="showPassword ? 'text' : 'password'"
-      required
-      minlength="8"
-      class="w-full px-3 py-3 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-      placeholder="Create a password (min. 8 characters)"
-    />
+          <div class="relative">
+            <input
+              v-model="form.password"
+              :type="showPassword ? 'text' : 'password'"
+              required
+              minlength="8"
+              class="w-full px-3 py-3 pr-12 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors
+              bg-white border-gray-300 text-gray-900 placeholder-gray-400
+              dark:bg-slate-900 dark:border-slate-700 dark:text-white dark:placeholder-gray-500"
+              placeholder="Create a password (min. 8 characters)"
+            />
 
-    <!-- Toggle Icon -->
-    <button
-      type="button"
-      @click="showPassword = !showPassword"
-      class="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-gray-700"
-    >
-      <Eye v-if="!showPassword" class="w-5 h-5" />
-      <EyeOff v-else class="w-5 h-5" />
-    </button>
-  </div>
-</div>
+            <!-- Toggle Icon -->
+            <button
+              type="button"
+              @click="showPassword = !showPassword"
+              class="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+            >
+              <Eye v-if="!showPassword" class="w-5 h-5" />
+              <EyeOff v-else class="w-5 h-5" />
+            </button>
+          </div>
+        </div>
 
         <div class="flex items-center justify-between">
           <div class="flex items-center">
             <input id="remember" type="checkbox"
-              class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded">
-            <label for="remember" class="ml-2 block text-sm text-gray-700">
+              class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 dark:border-slate-600 dark:bg-slate-800 rounded">
+            <label for="remember" class="ml-2 block text-sm text-gray-700 dark:text-gray-300 transition-colors">
               Remember me
             </label>
           </div>
           <NuxtLink to="/forgot-password"
-            class="text-sm font-medium text-[#9E4CFF] hover:text-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 rounded">
+            class="text-sm font-medium text-[#9E4CFF] hover:text-purple-500 dark:text-purple-400 dark:hover:text-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 rounded transition-colors">
             Forgot password?
           </NuxtLink>
         </div>
@@ -73,29 +78,35 @@
         </button>
       </form>
 
-      <!-- Success Message -->
-      <div v-if="success" class="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg text-green-600 text-sm"
+      <!-- Success Message (Adapted for dark mode) -->
+      <div v-if="success" class="mt-4 p-3 rounded-lg text-sm border transition-colors
+        bg-green-50 border-green-200 text-green-600
+        dark:bg-green-900/20 dark:border-green-800 dark:text-green-400"
         role="alert" aria-live="polite">
         {{ success }}
       </div>
 
-      <!-- Error Message -->
-      <div v-if="error" class="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm" role="alert"
+      <!-- Error Message (Adapted for dark mode) -->
+      <div v-if="error" class="mt-4 p-3 rounded-lg text-sm border transition-colors
+        bg-red-50 border-red-200 text-red-600
+        dark:bg-red-900/20 dark:border-red-800 dark:text-red-400" role="alert"
         aria-live="assertive">
         {{ error }}
         <div v-if="verificationExpired && expiredEmail" class="mt-2">
           <button @click="resendVerification" :disabled="resendLoading"
-            class="text-sm font-medium text-red-700 hover:text-red-800 underline focus:outline-none focus:ring-2 focus:ring-red-500 rounded">
+            class="text-sm font-medium underline focus:outline-none focus:ring-2 focus:ring-red-500 rounded
+            text-red-700 hover:text-red-800
+            dark:text-red-400 dark:hover:text-red-300">
             {{ resendLoading ? 'Sending...' : 'Resend verification email' }}
           </button>
         </div>
       </div>
 
       <!-- Sign Up Link -->
-      <p class="mt-6 text-center text-sm text-gray-600">
+      <p class="mt-6 text-center text-sm text-gray-600 dark:text-gray-400 transition-colors">
         Don't have an account?
         <NuxtLink to="/register"
-          class="font-medium text-[#9E4CFF] hover:text-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 rounded">
+          class="font-medium text-[#9E4CFF] hover:text-purple-500 dark:text-purple-400 dark:hover:text-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 rounded transition-colors">
           Sign up
         </NuxtLink>
       </p>
@@ -135,7 +146,6 @@ const handleLogin = async () => {
 
   try {
     const response = await authStore.login(form.value)
-
     const user = authStore.user
 
     if (!user) {
@@ -144,7 +154,6 @@ const handleLogin = async () => {
 
     console.log('Login successful:', user)
 
-    // Determine where to redirect based on user state
     if (!user.onboarding_completed) {
       router.push('/dashboard/onboarding')
     } else if (!user.current_business_id) {
@@ -154,8 +163,6 @@ const handleLogin = async () => {
     }
   } catch (err) {
     error.value = err.message || 'Login failed'
-
-    // Check if verification is needed
     if (err.needs_verification) {
       verificationExpired.value = true
       expiredEmail.value = form.value.email
@@ -171,16 +178,13 @@ const handleSocialAuth = async (provider) => {
 
   try {
     const result = await authStore.socialAuth(provider)
-
     const user = authStore.user
 
     if (!user) {
       throw new Error('User data not found after social auth')
     }
-
     console.log('Social auth successful:', user)
 
-    // Redirect based on user state
     if (!user.onboarding_completed) {
       router.push('/dashboard/onboarding')
     } else if (!user.current_business_id) {
@@ -195,14 +199,12 @@ const handleSocialAuth = async (provider) => {
 
 const resendVerification = async () => {
   resendLoading.value = true
-
   try {
     const config = useRuntimeConfig()
     await $fetch(`${config.public.apiBase}/api/auth/resend-verification`, {
       method: 'POST',
       body: { email: expiredEmail.value }
     })
-
     success.value = 'Verification email sent! Please check your inbox.'
     error.value = ''
     verificationExpired.value = false
@@ -213,15 +215,12 @@ const resendVerification = async () => {
   }
 }
 
-// Check for URL parameters (email verification, etc.)
 onMounted(() => {
   if (route.query.success) {
     success.value = decodeURIComponent(route.query.success)
   }
-
   if (route.query.error) {
     error.value = decodeURIComponent(route.query.error)
-
     if (route.query.expired === 'true' && route.query.email) {
       verificationExpired.value = true
       expiredEmail.value = decodeURIComponent(route.query.email)

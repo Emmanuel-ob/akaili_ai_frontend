@@ -1,83 +1,113 @@
-<script setup>
-import {productsuite} from '../../utils/data'
-</script>
-
+<!-- components/homepage/ProductSuite.vue -->
 <template>
-<section class="relative overflow-hidden py-20" style="background:#111827;">
-    <!-- #7F56D9 -->
-<!-- background accents -->
-<div class="pointer-events-none absolute inset-0 -z-10">
-<div class="absolute inset-0" style="background: linear-gradient(180deg, rgba(127,86,217,0.05), rgba(17,24,39,0.5)); mix-blend-mode: overlay;"></div>
-<!-- purple glow spots -->
-<div class="absolute top-20 left-1/4 w-[500px] h-[500px] rounded-full bg-[#9E4CFF] opacity-20 blur-3xl"></div>
-<div class="absolute bottom-10 right-1/4 w-[600px] h-[600px] rounded-full bg-[#9E4CFF] opacity-10 blur-3xl"></div>
-</div>
+
+  <section class="relative py-20 bg-gray-50 dark:bg-slate-950 overflow-hidden transition-colors duration-300">
+
+    <div class="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 bg-purple-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob dark:bg-purple-900/20 dark:mix-blend-screen"></div>
+    <div class="absolute bottom-0 left-0 -ml-20 -mb-20 w-96 h-96 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000 dark:bg-blue-900/20 dark:mix-blend-screen"></div>
+
+    <div class="relative max-w-7xl mx-auto px-6 lg:px-8 z-10">
+      <div class="flex flex-col md:flex-row md:items-center justify-between mb-12 gap-6">
+        <div>
+
+          <h2 
+            class="text-4xl sm:text-5xl font-extrabold tracking-tight bg-clip-text text-transparent pb-2"
+            style="background-image: linear-gradient(90deg, #9E4CFF, #2563EB);"
+          >
+            Product Suite
+          </h2>
+
+          <p class="mt-2 text-gray-500 dark:text-gray-400 max-w-xl text-lg transition-colors">
+            Pick the tools you need. Mix and match. All AI-powered.
+          </p>
+        </div>
 
 
-<div class="relative w-[95%] flex flex-col items-center mx-auto px-6 lg:px-8">
-<div class="text-center max-w-3xl mx-auto mb-14">
-<h2 class="text-4xl sm:text-5xl font-extrabold bg-clip-text text-transparent" style="background-image:linear-gradient(90deg,#9E4CFF, #ffffff);">AI-Powered Product Suite</h2>
-<p class="mt-4 text-lg text-gray-300">
-Explore a suite of AI-powered tools designed to streamline support,
-simplify operations, and scale your business effortlessly
-</p>
-</div>
+        <div class="flex flex-wrap gap-2 items-center bg-white dark:bg-slate-900 p-1.5 rounded-xl border border-gray-200 dark:border-slate-800 shadow-sm transition-colors">
+          <button class="px-4 py-1.5 rounded-lg text-sm font-medium bg-gray-100 text-gray-900 shadow-sm dark:bg-slate-800 dark:text-white transition-colors">All</button>
+          <button class="px-4 py-1.5 rounded-lg text-sm font-medium text-gray-500 hover:text-gray-900 hover:bg-gray-50 transition-colors dark:text-gray-400 dark:hover:text-white dark:hover:bg-slate-800">Support</button>
+          <button class="px-4 py-1.5 rounded-lg text-sm font-medium text-gray-500 hover:text-gray-900 hover:bg-gray-50 transition-colors dark:text-gray-400 dark:hover:text-white dark:hover:bg-slate-800">Automation</button>
+        </div>
+      </div>
 
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
 
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-<article
-v-for="p in productsuite"
-:key="p.id"
-class="revamped-card flex flex-col max-w-sm mx-auto transform transition duration-300 hover:-translate-y-2"
-data-aos="zoom-in-up"
-:data-aos-delay="p.id * 120"
->
-<!-- image -->
-<div class="relative w-full h-60 flex items-center justify-center overflow-hidden">
-<img :src="`/${p.image}`" :alt="p.title" class="object-contain max-h-full" />
-<!-- glow overlay -->
-<div class="absolute inset-0 bg-gradient-to-br from-[#9E4CFF]/20 to-transparent"></div>
-</div>
+        <article v-for="p in products" :key="p.id" 
+           class="product-card group bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800" 
+           :style="{ '--accent': p.color }" 
+           data-aos="fade-up">
+           
+          <div class="flex items-start gap-4">
 
+            <div class="icon-wrap shadow-md group-hover:scale-110 transition-transform duration-300 dark:bg-slate-800">
+              <img v-if="p.image" :src="`/${p.image}`" :alt="p.title" class="w-full h-full object-cover rounded-xl" />
+              <div v-else class="w-full h-full bg-purple-100 dark:bg-purple-900/30 rounded-xl"></div>
+            </div>
+            
+            <div class="flex-1">
+              <div class="flex items-center gap-2 flex-wrap">
 
-<!-- content -->
-<div class="p-6 flex flex-col flex-1">
-<h3 class="text-xl font-semibold text-white">{{ p.title }}</h3>
-<p class="mt-3 text-gray-300 text-base leading-relaxed">{{ p.description }}</p>
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white transition-colors">{{ p.title }}</h3>
+                
 
+                <span class="micro-label bg-gray-100 text-gray-600 dark:bg-slate-800 dark:text-gray-300">{{ p.category }}</span>
+              </div>
+              
 
-<ul class="mt-6 space-y-3 text-sm text-gray-300 flex-1">
-<li
-v-for="(feature, i) in p.features"
-:key="i"
-class="flex items-start gap-2"
-data-aos="fade-left"
-:data-aos-delay="i * p.id * 60"
->
-<span class="w-2 h-2 mt-2 rounded-full bg-gradient-to-r from-[#9E4CFF] to-white"></span>
-<p class="text-base">{{ feature }}</p>
-</li>
-</ul>
+              <p class="mt-2 text-gray-500 dark:text-gray-400 text-sm leading-relaxed transition-colors">{{ p.description }}</p>
+            </div>
+          </div>
+          
+          <hr class="my-5 border-gray-100 dark:border-slate-800 transition-colors" />
+          
+          <ul class="space-y-3">
+            <li v-for="(f, idx) in p.features.slice(0,4)" :key="idx" class="flex items-start gap-3">
 
-</div>
-</article>
-</div>
-</div>
-</section>
+              <span class="flex-shrink-0 w-5 h-5 rounded-full bg-green-50 text-green-600 flex items-center justify-center text-[10px] font-bold border border-green-100 dark:bg-green-900/30 dark:text-green-400 dark:border-green-900/50">✓</span>
+              <p class="text-sm text-gray-600 dark:text-gray-300 transition-colors">{{ f }}</p>
+            </li>
+          </ul>
+          
+          <div class="mt-6 flex items-center justify-between pt-4">
+            <NuxtLink to="/get-started" class="card-cta">Try it free</NuxtLink>
+            <div class="text-xs text-gray-400 font-medium">Avg setup: <strong class="text-gray-900 dark:text-white transition-colors">2 min</strong></div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
 </template>
 
+<script setup>
+import { productsuite } from '~/utils/data.js'
+const products = productsuite.map((p, i) => ({ ...p, color: p.color || (['#9E4CFF','#0EA5E9','#EC4899'][i % 3]), category: p.category || ['Automation','Support','Insight'][i % 3]}))
+</script>
 
 <style scoped>
-.revamped-card{
-background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-border: 1px solid rgba(255,255,255,0.06);
-backdrop-filter: blur(6px);
-border-radius: 1rem;
+@keyframes blob { 0% { transform: translate(0px, 0px) scale(1); } 33% { transform: translate(30px, -50px) scale(1.1); } 66% { transform: translate(-20px, 20px) scale(0.9); } 100% { transform: translate(0px, 0px) scale(1); } }
+.animate-blob { animation: blob 7s infinite; }
+.animation-delay-2000 { animation-delay: 2s; }
+
+.product-card { 
+  border-radius: 1rem; 
+  padding: 1.5rem; 
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); 
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); 
+  position: relative; 
+  z-index: 10; 
 }
-.revamped-card:hover{
-box-shadow: 0 10px 30px rgba(2,6,23,0.7), 0 0 30px rgba(127,86,217,0.18);
-border-color: rgba(127,86,217,0.3);
+.product-card:hover { 
+  transform: translateY(-8px); 
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); 
+  border-color: var(--accent); 
 }
+/* Dark mode hover shadow adjustment */
+:global(.dark) .product-card:hover {
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5); 
+}
+
+.icon-wrap { width: 52px; height: 52px; border-radius: 12px; overflow: hidden; }
+.micro-label { padding: 2px 8px; border-radius: 9999px; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; }
+.card-cta { color: var(--accent); font-weight: 600; font-size: 0.9rem; display: inline-flex; align-items: center; transition: opacity 0.2s; }
+.card-cta:hover { opacity: 0.8; text-decoration: underline; }
 </style>
-
-
