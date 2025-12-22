@@ -1,4 +1,4 @@
-<template>
+<!-- halfheroslider component --><template>
   <div
     ref="sliderContainer"
     class="relative w-full h-[80vh] md:h-[70vh] overflow-hidden rounded-3xl"

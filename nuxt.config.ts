@@ -6,6 +6,13 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
 
   devtools: { enabled: true },
+
+    colorMode: {
+    classSuffix: '',
+    preference: 'system',
+    fallback: 'light',
+  },
+  
   css: [
     '~/assets/css/main.css',
     'aos/dist/aos.css'

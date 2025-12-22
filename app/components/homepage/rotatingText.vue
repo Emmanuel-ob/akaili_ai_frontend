@@ -1,3 +1,4 @@
+<!-- components/hompage/rotatingText.vue -->
 <script setup lang="ts">
 import { AnimatePresence, Motion, type Target, type Transition, type VariantLabels } from 'motion-v';
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
