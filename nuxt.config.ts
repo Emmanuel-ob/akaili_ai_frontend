@@ -70,10 +70,18 @@ export default defineNuxtConfig({
       apiBase: process.env.NODE_ENV === 'production'
         ? 'https://api.xeliai.com'
         : (process.env.API_BASE_URL || 'http://localhost:8000'),
-      reverbAppKey: process.env.NUXT_PUBLIC_REVERB_APP_KEY || 'your-app-key',
-      reverbHost: process.env.NUXT_PUBLIC_REVERB_HOST || 'localhost',
-      reverbPort: process.env.NUXT_PUBLIC_REVERB_PORT || '8080',
-      reverbScheme: process.env.NUXT_PUBLIC_REVERB_SCHEME || 'http',
+      reverbAppKey: process.env.NODE_ENV === 'production'
+        ? 'your-production-app-key'
+        : (process.env.NUXT_PUBLIC_REVERB_APP_KEY || 'your-app-key'),
+      reverbHost: process.env.NODE_ENV === 'production'
+        ? 'api.xeliai.com'
+        : (process.env.NUXT_PUBLIC_REVERB_HOST || 'localhost'),
+      reverbPort: process.env.NODE_ENV === 'production'
+        ? '443'
+        : (process.env.NUXT_PUBLIC_REVERB_PORT || '8080'),
+      reverbScheme: process.env.NODE_ENV === 'production'
+        ? 'https'
+        : (process.env.NUXT_PUBLIC_REVERB_SCHEME || 'http'),
     },
   },
 
