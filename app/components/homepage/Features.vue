@@ -1,75 +1,53 @@
-<script setup>
-import { features } from '~/utils/data.js'
-
-const featuresList = features
-
-
-</script>
-
+<!-- components/homepage/Features.vue -->
 <template>
-  <section class="relative overflow-hidden bg-[#111827] py-16" >
-    <!-- subtle gradient overlay + decorative SVG particles -->
-    <div class="pointer-events-none absolute inset-0 -z-10">
-      <div class="absolute inset-0" style="background: linear-gradient(180deg, rgba(127,86,217,0.06), rgba(17,24,39,0.22)); mix-blend-mode: overlay;"></div>
 
-      <!-- decorative blurred radial spots -->
-      <svg class="absolute -left-20 top-8 w-[600px] h-[600px] opacity-30" viewBox="0 0 600 600" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <radialGradient id="g1" cx="0.5" cy="0.5">
-            <stop offset="0%" stop-color="#9E4CFF" stop-opacity="0.45" />
-            <stop offset="100%" stop-color="#9E4CFF" stop-opacity="0" />
-          </radialGradient>
-        </defs>
-        <rect width="600" height="600" fill="url(#g1)" />
-      </svg>
+  <section class="relative overflow-hidden bg-white dark:bg-slate-950 py-24 transition-colors duration-300">
+    <div class="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
 
-      <svg class="absolute right-0 -bottom-24 w-[700px] h-[700px] opacity-20" viewBox="0 0 700 700" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <radialGradient id="g2" cx="0.5" cy="0.5">
-            <stop offset="0%" stop-color="#9E4CFF" stop-opacity="0.35" />
-            <stop offset="100%" stop-color="#9E4CFF" stop-opacity="0" />
-          </radialGradient>
-        </defs>
-        <rect width="700" height="700" fill="url(#g2)" />
-      </svg>
+      <div class="absolute -left-[10%] top-0 w-[50%] h-[50%] bg-purple-100/60 blur-[120px] rounded-full mix-blend-multiply dark:bg-purple-900/20 dark:mix-blend-screen transition-all duration-500"></div>
+      <div class="absolute -right-[10%] bottom-0 w-[50%] h-[50%] bg-blue-50/60 blur-[120px] rounded-full mix-blend-multiply dark:bg-blue-900/20 dark:mix-blend-screen transition-all duration-500"></div>
     </div>
 
-    <div class="relative max-w-7xl mx-auto px-6">
-      <div class="text-center mb-12">
-        <h2 class="text-4xl sm:text-5xl font-extrabold tracking-tight bg-clip-text text-transparent" style="background-image: linear-gradient(90deg,#9E4CFF, #ffffff);">
+    <div class="relative max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="text-center mb-16">
+
+        <h2 
+          class="text-4xl sm:text-5xl font-extrabold tracking-tight bg-clip-text text-transparent pb-2"
+          style="background-image: linear-gradient(90deg, #9E4CFF, #2563EB);"
+        >
           Powerful Features
         </h2>
-        <p class="mt-3 text-lg text-gray-300">Everything you need to create intelligent, responsive chatbots</p>
-      </div>
-1
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div
-          v-for="(f, idx) in featuresList"
-          :key="f.id"
-          class="feature-card transform transition-all duration-400 hover:-translate-y-2 rounded-2xl p-6 shadow-md"
-          :data-aos="'zoom-in-up'"
-          :data-aos-delay="idx * 80"
-        >
-          <div class="flex gap-4 items-start">
-            <!-- icon circle -->
-            <div class="icon-wrap flex-none w-14 h-14 rounded-full flex items-center justify-center shadow-lg">
-              <!-- Use NuxtImg if you have SVG/PNG icons, otherwise swap for inline SVG -->
-              <NuxtImg :src="`/feature_${f.icon}.png`" format="webp" class="w-7 h-7" alt="" />
-            </div>
+        
 
+        <p class="mt-4 text-lg text-gray-500 dark:text-gray-400 max-w-2xl mx-auto transition-colors">
+          Everything you need to create intelligent, responsive chatbots without writing a single line of code.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+        <div v-for="(f, idx) in featuresList" :key="f.id" class="feature-card group bg-white dark:bg-slate-900 border-gray-200 dark:border-slate-800" :data-aos="'fade-up'" :data-aos-delay="idx * 50">
+          <div class="flex gap-5 items-start">
+
+            <div class="icon-wrap flex-none w-12 h-12 rounded-xl bg-purple-50 flex items-center justify-center border border-purple-100 group-hover:bg-purple-100 transition-colors duration-300 dark:bg-slate-800 dark:border-slate-700 dark:group-hover:bg-slate-700">
+              <div class="icon w-6 h-6 text-purple-600 dark:text-purple-400" v-html="f.icon"></div>
+            </div>
+            
             <div class="flex-1 min-w-0">
-              <h3 class="text-white text-lg font-semibold leading-snug">{{ f.title }}</h3>
-              <p class="mt-2 text-sm text-gray-300 leading-relaxed">{{ f.description }}</p>
+
+              <h3 class="text-gray-900 dark:text-white text-lg font-bold leading-snug group-hover:text-[#9E4CFF] dark:group-hover:text-purple-400 transition-colors duration-300">{{ f.title }}</h3>
+              
+
+              <p class="mt-2 text-sm text-gray-600 dark:text-gray-400 leading-relaxed transition-colors">{{ f.description }}</p>
             </div>
           </div>
-
-          <!-- small badges or CTA area -->
-          <div class="mt-4 flex items-center justify-between">
+          
+          <div class="mt-5 pt-5 border-t border-gray-100 dark:border-slate-800 flex items-center justify-between opacity-80 group-hover:opacity-100 transition-opacity">
             <div class="flex items-center gap-2">
-              <span class="badge text-xs font-medium">AI-powered</span>
-              <span v-if="f.popular" class="badge-primary text-xs font-medium">Popular</span>
+              <span v-if="f.popular" class="px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 text-[10px] font-bold uppercase tracking-wide border border-amber-200 dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-800">Popular</span>
             </div>
-            <button class="text-xs font-medium px-3 py-1 text-white rounded-full bg-white/6 hover:bg-white/12 transition">Learn more</button>
+            <NuxtLink to="/get-started" class="text-xs font-semibold text-[#9E4CFF] dark:text-purple-400 flex items-center gap-1 group/link">
+              Learn more <span class="group-hover/link:translate-x-1 transition-transform">→</span>
+            </NuxtLink>
           </div>
         </div>
       </div>
@@ -77,43 +55,30 @@ const featuresList = features
   </section>
 </template>
 
+<script setup>
+import { features } from '~/utils/data.js'
+const featuresList = features
+</script>
+
 <style scoped>
-/* Card base styling */
-.feature-card{
-  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-  border: 1px solid rgba(255,255,255,0.04);
-  backdrop-filter: blur(6px);
+/* Updated card styles to handle dark mode via CSS variables or Tailwind classes directly in template above */
+.feature-card { 
+  /* background & border handled in template via tailwind classes */
+  border-width: 1px; 
+  border-radius: 1.25rem; 
+  padding: 1.75rem; 
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); 
+  transition: all 0.3s ease; 
 }
-
-/* Icon circle gradient and glow */
-.icon-wrap{
-  background: white;
-  box-shadow: 0 8px 28px rgba(127,86,217,0.14);
+.feature-card:hover { 
+  transform: translateY(-4px); 
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); 
+  border-color: #d8b4fe; 
 }
-
-/* badges */
-.badge{
-  background: linear-gradient(90deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
-  color: #cbd5e1;
-  padding: 6px 10px;
-  border-radius: 9999px;
+/* Ensure dark mode hover border is visible but subtle */
+:global(.dark) .feature-card:hover {
+  border-color: #9333ea; /* Purple 600 */
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5); 
 }
-
-.badge-primary{
-  background: linear-gradient(90deg, rgba(127,86,217,0.18), rgba(127,86,217,0.08));
-  color: #f8fafc;
-  padding: 6px 10px;
-  border-radius: 9999px;
-}
-
-/* hover glow effect (thin gradient ring) */
-.feature-card:hover{
-  box-shadow: 0 10px 30px rgba(2,6,23,0.6), 0 0 30px rgba(127,86,217,0.12);
-  border-color: rgba(127,86,217,0.25);
-}
-
-/* responsive tweaks */
-@media (min-width: 1024px){
-  .feature-card{ padding: 28px; }
-}
+:deep(svg) { width: 100%; height: 100%; }
 </style>

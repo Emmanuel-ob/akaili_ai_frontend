@@ -1,107 +1,66 @@
-
+<!-- pages/products.vue -->
 <template>
-       <div class="overflow-hidden">
-     <div class="relative overflow-hidden bg-white pt-[30vh] sm:pt-[40vh] lg:pt-[5rem] h-screen w-full flex flex-col justify-center">
-    <!-- purple glow -->
-    <div
-    aria-hidden="true"
-    class="absolute -top-[-3rem] -left-[-9rem] w-[640px] h-[640px] rounded-full pointer-events-none
-    filter blur-[80px] opacity-50
-    bg-[radial-gradient(circle_at_20%_20%,_rgba(124,58,237,0.65)_0%,_rgba(167,139,250,0.32)_35%,_transparent_70%)]"
-    data-aos="fade-up" 
-    />
 
-       <div class="relative z-10 w-full">
-<div class="relative z-10 w-full ">
-  <div class="grid grid-cols-1 md:grid-cols-2 items-center px-6 py-12 md:px-20 md:py-24 gap-12" >
+  <div class="overflow-hidden bg-white dark:bg-slate-950 transition-colors duration-300">
+    <div class="relative overflow-hidden w-full"> 
+      <div
+        class="absolute inset-0 bg-cover bg-center"
+        :style="{ backgroundImage: 'url(/products_hero.png)' }"
+      ></div>
+
     
-    <!-- left text content -->
-    <div>
-        <NuxtImg src="/product_icon.png" format="webp" class="w-20 mb-6" alt="Wxeli ai Logo"  data-aos="zoom-in-right" />
-      <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight" data-aos="zoom-in-right">
-       Xeli ai
-        
-      </h1>
+      <div class="absolute inset-0 bg-black/60 dark:bg-black/80 transition-colors duration-300"></div>
 
-      <p class="mt-5 text-base text-slate-600 max-w-lg" data-aos="fade-in-right" data-aos-delay="100">
-       Empower your business with an AI chatbot that understands your data, responds instantly, and supports your customers—24/7, on any channel
-      </p>
+      <div class="relative z-10 w-full px-6 py-20 md:px-12 lg:px-20 md:py-32"> 
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20 items-center w-full max-w-7xl mx-auto">
+          <div class="text-white space-y-6" data-aos="fade-right">
+            <NuxtImg src="/logo-footer.png" format="webp" class="w-24 h-auto mb-4" alt="Xeli AI Logo" /> 
+            
+            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight">
+              Xeli AI
+            </h1>
+            
+          
+            <p class="text-lg sm:text-xl max-w-lg opacity-90 text-gray-100 dark:text-gray-300">
+              A complete AI platform to build, deploy, and manage intelligent chatbots for your business. 
+              From analytics and team management to live monitoring and email campaigns, everything you need is in one place.
+            </p>
 
-      <!-- buttons -->
-      <div class="mt-8 flex flex-col sm:flex-row items-start sm:items-center gap-4" data-aos="flip-up" data-aos-delay="200">
-        <NuxtLink
-          to="/get-started"
-          class="px-6 py-3 nav_primary_btn text-white rounded-md font-medium transition shadow-md"
-        >
-          Get Started
-        </NuxtLink>
+            <div class="flex flex-col sm:flex-row gap-4 pt-4">
+              <NuxtLink
+                to="/get-started"
+                class="px-8 py-4 nav_primary_btn text-white rounded-lg font-medium shadow-xl transition hover:scale-105 transform text-center"
+              >
+                Get Started
+              </NuxtLink>
+            </div>
+          </div>
 
-        <a
-          href="#"
-          class="px-6 py-3 border border-purple-300 text-purple-600 rounded-md font-medium hover:bg-purple-50 transition"
-        >
-          View Demo
-        </a>
+          <div class="flex justify-center md:justify-end mt-12 md:mt-0"> 
+              <NuxtImg
+              src="/product_hero.png" 
+              format="webp" 
+              class="w-full max-w-md lg:max-w-lg h-auto rounded-3xl shadow-2xl transition duration-500 hover:scale-[1.02]"
+              alt="AI Hero" />
+          </div>
+
+        </div>
       </div>
-
-      <!-- stats -->
-      <ul class="mt-10 flex gap-9 ">
-        <li class="flex flex-col items-center gap-1" data-aos="flip-left" data-aos-delay="200" >
-            <div class=" font-bold text-slate-800 flex gap-2" >
-               <NuxtImg src="/hero_brain.png" format="webp" class="w-5" alt="" /><span>99.9%</span>
-            </div>
-            <div class="text-xs font_color font-semibold">AI Accuracy</div>
-        </li>
-        <li class="flex flex-col items-center gap-1" data-aos="flip-left" data-aos-delay="250" >
-            <div class=" font-bold text-slate-800 flex gap-2" >
-               <NuxtImg src="/hero_faster.png" format="webp" class="w-5" alt="" /><span>10x</span>
-            </div>
-            <div class="text-xs font_color font-semibold">Faster Processing</div>
-        </li>
-        <li class="flex flex-col items-center gap-1" data-aos="flip-left" data-aos-delay="300" >
-            <div class=" font-bold text-slate-800 flex gap-2" >
-               <NuxtImg src="/hero_cpu.png" format="webp" class="w-5" alt="" /><span>1M+</span>
-            </div>
-            <div class="text-xs font_color font-semibold">AI Operations/Day</div>
-        </li>
-      </ul>
     </div>
 
-    <!-- right image card -->
-    <div class="h-full flex justify-center py-[5rem]" data-aos="zoom-in-left">
-  <img src="/product_hero.png" alt="AI Hero" class="w-full h-full object-cover rounded-[40px]" />
-    </div>-
-
-  </div>
-</div>
-
-</div>
-
-
-  </div>
     <Features />
     <CtaBanner />
-
-             
-
-    </div>
+  </div>
 </template>
 
+<script setup> 
+import Features from '../components/homepage/Features.vue'
+import CtaBanner from '../components/homepage/CtaBanner.vue'
+import { onMounted } from 'vue'
 
-    <script setup> 
-    import Features from '../components/homepage/Features.vue'
-    import CtaBanner from '../components/homepage/CtaBanner.vue'
-    import { onMounted } from 'vue'
-    
-    
-    
-        onMounted(() => {
+onMounted(() => {
   if (window.AOS) {
-    window.AOS.init({
-      duration: 1000,
-      once: true,
-    })
+    window.AOS.init({ duration: 1000, once: true })
   }
 })
-    
-    </script>
+</script>

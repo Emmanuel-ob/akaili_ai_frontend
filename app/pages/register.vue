@@ -1,13 +1,13 @@
 <template>
-  <div class="min-h-screen pt-[30vh] sm:pt-[40vh] lg:pt-[6rem] bg-white flex items-center justify-center p-6">
+  <div class="min-h-screen pt-[30vh] sm:pt-[40vh] lg:pt-[6rem] bg-white dark:bg-slate-950 flex items-center justify-center p-6 transition-colors duration-300">
     <div class="max-w-md w-full">
       <!-- Logo -->
       <div class="text-center mb-8">
         <NuxtLink class="hover:cursor-pointer" to="/">
           <AppLogo size="md" center />
         </NuxtLink>
-        <h2 class="text-2xl font-semibold text-gray-800 mb-2 mt-4">Create your account</h2>
-        <p class="text-gray-600">Start building your intelligent chatbot</p>
+        <h2 class="text-2xl font-semibold text-gray-800 dark:text-white mb-2 mt-4 transition-colors">Create your account</h2>
+        <p class="text-gray-600 dark:text-gray-400 transition-colors">Start building your intelligent chatbot</p>
       </div>
 
       <!-- Social Login -->
@@ -19,44 +19,49 @@
       <!-- Register Form -->
       <form class="space-y-4" @submit.prevent="handleRegister">
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 transition-colors">Full Name</label>
           <input v-model="form.name" type="text" required
-            class="w-full px-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+            class="w-full px-3 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors
+            bg-white border-gray-300 text-gray-900 placeholder-gray-400
+            dark:bg-slate-900 dark:border-slate-700 dark:text-white dark:placeholder-gray-500"
             placeholder="Enter your full name">
         </div>
 
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 transition-colors">Email</label>
           <input v-model="form.email" type="email" required
-            class="w-full px-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+            class="w-full px-3 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors
+            bg-white border-gray-300 text-gray-900 placeholder-gray-400
+            dark:bg-slate-900 dark:border-slate-700 dark:text-white dark:placeholder-gray-500"
             placeholder="Enter your email">
         </div>
 
         <div>
-  <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 transition-colors">Password</label>
 
-  <div class="relative">
-    <input
-      v-model="form.password"
-      :type="showPassword ? 'text' : 'password'"
-      required
-      minlength="8"
-      class="w-full px-3 py-3 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-      placeholder="Create a password (min. 8 characters)"
-    />
+          <div class="relative">
+            <input
+              v-model="form.password"
+              :type="showPassword ? 'text' : 'password'"
+              required
+              minlength="8"
+              class="w-full px-3 py-3 pr-12 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors
+              bg-white border-gray-300 text-gray-900 placeholder-gray-400
+              dark:bg-slate-900 dark:border-slate-700 dark:text-white dark:placeholder-gray-500"
+              placeholder="Create a password (min. 8 characters)"
+            />
 
-    <!-- Toggle Icon -->
-    <button
-      type="button"
-      @click="showPassword = !showPassword"
-      class="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-gray-700"
-    >
-      <Eye v-if="!showPassword" class="w-5 h-5" />
-      <EyeOff v-else class="w-5 h-5" />
-    </button>
-  </div>
-</div>
-
+            <!-- Toggle Icon -->
+            <button
+              type="button"
+              @click="showPassword = !showPassword"
+              class="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+            >
+              <Eye v-if="!showPassword" class="w-5 h-5" />
+              <EyeOff v-else class="w-5 h-5" />
+            </button>
+          </div>
+        </div>
 
         <button type="submit" :disabled="loading"
           class="w-full bg-[#9E4CFF] text-white py-3 px-4 rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
@@ -65,18 +70,18 @@
       </form>
 
       <!-- Success/Error Messages -->
-      <div v-if="success" class="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg text-green-600 text-sm">
+      <div v-if="success" class="mt-4 p-3 rounded-lg text-sm border transition-colors bg-green-50 border-green-200 text-green-600 dark:bg-green-900/20 dark:border-green-800 dark:text-green-400">
         {{ success }}
       </div>
 
-      <div v-if="error" class="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm">
+      <div v-if="error" class="mt-4 p-3 rounded-lg text-sm border transition-colors bg-red-50 border-red-200 text-red-600 dark:bg-red-900/20 dark:border-red-800 dark:text-red-400">
         {{ error }}
       </div>
 
       <!-- Sign In Link -->
-      <p class="mt-6 text-center text-sm text-gray-600">
+      <p class="mt-6 text-center text-sm text-gray-600 dark:text-gray-400 transition-colors">
         Already have an account?
-        <NuxtLink to="/login" class="font-medium text-purple-600 hover:text-purple-500">
+        <NuxtLink to="/login" class="font-medium text-purple-600 hover:text-purple-500 dark:text-purple-400 dark:hover:text-purple-300 transition-colors">
           Sign in
         </NuxtLink>
       </p>
@@ -125,10 +130,8 @@ const handleRegister = async () => {
 const handleSocialAuth = async (provider) => {
   try {
     await authStore.socialAuth(provider)
-
     const user = authStore.user
 
-    // New users from social auth are already verified, send to onboarding
     if (!user.onboarding_completed) {
       router.push('/dashboard/onboarding')
     } else if (!user.current_business_id) {
