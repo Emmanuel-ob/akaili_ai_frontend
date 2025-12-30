@@ -43,7 +43,6 @@ onUnmounted(() => document.removeEventListener('click', handleClickOutside))
 </script>
 
 <template>
-  <!-- Added dark:bg-slate-900 and dark:border-b dark:border-slate-800 -->
   <nav 
      class="transition-all duration-300 h-[9vh] md:h-[10vh] lg:h-[12vh] z-[100] fixed w-full 
            bg-white/90 backdrop-blur-md 
@@ -54,7 +53,6 @@ onUnmounted(() => document.removeEventListener('click', handleClickOutside))
     <div class="flex items-center h-full md:w-[95%] lg:w-[95%] justify-between sm:w-[80%] mx-[2rem]">
       <!-- LOGO -->
       <NuxtLink to="/" class="font-bold text-2xl sm:text-3xl" aria-label="Xeli AI Home">
-        <!-- You might want a white version of logo for dark mode, or use brightness filter -->
         <NuxtImg width="100" height="80" src="/logo-small.png" format="webp" alt="Xeli AI Logo" loading="eager" />
       </NuxtLink>
 
@@ -141,37 +139,65 @@ onUnmounted(() => document.removeEventListener('click', handleClickOutside))
 
     <!-- Mobile Nav Drawer -->
     <aside
-      class="fixed top-0 left-0 h-full w-[80%] sm:w-[60%] bg-[#9E4CFF] dark:bg-slate-900 text-white flex flex-col space-y-10 pt-20 pl-12 transform transition-transform duration-500 z-[1050] shadow-2xl"
+      class="fixed top-0 left-0 h-screen w-[80%] sm:w-[60%] bg-[#9E4CFF] text-white flex flex-col z-[1050] shadow-2xl transition-transform duration-300"
       :class="navOpen ? 'translate-x-0' : '-translate-x-full'" role="dialog" aria-modal="true"
       aria-label="Mobile navigation">
       
-      <X @click="closeNav" class="absolute top-4 right-6 cursor-pointer w-6 h-6 sm:w-8 sm:h-8"
-        role="button" aria-label="Close mobile menu" tabindex="0" />
-
-      <NuxtLink v-for="link in navLinks" :key="link.id" :to="link.url"
-        class="text-xl sm:text-[30px] border-b border-white/20 pb-1 hover:border-white transition-all w-fit"
-        @click="closeNav">
-        {{ link.label }}
-      </NuxtLink>
-
-      <div v-if="isAuthenticated" class="space-y-4 pr-12">
-        <button @click="() => { goToDashboard(); closeNav(); }"
-          class="flex w-full items-center text-lg bg-white/10 hover:bg-white/20 px-4 py-3 rounded-xl transition-colors">
-          <LayoutDashboard class="w-5 h-5 mr-3" aria-hidden="true" />
-          Dashboard
-        </button>
-        <button @click="() => { handleLogout(); closeNav(); }"
-          class="flex w-full items-center text-lg text-red-100 hover:bg-red-500/20 px-4 py-3 rounded-xl transition-colors">
-          <LogOut class="w-5 h-5 mr-3" aria-hidden="true" />
-          Logout
-        </button>
+      <!-- Close Button (Absolute to stay fixed while content scrolls) -->
+      <div class="absolute top-6 right-6 z-20">
+        <X @click="closeNav" class="w-8 h-8 cursor-pointer hover:rotate-90 transition-transform hover:opacity-80"
+          role="button" aria-label="Close mobile menu" tabindex="0" />
       </div>
-      <NuxtLink v-else to="/get-started" @click="closeNav" class="pr-12">
-        <button
-          class="w-full px-11 py-4 bg-white text-purple-600 font-bold rounded-xl shadow-lg transition-colors">
-          Get Started
-        </button>
-      </NuxtLink>
+
+      <!-- Scrollable Content Container -->
+      <!-- 'no-scrollbar' class added via style tag below -->
+      <div class="flex-1 overflow-y-auto no-scrollbar flex flex-col px-10 py-20">
+        
+        <!-- Navigation Links -->
+        <!-- Reduced text size: text-lg sm:text-2xl -->
+        <div class="flex flex-col space-y-6">
+          <NuxtLink v-for="link in navLinks" :key="link.id" :to="link.url"
+            class="text-lg sm:text-2xl font-semibold border-b border-white/20 pb-2 hover:border-white transition-all w-fit"
+            @click="closeNav">
+            {{ link.label }}
+          </NuxtLink>
+        </div>
+
+        <!-- Action Buttons (Pushed down if there is space) -->
+        <div class="mt-auto pt-10">
+          <div v-if="isAuthenticated" class="space-y-4">
+            <button @click="() => { goToDashboard(); closeNav(); }"
+              class="flex w-full items-center text-base sm:text-lg bg-white/10 hover:bg-white/20 px-4 py-3 rounded-xl transition-colors font-medium">
+              <LayoutDashboard class="w-5 h-5 mr-3" aria-hidden="true" />
+              Dashboard
+            </button>
+            <button @click="() => { handleLogout(); closeNav(); }"
+              class="flex w-full items-center text-base sm:text-lg text-red-100 hover:bg-red-500/20 px-4 py-3 rounded-xl transition-colors font-medium">
+              <LogOut class="w-5 h-5 mr-3" aria-hidden="true" />
+              Logout
+            </button>
+          </div>
+          
+          <NuxtLink v-else to="/get-started" @click="closeNav" class="block">
+            <!-- White button with Purple text for high contrast -->
+            <button
+              class="w-full px-8 py-3 bg-white text-[#9E4CFF] font-bold text-base sm:text-lg rounded-xl shadow-lg hover:bg-gray-50 transition-colors">
+              Get Started
+            </button>
+          </NuxtLink>
+        </div>
+      </div>
     </aside>
   </nav>
 </template>
+
+<style scoped>
+/* Utility to hide scrollbar but keep functionality */
+.no-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari and Opera */
+}
+</style>

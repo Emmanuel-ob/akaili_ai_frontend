@@ -1,11 +1,9 @@
+<!-- components/chatbot-setup/BehaviourChatbotSetup.vue -->
 <script setup>
 import { inject, ref } from 'vue'
 import ToggleSwitch from '~/components/chatbot-setup/ToggleSwitch.vue'
 
-// Inject form data from parent
 const formData = inject('formData')
-
-// Authentication testing
 const testingAuth = ref(false)
 const authTestResult = ref(null)
 
@@ -25,37 +23,24 @@ const testAuthEndpoint = async () => {
             widget_token: 'test_token_validation'
         }
 
-        // Try to reach the endpoint
         const url = formData.auth_endpoint.startsWith('http')
             ? formData.auth_endpoint
             : `${window.location.origin}${formData.auth_endpoint}`
 
         const response = await fetch(url, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            },
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
             body: JSON.stringify(testPayload)
         })
 
         if (response.ok) {
             const data = await response.json()
-            authTestResult.value = {
-                success: true,
-                message: `✓ Endpoint reachable. Response: ${JSON.stringify(data)}`
-            }
+            authTestResult.value = { success: true, message: `✓ Endpoint reachable. Response: ${JSON.stringify(data)}` }
         } else {
-            authTestResult.value = {
-                success: false,
-                message: `✗ Endpoint returned ${response.status}: ${response.statusText}`
-            }
+            authTestResult.value = { success: false, message: `✗ Endpoint returned ${response.status}: ${response.statusText}` }
         }
     } catch (error) {
-        authTestResult.value = {
-            success: false,
-            message: `✗ Cannot reach endpoint: ${error.message}`
-        }
+        authTestResult.value = { success: false, message: `✗ Cannot reach endpoint: ${error.message}` }
     } finally {
         testingAuth.value = false
     }
@@ -65,24 +50,23 @@ const testAuthEndpoint = async () => {
 <template>
     <div class="space-y-6">
         <!-- Basic Behavior Settings -->
-        <div class="block border px-4 py-6 border-gray-200 rounded-2xl">
+        <div class="block border px-6 py-8 border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl transition-colors duration-300">
             <div>
-                <h2 class="text-xl lg:text-2xl font-bold">Behavior Settings</h2>
-                <p class="text-gray-500 mt-1 mb-4">Configure how your chatbot responds and behaves</p>
+                <h2 class="text-xl lg:text-2xl font-bold text-gray-900 dark:text-white">Behavior Settings</h2>
+                <p class="text-gray-500 dark:text-gray-400 mt-1 mb-6">Configure how your chatbot responds and behaves</p>
             </div>
 
-            <section
-                class="input-card grid grid-cols-1 lg:grid-cols-2 gap-6 border px-4 py-6 border-gray-200 rounded-2xl">
+            <section class="input-card grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <!-- Left Card -->
                 <div>
-                    <label class="block text-base font-semibold mt-4">Fallback Message</label>
+                    <label class="block text-base font-semibold mt-0 text-gray-800 dark:text-gray-200">Fallback Message</label>
                     <textarea v-model="formData.fallback_message" rows="4"
                         placeholder="I'm sorry, I didn't understand that. Could you please rephrase?"
-                        class="mt-2 block w-full text-gray-600 rounded-md border border-gray-300 p-3 focus:outline-none focus:border-gray-300" />
+                        class="mt-2 block w-full rounded-xl border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-gray-900 dark:text-white p-3 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all" />
 
-                    <label class="block text-base font-semibold mt-4">Max Conversation Length</label>
+                    <label class="block text-base font-semibold mt-6 text-gray-800 dark:text-gray-200">Max Conversation Length</label>
                     <select v-model="formData.max_conversation_length"
-                        class="mt-2 block w-full text-gray-600 rounded-md border border-gray-300 p-3 focus:outline-none focus:border-gray-300">
+                        class="mt-2 block w-full rounded-xl border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-gray-900 dark:text-white p-3 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all">
                         <option :value="10">10 messages</option>
                         <option :value="50">50 messages</option>
                         <option :value="100">100 messages</option>
@@ -90,28 +74,28 @@ const testAuthEndpoint = async () => {
                     </select>
                 </div>
 
-                <!-- Right Card -->
-                <div>
-                    <div class="mt-6 flex items-center justify-between">
+                <!-- Right Card: Toggles -->
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between p-4 bg-gray-50 dark:bg-slate-800/50 rounded-xl border border-gray-100 dark:border-slate-700">
                         <div>
-                            <label class="block text-base font-semibold mt-4">Enable Typing Indicator</label>
-                            <p class="text-gray-500">Show typing animation while processing</p>
+                            <label class="block text-base font-semibold text-gray-900 dark:text-white">Enable Typing Indicator</label>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Show typing animation while processing</p>
                         </div>
                         <ToggleSwitch v-model="formData.enable_typing_indicator" />
                     </div>
 
-                    <div class="mt-6 flex items-center justify-between">
+                    <div class="flex items-center justify-between p-4 bg-gray-50 dark:bg-slate-800/50 rounded-xl border border-gray-100 dark:border-slate-700">
                         <div>
-                            <label class="block text-base font-semibold mt-4">Collect User Feedback</label>
-                            <p class="text-gray-500">Ask for ratings after conversations</p>
+                            <label class="block text-base font-semibold text-gray-900 dark:text-white">Collect User Feedback</label>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Ask for ratings after conversations</p>
                         </div>
                         <ToggleSwitch v-model="formData.collect_user_feedback" />
                     </div>
 
-                    <div class="mt-6 flex items-center justify-between">
+                    <div class="flex items-center justify-between p-4 bg-gray-50 dark:bg-slate-800/50 rounded-xl border border-gray-100 dark:border-slate-700">
                         <div>
-                            <label class="block text-base font-semibold mt-4">Handoff to Human</label>
-                            <p class="text-gray-500">Allow escalation to human agents</p>
+                            <label class="block text-base font-semibold text-gray-900 dark:text-white">Handoff to Human</label>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Allow escalation to human agents</p>
                         </div>
                         <ToggleSwitch v-model="formData.handoff_to_human" />
                     </div>
@@ -120,21 +104,21 @@ const testAuthEndpoint = async () => {
         </div>
 
         <!-- Authentication Settings -->
-        <div class="block border px-4 py-6 border-gray-200 rounded-2xl">
-            <h3 class="text-xl font-bold text-gray-900 mb-4">Authentication Settings</h3>
-            <p class="text-gray-600 text-sm mb-6">
+        <div class="block border px-6 py-8 border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl transition-colors duration-300">
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-4">Authentication Settings</h3>
+            <p class="text-gray-600 dark:text-gray-400 text-sm mb-6">
                 Configure authentication for sensitive queries. When users ask about account information, personal data,
                 or other sensitive topics, the widget will verify their identity.
             </p>
 
             <div class="space-y-6">
                 <!-- Enable Authentication Toggle -->
-                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                <div class="flex items-center justify-between p-4 bg-gray-50 dark:bg-slate-800/50 rounded-xl border border-gray-100 dark:border-slate-700">
                     <div>
-                        <label class="block text-base font-semibold text-gray-900">
+                        <label class="block text-base font-semibold text-gray-900 dark:text-white">
                             Enable Authentication
                         </label>
-                        <p class="text-gray-600 text-sm mt-1">
+                        <p class="text-gray-500 dark:text-gray-400 text-sm mt-1">
                             Require user verification for sensitive queries
                         </p>
                     </div>
@@ -142,73 +126,49 @@ const testAuthEndpoint = async () => {
                 </div>
 
                 <!-- Authentication Configuration -->
-                <div v-if="formData.require_auth" class="space-y-4 pl-4 border-l-4 border-gray-200">
+                <div v-if="formData.require_auth" class="space-y-6 pl-6 border-l-2 border-gray-200 dark:border-slate-700">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             Authentication Endpoint URL
                         </label>
                         <input v-model="formData.auth_endpoint" type="text"
                             placeholder="https://yoursite.com/api/widget-auth or /api/widget-auth"
-                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent" />
-                        <p class="text-xs text-gray-500 mt-1">
-                            URL endpoint on your website that the widget will call to verify user identity. Can be
-                            absolute (https://...) or relative (/api/...)
+                            class="w-full px-4 py-3 border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all" />
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                            URL endpoint on your website that the widget will call to verify user identity.
                         </p>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                 Authentication Timeout (seconds)
                             </label>
                             <input v-model.number="formData.auth_timeout" type="number" min="300" max="7200"
                                 placeholder="1800"
-                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent" />
-                            <p class="text-xs text-gray-500 mt-1">
-                                How long authentication lasts (default: 1800 seconds / 30 minutes)
-                            </p>
+                                class="w-full px-4 py-3 border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all" />
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                 Sensitive Keywords
                             </label>
                             <input v-model="formData.sensitive_keywords" type="text"
                                 placeholder="account, balance, order, payment, personal, billing"
-                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent" />
-                            <p class="text-xs text-gray-500 mt-1">
-                                Keywords that trigger authentication requirement (comma separated)
-                            </p>
+                                class="w-full px-4 py-3 border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all" />
                         </div>
                     </div>
 
                     <!-- Auth Endpoint Testing -->
-                    <div v-if="formData.auth_endpoint" class="p-4 bg-gray-50 border border-gray-200 rounded-lg">
-                        <h4 class="text-sm font-medium text-gray-900 mb-3">Test Authentication Endpoint</h4>
-                        <p class="text-xs text-gray-600 mb-3">
-                            Test if your authentication endpoint is properly configured and reachable.
-                        </p>
+                    <div v-if="formData.auth_endpoint" class="p-5 bg-gray-50 dark:bg-slate-800/30 border border-gray-200 dark:border-slate-700 rounded-xl">
+                        <h4 class="text-sm font-bold text-gray-900 dark:text-white mb-3">Test Authentication Endpoint</h4>
                         <button @click="testAuthEndpoint" :disabled="testingAuth"
-                            class="bg-gray-900 text-white px-4 py-2 text-sm rounded hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed">
+                            class="bg-gray-900 dark:bg-white text-white dark:text-gray-900 px-4 py-2 text-sm rounded-lg hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all">
                             {{ testingAuth ? 'Testing...' : 'Test Endpoint' }}
                         </button>
-                        <div v-if="authTestResult" class="mt-3 p-2 rounded text-xs"
-                            :class="authTestResult.success ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-700 border border-red-200'">
+                        <div v-if="authTestResult" class="mt-4 p-3 rounded-lg text-xs"
+                            :class="authTestResult.success ? 'bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 border border-green-200 dark:border-green-800' : 'bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-800'">
                             {{ authTestResult.message }}
-                        </div>
-                    </div>
-
-                    <!-- Implementation Guide -->
-                    <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                        <h4 class="text-sm font-medium text-blue-900 mb-2">Implementation Guide</h4>
-                        <div class="text-xs text-blue-800 space-y-1">
-                            <p><strong>1.</strong> Create an endpoint on your website (e.g., /api/widget-auth)</p>
-                            <p><strong>2.</strong> The endpoint should accept POST requests with customer_data and
-                                widget_token</p>
-                            <p><strong>3.</strong> Verify the user matches the customer_data (email, ID, etc.)</p>
-                            <p><strong>4.</strong> Return JSON: {"success": true, "expires_in": 1800} for valid users
-                            </p>
-                            <p><strong>5.</strong> See the embed code section for complete implementation examples</p>
                         </div>
                     </div>
                 </div>

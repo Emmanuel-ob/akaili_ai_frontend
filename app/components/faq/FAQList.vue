@@ -1,25 +1,26 @@
+<!-- components/faq/FAQList.vue -->
 <template>
     <div class="space-y-4">
         <!-- Empty State -->
         <div v-if="!faqSources.length && !loading"
-            class="text-center py-12 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
-            <svg class="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            class="text-center py-12 bg-gray-50 dark:bg-slate-800/50 rounded-xl border-2 border-dashed border-gray-300 dark:border-slate-700">
+            <svg class="w-16 h-16 mx-auto text-gray-400 dark:text-gray-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
-            <p class="text-lg font-medium text-gray-700 mb-2">No FAQ sources yet</p>
-            <p class="text-sm text-gray-500">Upload documents or create manual Q&A pairs to get started</p>
+            <p class="text-lg font-medium text-gray-700 dark:text-gray-200 mb-2">No FAQ sources yet</p>
+            <p class="text-sm text-gray-500 dark:text-gray-400">Upload documents or create manual Q&A pairs to get started</p>
         </div>
 
         <!-- FAQ Source Cards -->
         <div v-for="faq in faqSources" :key="faq.id"
-            class="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-md transition-shadow">
+            class="bg-white dark:bg-slate-900 rounded-xl border border-gray-200 dark:border-slate-800 p-6 hover:shadow-md transition-shadow">
 
             <!-- Header -->
             <div class="flex items-start justify-between mb-4">
                 <div class="flex-1">
                     <div class="flex items-center space-x-3">
-                        <h3 class="text-lg font-semibold text-gray-900">{{ faq.source_name }}</h3>
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ faq.source_name }}</h3>
 
                         <!-- Status Badge -->
                         <span :class="['px-2 py-1 text-xs font-medium rounded-full', getStatusColor(faq.status)]">
@@ -28,12 +29,12 @@
 
                         <!-- Active Badge -->
                         <span v-if="faq.is_active"
-                            class="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">
+                            class="px-2 py-1 text-xs font-medium rounded-full bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300">
                             ACTIVE
                         </span>
                     </div>
 
-                    <div class="flex items-center space-x-4 mt-2 text-sm text-gray-500">
+                    <div class="flex items-center space-x-4 mt-2 text-sm text-gray-500 dark:text-gray-400">
                         <span class="flex items-center">
                             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -50,7 +51,7 @@
                 <!-- Priority Badge -->
                 <div class="ml-4">
                     <span
-                        class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-purple-100 text-purple-800">
+                        class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300">
                         Priority: {{ faq.priority }}
                     </span>
                 </div>
@@ -58,34 +59,34 @@
 
             <!-- Progress Bar (if processing or pending) -->
             <div v-if="faq.status === 'processing' || faq.status === 'pending'" class="mb-4">
-                <div class="flex items-center justify-between text-sm text-gray-600 mb-1">
+                <div class="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400 mb-1">
                     <span>{{ faq.status === 'pending' ? 'Queued...' : 'Processing...' }}</span>
                     <span>{{ getProgressPercentage(faq) }}%</span>
                 </div>
-                <div class="w-full bg-gray-200 rounded-full h-2">
-                    <div class="bg-purple-600 h-2 rounded-full transition-all duration-300"
+                <div class="w-full bg-gray-200 dark:bg-slate-700 rounded-full h-2">
+                    <div class="bg-purple-600 dark:bg-purple-500 h-2 rounded-full transition-all duration-300"
                         :style="{ width: getProgressPercentage(faq) + '%' }">
                         <div v-if="faq.status === 'processing'"
-                            class="h-full w-full bg-gradient-to-r from-transparent via-white to-transparent opacity-30 animate-shimmer" />
+                            class="h-full w-full bg-gradient-to-r from-transparent via-white/30 to-transparent opacity-30 animate-shimmer" />
                     </div>
                 </div>
             </div>
 
             <!-- Error Message -->
             <div v-if="faq.status === 'failed' && faq.error_message"
-                class="mb-4 p-3 bg-red-50 border border-red-200 rounded-md">
-                <p class="text-sm text-red-600">{{ faq.error_message }}</p>
+                class="mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md">
+                <p class="text-sm text-red-600 dark:text-red-400">{{ faq.error_message }}</p>
             </div>
 
             <!-- Actions -->
-            <div class="flex items-center justify-between pt-4 border-t border-gray-200">
+            <div class="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-slate-800">
                 <div class="flex items-center space-x-2">
                     <!-- Priority Slider -->
                     <div class="flex items-center space-x-2">
-                        <label class="text-sm text-gray-600">Priority:</label>
+                        <label class="text-sm text-gray-600 dark:text-gray-400">Priority:</label>
                         <input :value="faq.priority" @change="updatePriority(faq.id, $event.target.value)" type="range"
                             min="1" max="10" class="w-24" :disabled="faq.status === 'processing'" />
-                        <span class="text-sm font-medium text-gray-900 w-6">{{ faq.priority }}</span>
+                        <span class="text-sm font-medium text-gray-900 dark:text-white w-6">{{ faq.priority }}</span>
                     </div>
                 </div>
 
@@ -93,13 +94,13 @@
                     <!-- Edit Button (manual_qa only) -->
                     <button v-if="faq.source_type === 'manual_qa' && faq.status !== 'processing'"
                         @click="$emit('edit', faq)"
-                        class="px-3 py-1.5 text-sm text-purple-700 border border-purple-300 rounded-md hover:bg-purple-50">
+                        class="px-3 py-1.5 text-sm text-purple-700 dark:text-purple-400 border border-purple-300 dark:border-purple-700 rounded-md hover:bg-purple-50 dark:hover:bg-purple-900/20">
                         Edit Q&A
                     </button>
 
                     <!-- Preview Button -->
                     <button v-if="faq.status === 'completed'" @click="$emit('preview', faq)"
-                        class="px-3 py-1.5 text-sm text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50">
+                        class="px-3 py-1.5 text-sm text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-slate-600 rounded-md hover:bg-gray-50 dark:hover:bg-slate-800">
                         Preview
                     </button>
 
@@ -112,7 +113,7 @@
                     <!-- Reprocess Button -->
                     <button v-if="faq.embedded_items > 0 && faq.status !== 'processing'"
                         @click="$emit('reprocess', faq)"
-                        class="px-3 py-1.5 text-sm text-purple-600 border border-purple-200 rounded-md hover:bg-purple-50">
+                        class="px-3 py-1.5 text-sm text-purple-600 dark:text-purple-400 border border-purple-200 dark:border-purple-800 rounded-md hover:bg-purple-50 dark:hover:bg-purple-900/20">
                         Reprocess
                     </button>
 
@@ -121,15 +122,15 @@
                         :class="[
                             'px-3 py-1.5 text-sm rounded-md transition-colors',
                             faq.is_active
-                                ? 'text-yellow-700 border border-yellow-300 hover:bg-yellow-50'
-                                : 'text-green-700 border border-green-300 hover:bg-green-50'
+                                ? 'text-yellow-700 dark:text-yellow-400 border border-yellow-300 dark:border-yellow-700 hover:bg-yellow-50 dark:hover:bg-yellow-900/20'
+                                : 'text-green-700 dark:text-green-400 border border-green-300 dark:border-green-700 hover:bg-green-50 dark:hover:bg-green-900/20'
                         ]">
                         {{ faq.is_active ? 'Deactivate' : 'Activate' }}
                     </button>
 
                     <!-- Delete Button -->
                     <button @click="$emit('delete', faq)" :disabled="faq.status === 'processing'"
-                        class="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-md disabled:opacity-50 disabled:cursor-not-allowed">
+                        class="p-2 text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-md disabled:opacity-50 disabled:cursor-not-allowed">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -161,12 +162,12 @@ const faqStore = useFAQStore()
 
 const getStatusColor = (status) => {
     const colors = {
-        pending: 'bg-yellow-100 text-yellow-800',
-        processing: 'bg-blue-100 text-blue-800',
-        completed: 'bg-green-100 text-green-800',
-        failed: 'bg-red-100 text-red-800'
+        pending: 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300',
+        processing: 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300',
+        completed: 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300',
+        failed: 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300'
     }
-    return colors[status] || 'bg-gray-100 text-gray-800'
+    return colors[status] || 'bg-gray-100 dark:bg-slate-800 text-gray-800 dark:text-gray-300'
 }
 
 const getSourceTypeLabel = (type) => {
@@ -199,15 +200,9 @@ const toggleActive = async (faqId) => {
 
 <style scoped>
 @keyframes shimmer {
-    0% {
-        transform: translateX(-100%);
-    }
-
-    100% {
-        transform: translateX(100%);
-    }
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
 }
-
 .animate-shimmer {
     animation: shimmer 2s infinite;
 }

@@ -1,10 +1,11 @@
+<!-- dashboard/knowledge-base.vue -->
 <template>
-    <div>
-        <header class="bg-white px-6 py-4 border-b border-gray-200">
+    <div class="min-h-screen bg-gray-50 dark:bg-slate-950 transition-colors duration-300">
+        <header class="bg-white dark:bg-slate-900 px-6 py-5 border-b border-gray-200 dark:border-slate-800 transition-colors duration-300">
             <div class="flex justify-between items-center">
                 <div>
                     <h1 class="text-[#9E4CFF] text-2xl font-bold">Knowledge Base</h1>
-                    <p class="text-sm lg:text-base text-[#6B7280]">
+                    <p class="text-sm lg:text-base text-gray-500 dark:text-gray-400 mt-1">
                         Manage your chatbot's FAQ sources and training data
                     </p>
                 </div>
@@ -12,7 +13,7 @@
                 <div class="flex items-center space-x-4">
                     <!-- Chatbot Selector -->
                     <select v-model="selectedChatbotId" @change="onChatbotChange"
-                        class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                        class="px-4 py-2 border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors">
                         <option value="">Select Chatbot</option>
                         <option v-for="bot in chatbotStore.chatbots" :key="bot.id" :value="bot.id">
                             {{ bot.name }}
@@ -22,42 +23,42 @@
             </div>
         </header>
 
-        <main class="px-6 py-6">
+        <main class="px-6 py-8">
             <!-- No Chatbot Selected -->
             <div v-if="!selectedChatbotId"
-                class="text-center py-12 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
-                <svg class="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                class="text-center py-16 bg-white dark:bg-slate-900 rounded-xl border-2 border-dashed border-gray-300 dark:border-slate-700 transition-colors">
+                <svg class="w-16 h-16 mx-auto text-gray-400 dark:text-gray-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
                 </svg>
-                <p class="text-lg font-medium text-gray-700 mb-2">Select a Chatbot</p>
-                <p class="text-sm text-gray-500">Choose a chatbot to manage its knowledge base</p>
+                <p class="text-lg font-medium text-gray-700 dark:text-gray-200 mb-2">Select a Chatbot</p>
+                <p class="text-sm text-gray-500 dark:text-gray-400">Choose a chatbot to manage its knowledge base</p>
             </div>
 
             <!-- Main Content -->
             <div v-else>
                 <!-- Stats Cards -->
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
                     <StatCard title="Total Sources" :value="faqStore.faqSources.length" icon="folder" color="blue" />
-                    <StatCard title="Active Sources" :value="activeSources" icon="check-circle" color="green" />
+                    <StatCard title="Active Sources" :value="activeSources" icon="check" color="green" />
                     <StatCard title="Total Items" :value="totalItems" icon="document" color="purple" />
-                    <StatCard title="Embedded Items" :value="embeddedItems" icon="database" color="indigo" />
+                    <StatCard title="Embedded Items" :value="embeddedItems" icon="database" color="yellow" />
                 </div>
 
                 <!-- Action Tabs -->
-                <div class="grid grid-cols-2 gap-4 mb-6">
+                <div class="grid grid-cols-2 gap-6 mb-8">
                     <div @click="handleTabClick('upload')" :class="[
-                        'cursor-pointer rounded-lg border-2 p-6 transition-all',
+                        'cursor-pointer rounded-xl border-2 p-6 transition-all duration-200',
                         activeTab === 'upload'
-                            ? 'border-purple-500 bg-purple-50'
-                            : 'border-gray-200 hover:border-gray-300'
+                            ? 'border-purple-500 bg-purple-50 dark:bg-purple-900/10'
+                            : 'border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-gray-300 dark:hover:border-slate-700'
                     ]">
                         <div class="flex items-center justify-between">
                             <div>
-                                <h3 class="text-lg font-semibold text-gray-900">Upload Documents</h3>
-                                <p class="text-sm text-gray-600 mt-1">PDF, Word, Excel, CSV, TXT, JSON</p>
+                                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Upload Documents</h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">PDF, Word, Excel, CSV, TXT, JSON</p>
                             </div>
-                            <svg class="w-10 h-10 text-purple-600" fill="none" stroke="currentColor"
+                            <svg class="w-10 h-10 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor"
                                 viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
@@ -66,17 +67,17 @@
                     </div>
 
                     <div @click="handleTabClick('manual')" :class="[
-                        'cursor-pointer rounded-lg border-2 p-6 transition-all',
+                        'cursor-pointer rounded-xl border-2 p-6 transition-all duration-200',
                         activeTab === 'manual'
-                            ? 'border-purple-500 bg-purple-50'
-                            : 'border-gray-200 hover:border-gray-300'
+                            ? 'border-purple-500 bg-purple-50 dark:bg-purple-900/10'
+                            : 'border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-gray-300 dark:hover:border-slate-700'
                     ]">
                         <div class="flex items-center justify-between">
                             <div>
-                                <h3 class="text-lg font-semibold text-gray-900">Manual Q&A</h3>
-                                <p class="text-sm text-gray-600 mt-1">Create question-answer pairs</p>
+                                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Manual Q&A</h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Create question-answer pairs</p>
                             </div>
-                            <svg class="w-10 h-10 text-purple-600" fill="none" stroke="currentColor"
+                            <svg class="w-10 h-10 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor"
                                 viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M12 4v16m8-8H4" />
@@ -86,22 +87,22 @@
                 </div>
 
                 <!-- Upload/Manual Entry Forms -->
-                <div v-if="activeTab === 'upload'" class="mb-6">
+                <div v-if="activeTab === 'upload'" class="mb-8">
                     <FAQUpload :chatbot-id="selectedChatbotId" @uploaded="handleUploaded"
                         @processing="isProcessing = $event" />
                 </div>
 
-                <div v-if="activeTab === 'manual'" class="mb-6">
+                <div v-if="activeTab === 'manual'" class="mb-8">
                     <FAQManualEntry :chatbot-id="selectedChatbotId" :editing-source="editingFAQ" @saved="handleSaved"
                         @processing="isProcessing = $event" @cancel="handleCancelEdit" />
                 </div>
 
                 <!-- FAQ Sources List -->
-                <div class="bg-white rounded-lg border border-gray-200 p-6">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-lg font-semibold text-gray-900">FAQ Sources</h3>
+                <div class="bg-white dark:bg-slate-900 rounded-xl border border-gray-200 dark:border-slate-800 p-6 transition-colors duration-300">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">FAQ Sources</h3>
                         <button @click="refreshList" :disabled="faqStore.loading"
-                            class="p-2 text-gray-600 hover:text-gray-900 disabled:opacity-50">
+                            class="p-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white disabled:opacity-50 transition-colors">
                             <svg class="w-5 h-5" :class="{ 'animate-spin': faqStore.loading }" fill="none"
                                 stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -123,6 +124,7 @@
 </template>
 
 <script setup>
+// ... (Logic remains identical to original)
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useToast } from 'vue-toastification'
 import FAQUpload from '~/components/faq/FAQUpload.vue'
@@ -170,7 +172,6 @@ const onChatbotChange = async () => {
 }
 
 const setupEventListeners = () => {
-    // Register event handlers for this page
     wsStore.on('faq.processing.completed', handleProcessingCompleted, COMPONENT_ID)
     wsStore.on('faq.processing.failed', handleProcessingFailed, COMPONENT_ID)
     wsStore.on('faq.embedding.completed', handleEmbeddingCompleted, COMPONENT_ID)
@@ -181,8 +182,6 @@ const setupEventListeners = () => {
 
 const handleProcessingCompleted = async (event) => {
     await refreshList()
-
-    // Show toast with action button
     toast.success({
         component: ActionToast,
         props: {
@@ -200,7 +199,6 @@ const handleProcessingCompleted = async (event) => {
 
 const handleProcessingFailed = async (event) => {
     await refreshList()
-
     toast.error({
         component: ActionToast,
         props: {
@@ -223,7 +221,6 @@ const handleEmbeddingCompleted = async (event) => {
 
 const handleEmbeddingFailed = async (event) => {
     await refreshList()
-
     toast.error({
         component: ActionToast,
         props: {
@@ -330,18 +327,14 @@ const handleEmbedded = async (count) => {
 
 onMounted(async () => {
     await chatbotStore.fetchChatbots()
-
     if (chatbotStore.chatbots.length > 0) {
         selectedChatbotId.value = chatbotStore.chatbots[0].id
         await onChatbotChange()
     }
-
-    // Set up event listeners
     setupEventListeners()
 })
 
 onUnmounted(() => {
-    // Clean up event listeners for this component
     wsStore.offAll(COMPONENT_ID)
 })
 </script>

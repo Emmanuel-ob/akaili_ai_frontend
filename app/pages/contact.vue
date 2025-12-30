@@ -39,7 +39,7 @@
             </div>
             <div>
               <dt class="font-medium text-gray-900 dark:text-gray-200">Phone</dt>
-              <dd class="mt-1">+234 803 968 8395</dd>
+              <dd class="mt-1">+234 810 308 3111</dd>
             </div>
             <div>
               <dt class="font-medium text-gray-900 dark:text-gray-200">Hours</dt>

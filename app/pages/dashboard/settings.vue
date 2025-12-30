@@ -1,20 +1,21 @@
+<!-- dashboard/settings.vue -->
 <template>
-    <div class="p-6 bg-gray-50 min-h-screen">
+    <div class="p-6 bg-gray-50 dark:bg-slate-950 min-h-screen transition-colors duration-300">
         <!-- Header -->
         <div class="mb-6">
-            <h1 class="text-2xl font-bold text-gray-800">Settings</h1>
-            <p class="text-sm text-gray-500 mt-1">Manage your account and business settings</p>
+            <h1 class="text-2xl font-bold text-gray-800 dark:text-white">Settings</h1>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Manage your account and business settings</p>
         </div>
 
-        <!-- Tabs -->
-        <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-            <div class="border-b border-gray-200">
+        <!-- Tabs Container -->
+        <div class="bg-white dark:bg-slate-900 rounded-xl shadow-sm dark:shadow-none border border-gray-100 dark:border-slate-800 overflow-hidden transition-colors duration-300">
+            <div class="border-b border-gray-200 dark:border-slate-800">
                 <nav class="flex -mb-px">
                     <button v-for="tab in tabs" :key="tab.id" @click="activeTab = tab.id" :class="[
                         'px-6 py-4 text-sm font-medium border-b-2 transition-colors',
                         activeTab === tab.id
-                            ? 'border-[#9E4CFF] text-[#9E4CFF]'
-                            : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                            ? 'border-[#9E4CFF] text-[#9E4CFF] dark:text-purple-400'
+                            : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:border-gray-300 dark:hover:border-slate-700'
                     ]">
                         {{ tab.name }}
                     </button>
@@ -22,24 +23,24 @@
             </div>
 
             <div class="p-6">
-                <!-- Profile Tab -->
+                <!-- Profile Tab Content -->
                 <div v-show="activeTab === 'profile'" class="space-y-6">
                     <div>
-                        <h3 class="text-lg font-semibold text-gray-800 mb-4">Profile Information</h3>
+                        <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Profile Information</h3>
                         <form @submit.prevent="updateProfile" class="space-y-4">
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Full Name</label>
                                 <input v-model="profileForm.name" type="text" required
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none" />
+                                    class="w-full px-3 py-2 border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-colors" />
                             </div>
 
                             <div class="flex justify-end gap-2 pt-2">
                                 <button type="button" @click="resetProfileForm"
-                                    class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
+                                    class="px-4 py-2 border border-gray-300 dark:border-slate-700 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors">
                                     Cancel
                                 </button>
                                 <button type="submit" :disabled="userStore.loading"
-                                    class="px-4 py-2 bg-[#9E4CFF] text-white rounded-lg hover:bg-[#6C47B5] disabled:opacity-50">
+                                    class="px-4 py-2 bg-[#9E4CFF] text-white rounded-lg hover:bg-[#6C47B5] disabled:opacity-50 transition-colors">
                                     {{ userStore.loading ? 'Saving...' : 'Save Changes' }}
                                 </button>
                             </div>
@@ -47,18 +48,18 @@
                     </div>
 
                     <!-- Email Change Section -->
-                    <div class="border-t pt-6">
-                        <h3 class="text-lg font-semibold text-gray-800 mb-4">Email Address</h3>
+                    <div class="border-t border-gray-200 dark:border-slate-800 pt-6">
+                        <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Email Address</h3>
 
                         <!-- Current Email Display -->
                         <div v-if="!showEmailChangeForm && !emailChangeRequest" class="space-y-4">
-                            <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                            <div class="flex items-center justify-between p-4 bg-gray-50 dark:bg-slate-800/50 rounded-lg border border-gray-100 dark:border-slate-700">
                                 <div>
-                                    <p class="text-sm text-gray-600">Current Email</p>
-                                    <p class="text-base font-medium text-gray-900">{{ authStore.user?.email }}</p>
+                                    <p class="text-sm text-gray-600 dark:text-gray-400">Current Email</p>
+                                    <p class="text-base font-medium text-gray-900 dark:text-white">{{ authStore.user?.email }}</p>
                                 </div>
                                 <button @click="showEmailChangeForm = true"
-                                    class="px-4 py-2 text-sm border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
+                                    class="px-4 py-2 text-sm border border-gray-300 dark:border-slate-700 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors">
                                     Change Email
                                 </button>
                             </div>
@@ -68,22 +69,22 @@
                         <div v-if="showEmailChangeForm && !emailChangeRequest" class="space-y-4">
                             <form @submit.prevent="requestEmailChange" class="space-y-4">
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">New Email
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">New Email
                                         Address</label>
                                     <input v-model="emailChangeForm.new_email" type="email" required
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none"
+                                        class="w-full px-3 py-2 border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-colors"
                                         placeholder="Enter new email address" />
                                 </div>
 
                                 <div v-if="!isSocialOnly">
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Current Password</label>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Current Password</label>
                                     <input v-model="emailChangeForm.password" type="password" required
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none"
+                                        class="w-full px-3 py-2 border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-colors"
                                         placeholder="Enter your current password" />
                                 </div>
 
-                                <div class="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                                    <p class="text-sm text-blue-800">
+                                <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3">
+                                    <p class="text-sm text-blue-800 dark:text-blue-300">
                                         We'll send a verification code to your current email address ({{
                                         authStore.user?.email }}) to confirm this change.
                                     </p>
@@ -92,11 +93,11 @@
                                 <div class="flex justify-end gap-2">
                                     <button type="button"
                                         @click="showEmailChangeForm = false; emailChangeForm = { new_email: '', password: '', verification_code: '' }"
-                                        class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
+                                        class="px-4 py-2 border border-gray-300 dark:border-slate-700 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors">
                                         Cancel
                                     </button>
                                     <button type="submit" :disabled="emailChangeLoading"
-                                        class="px-4 py-2 bg-[#9E4CFF] text-white rounded-lg hover:bg-[#6C47B5] disabled:opacity-50">
+                                        class="px-4 py-2 bg-[#9E4CFF] text-white rounded-lg hover:bg-[#6C47B5] disabled:opacity-50 transition-colors">
                                         {{ emailChangeLoading ? 'Sending Code...' : 'Send Verification Code' }}
                                     </button>
                                 </div>
@@ -105,19 +106,19 @@
 
                         <!-- Verification Code Form -->
                         <div v-if="emailChangeRequest" class="space-y-4">
-                            <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                            <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
                                 <div class="flex items-start gap-3">
-                                    <svg class="w-5 h-5 text-green-600 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                    <svg class="w-5 h-5 text-green-600 dark:text-green-400 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                                         <path fill-rule="evenodd"
                                             d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
                                             clip-rule="evenodd" />
                                     </svg>
                                     <div class="flex-1">
-                                        <p class="text-sm font-medium text-green-800">Verification code sent!</p>
-                                        <p class="text-sm text-green-700 mt-1">
+                                        <p class="text-sm font-medium text-green-800 dark:text-green-300">Verification code sent!</p>
+                                        <p class="text-sm text-green-700 dark:text-green-400 mt-1">
                                             We sent a 6-digit code to <strong>{{ authStore.user?.email }}</strong>
                                         </p>
-                                        <p class="text-sm text-green-700 mt-1">
+                                        <p class="text-sm text-green-700 dark:text-green-400 mt-1">
                                             New email: <strong>{{ emailChangeRequest.new_email }}</strong>
                                         </p>
                                     </div>
@@ -126,63 +127,63 @@
 
                             <form @submit.prevent="verifyEmailChange" class="space-y-4">
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Verification
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Verification
                                         Code</label>
                                     <input v-model="emailChangeForm.verification_code" type="text" required
                                         maxlength="6" pattern="[0-9]{6}"
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none text-center text-2xl tracking-widest font-mono"
+                                        class="w-full px-3 py-2 border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none text-center text-2xl tracking-widest font-mono transition-colors"
                                         placeholder="000000" />
-                                    <p class="text-xs text-gray-500 mt-1">Enter the 6-digit code from your email</p>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Enter the 6-digit code from your email</p>
                                 </div>
 
                                 <div class="flex justify-end gap-2">
                                     <button type="button" @click="cancelEmailChange"
-                                        class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
+                                        class="px-4 py-2 border border-gray-300 dark:border-slate-700 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors">
                                         Cancel
                                     </button>
                                     <button type="submit" :disabled="emailChangeLoading"
-                                        class="px-4 py-2 bg-[#9E4CFF] text-white rounded-lg hover:bg-[#6C47B5] disabled:opacity-50">
+                                        class="px-4 py-2 bg-[#9E4CFF] text-white rounded-lg hover:bg-[#6C47B5] disabled:opacity-50 transition-colors">
                                         {{ emailChangeLoading ? 'Verifying...' : 'Verify & Change Email' }}
                                     </button>
                                 </div>
                             </form>
 
                             <button @click="requestEmailChange" :disabled="emailChangeLoading"
-                                class="text-sm text-purple-600 hover:text-purple-700 underline">
+                                class="text-sm text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 underline transition-colors">
                                 Didn't receive the code? Resend
                             </button>
                         </div>
                     </div>
 
-                    <div class="border-t pt-6">
-                        <h3 class="text-lg font-semibold text-gray-800 mb-4">Change Password</h3>
+                    <div class="border-t border-gray-200 dark:border-slate-800 pt-6">
+                        <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Change Password</h3>
                         <form @submit.prevent="updatePassword" class="space-y-4">
                             <div v-if="hasPassword">
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Current Password</label>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Current Password</label>
                                 <input v-model="passwordForm.current_password" type="password" required
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none" />
+                                    class="w-full px-3 py-2 border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-colors" />
                             </div>
 
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">New Password</label>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">New Password</label>
                                 <input v-model="passwordForm.password" type="password" required minlength="8"
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none" />
+                                    class="w-full px-3 py-2 border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-colors" />
                             </div>
 
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Confirm New Password</label>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Confirm New Password</label>
                                 <input v-model="passwordForm.password_confirmation" type="password" required
                                     minlength="8"
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none" />
+                                    class="w-full px-3 py-2 border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-colors" />
                             </div>
 
                             <div class="flex justify-end gap-2 pt-2">
                                 <button type="button" @click="resetPasswordForm"
-                                    class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
+                                    class="px-4 py-2 border border-gray-300 dark:border-slate-700 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors">
                                     Cancel
                                 </button>
                                 <button type="submit" :disabled="userStore.loading"
-                                    class="px-4 py-2 bg-[#9E4CFF] text-white rounded-lg hover:bg-[#6C47B5] disabled:opacity-50">
+                                    class="px-4 py-2 bg-[#9E4CFF] text-white rounded-lg hover:bg-[#6C47B5] disabled:opacity-50 transition-colors">
                                     {{ userStore.loading ? 'Updating...' : 'Update Password' }}
                                 </button>
                             </div>
@@ -190,28 +191,28 @@
                     </div>
                 </div>
 
-                <!-- Business Tab -->
+                <!-- Business Tab Content -->
                 <div v-show="activeTab === 'business'" class="space-y-6">
                     <div>
-                        <h3 class="text-lg font-semibold text-gray-800 mb-4">Business Information</h3>
+                        <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Business Information</h3>
                         <form @submit.prevent="updateBusiness" class="space-y-4">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Company Name</label>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Company Name</label>
                                     <input v-model="businessForm.company_name" type="text" required
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none" />
+                                        class="w-full px-3 py-2 border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-colors" />
                                 </div>
 
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Industry</label>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Industry</label>
                                     <input v-model="businessForm.industry" type="text" required
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none" />
+                                        class="w-full px-3 py-2 border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-colors" />
                                 </div>
 
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Company Size</label>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Company Size</label>
                                     <select v-model="businessForm.company_size"
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none">
+                                        class="w-full px-3 py-2 border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-colors">
                                         <option value="">Select size</option>
                                         <option value="1-10">1-10 employees</option>
                                         <option value="11-50">11-50 employees</option>
@@ -222,33 +223,33 @@
                                 </div>
 
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Website URL</label>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Website URL</label>
                                     <input v-model="businessForm.website_url" type="url"
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none" />
+                                        class="w-full px-3 py-2 border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-colors" />
                                 </div>
 
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Support Email</label>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Support Email</label>
                                     <input v-model="businessForm.support_email" type="email"
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none" />
+                                        class="w-full px-3 py-2 border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-colors" />
                                 </div>
 
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Support Phone</label>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Support Phone</label>
                                     <input v-model="businessForm.support_phone" type="tel"
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none" />
+                                        class="w-full px-3 py-2 border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-colors" />
                                 </div>
 
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Location</label>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Location</label>
                                     <input v-model="businessForm.location" type="text"
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none" />
+                                        class="w-full px-3 py-2 border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-colors" />
                                 </div>
 
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Timezone</label>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Timezone</label>
                                     <select v-model="businessForm.timezone"
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none">
+                                        class="w-full px-3 py-2 border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-colors">
                                         <option value="UTC">UTC</option>
                                         <option value="America/New_York">Eastern Time</option>
                                         <option value="America/Chicago">Central Time</option>
@@ -261,19 +262,19 @@
                             </div>
 
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Description</label>
                                 <textarea v-model="businessForm.description" rows="3"
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none"
+                                    class="w-full px-3 py-2 border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-colors"
                                     placeholder="Tell us about your business"></textarea>
                             </div>
 
                             <div class="flex justify-end gap-2 pt-2">
                                 <button type="button" @click="resetBusinessForm"
-                                    class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
+                                    class="px-4 py-2 border border-gray-300 dark:border-slate-700 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors">
                                     Cancel
                                 </button>
                                 <button type="submit" :disabled="businessStore.loading"
-                                    class="px-4 py-2 bg-[#9E4CFF] text-white rounded-lg hover:bg-[#6C47B5] disabled:opacity-50">
+                                    class="px-4 py-2 bg-[#9E4CFF] text-white rounded-lg hover:bg-[#6C47B5] disabled:opacity-50 transition-colors">
                                     {{ businessStore.loading ? 'Saving...' : 'Save Changes' }}
                                 </button>
                             </div>
@@ -368,7 +369,7 @@ const businessForm = ref({
 })
 
 const emailChanged = computed(() => {
-    return false // Email changes now handled separately
+    return false 
 })
 
 const isSocialOnly = computed(() => {
@@ -381,15 +382,12 @@ const hasPassword = computed(() => {
 
 // Initialize forms
 const initializeForms = async () => {
-    // Profile (name only now)
     profileForm.value = {
         name: authStore.user?.name || ''
     }
 
-    // Check for existing email change request
     await checkEmailChangeStatus()
 
-    // Business
     await businessStore.fetchBusiness()
     if (businessStore.business) {
         businessForm.value = {
@@ -519,13 +517,9 @@ const verifyEmailChange = async () => {
         })
 
         if (response.success) {
-            // Update user email in auth store
             authStore.user.email = response.data.new_email
-
-            // Reset forms
             emailChangeRequest.value = null
             emailChangeForm.value = { new_email: '', password: '', verification_code: '' }
-
             successMessage.value = 'Email changed successfully!'
             setTimeout(() => { successMessage.value = '' }, 5000)
         }
