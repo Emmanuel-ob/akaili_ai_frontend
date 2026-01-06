@@ -387,5 +387,5 @@ const closeSidebar = () => {
     if (!authStore.isLoggedIn) {
       router.push('/login')
     }
-  }) 
+  })
 </script>
