@@ -2,12 +2,14 @@
 <template>
     <div>
         <!-- Header Actions -->
-        <div class="flex items-center justify-between mb-6">
-            <div class="flex items-center gap-4">
+        <div class="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
+            <!-- Filters -->
+            <div class="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
                 <input v-model="searchQuery" type="text" placeholder="Search campaigns..."
-                    class="px-4 py-2 border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors" />
+                    class="w-full sm:w-64 px-4 py-2 border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors" />
+                
                 <select v-model="statusFilter"
-                    class="px-4 py-2 border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors">
+                    class="w-full sm:w-40 px-4 py-2 border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors">
                     <option value="">All Status</option>
                     <option value="draft">Draft</option>
                     <option value="scheduled">Scheduled</option>
@@ -16,8 +18,10 @@
                     <option value="paused">Paused</option>
                 </select>
             </div>
+
+            <!-- Action Button -->
             <button @click="createNewCampaign"
-                class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 flex items-center gap-2 transition-colors">
+                class="w-full md:w-auto px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 flex items-center justify-center gap-2 transition-colors shadow-sm">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                 </svg>
@@ -49,34 +53,34 @@
         <!-- Campaigns List -->
         <div v-else class="space-y-4">
             <div v-for="campaign in filteredCampaigns" :key="campaign.id"
-                class="bg-white dark:bg-slate-900 rounded-lg border border-gray-200 dark:border-slate-800 hover:border-purple-300 dark:hover:border-purple-600 transition-all p-6 shadow-sm dark:shadow-none">
+                class="bg-white dark:bg-slate-900 rounded-lg border border-gray-100 dark:border-slate-800 hover:border-purple-300 dark:hover:border-purple-600 transition-all p-4 sm:p-6 shadow-sm dark:shadow-none">
                 <div class="flex flex-col md:flex-row items-start justify-between gap-4">
-                    <div class="flex-1">
-                        <div class="flex items-center gap-3 mb-2">
-                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ campaign.name }}</h3>
+                    <div class="flex-1 w-full">
+                        <div class="flex flex-wrap items-center gap-2 sm:gap-3 mb-2">
+                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white truncate max-w-[200px] sm:max-w-none">{{ campaign.name }}</h3>
                             <span :class="[
-                                'px-3 py-1 rounded-full text-xs font-medium',
+                                'px-2.5 py-0.5 rounded-full text-xs font-medium',
                                 getStatusBadgeClass(campaign.status)
                             ]">
                                 {{ formatStatus(campaign.status) }}
                             </span>
                             <span v-if="!campaign.is_complete"
-                                class="px-3 py-1 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300 rounded-full text-xs font-medium">
+                                class="px-2.5 py-0.5 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300 rounded-full text-xs font-medium">
                                 Incomplete
                             </span>
                         </div>
 
-                        <p v-if="campaign.description" class="text-gray-600 dark:text-gray-400 text-sm mb-3">
+                        <p v-if="campaign.description" class="text-gray-600 dark:text-gray-400 text-sm mb-3 line-clamp-2">
                             {{ campaign.description }}
                         </p>
 
-                        <div class="flex flex-wrap items-center gap-6 text-sm text-gray-600 dark:text-gray-400">
+                        <div class="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-gray-600 dark:text-gray-400">
                             <div class="flex items-center gap-1">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8" />
                                 </svg>
-                                <span>{{ campaign.list_name || 'No list' }}</span>
+                                <span class="truncate max-w-[150px]">{{ campaign.list_name || 'No list' }}</span>
                             </div>
 
                             <div v-if="campaign.send_date" class="flex items-center gap-1">
@@ -87,7 +91,7 @@
                                 <span>{{ formatDate(campaign.send_date) }}</span>
                             </div>
 
-                            <div v-if="campaign.stats" class="flex items-center gap-4">
+                            <div v-if="campaign.stats" class="flex flex-wrap items-center gap-4">
                                 <span>📤 {{ campaign.stats.sent || 0 }} sent</span>
                                 <span>📬 {{ campaign.open_rate }}% opens</span>
                                 <span>🖱️ {{ campaign.click_rate }}% clicks</span>
@@ -103,10 +107,10 @@
                     </div>
 
                     <!-- Actions -->
-                    <div class="flex items-center gap-2">
+                    <div class="flex items-center gap-2 w-full md:w-auto mt-4 md:mt-0 overflow-x-auto pb-1 md:pb-0">
                         <!-- Analytics -->
                         <button v-if="campaign.status === 'sent'" @click="viewAnalytics(campaign)"
-                            class="px-3 py-2 text-sm text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-900/20 rounded-lg flex items-center gap-1 transition-colors"
+                            class="px-3 py-2 text-sm text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-900/20 rounded-lg flex items-center gap-1 transition-colors whitespace-nowrap"
                             title="View Analytics">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -117,40 +121,28 @@
 
                         <!-- Edit -->
                         <button v-if="campaign.can_edit" @click="editCampaign(campaign)"
-                            class="px-3 py-2 text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-slate-800 rounded-lg transition-colors" title="Edit">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                            </svg>
+                            class="px-3 py-2 text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-slate-800 rounded-lg transition-colors border border-gray-200 dark:border-slate-700" title="Edit">
+                            Edit
                         </button>
 
                         <!-- Pause -->
                         <button v-if="campaign.status === 'sending'" @click="pauseCampaign(campaign)"
                             :disabled="actionLoading[campaign.id]"
-                            class="px-3 py-2 text-sm text-orange-600 dark:text-orange-400 hover:bg-orange-50 dark:hover:bg-orange-900/20 rounded-lg disabled:opacity-50 transition-colors"
+                            class="px-3 py-2 text-sm text-orange-600 dark:text-orange-400 hover:bg-orange-50 dark:hover:bg-orange-900/20 rounded-lg disabled:opacity-50 transition-colors border border-orange-200 dark:border-orange-800"
                             title="Pause">
                             <div v-if="actionLoading[campaign.id]"
                                 class="animate-spin rounded-full h-4 w-4 border-b-2 border-orange-600 dark:border-orange-400"></div>
-                            <svg v-else class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
+                            <span v-else>Pause</span>
                         </button>
 
                         <!-- Resume -->
                         <button v-if="campaign.status === 'paused'" @click="resumeCampaign(campaign)"
                             :disabled="actionLoading[campaign.id]"
-                            class="px-4 py-2 text-sm bg-blue-600 text-white hover:bg-blue-700 rounded-lg flex items-center gap-1 disabled:opacity-50 transition-colors"
+                            class="px-4 py-2 text-sm bg-blue-600 text-white hover:bg-blue-700 rounded-lg flex items-center gap-1 disabled:opacity-50 transition-colors whitespace-nowrap"
                             title="Resume Campaign">
                             <div v-if="actionLoading[campaign.id]"
                                 class="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
                             <template v-else>
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
                                 Resume
                             </template>
                         </button>
@@ -158,15 +150,11 @@
                         <!-- Send -->
                         <button v-if="campaign.can_send" @click="sendCampaign(campaign)"
                             :disabled="actionLoading[campaign.id]"
-                            class="px-4 py-2 text-sm bg-green-600 text-white hover:bg-green-700 rounded-lg flex items-center gap-1 disabled:opacity-50 transition-colors"
+                            class="px-4 py-2 text-sm bg-green-600 text-white hover:bg-green-700 rounded-lg flex items-center gap-1 disabled:opacity-50 transition-colors whitespace-nowrap"
                             title="Send Now">
                             <div v-if="actionLoading[campaign.id]"
                                 class="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
                             <template v-else>
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-                                </svg>
                                 Send
                             </template>
                         </button>
@@ -174,23 +162,18 @@
                         <!-- Delete -->
                         <button v-if="campaign.can_edit" @click="deleteCampaign(campaign)"
                             :disabled="actionLoading[campaign.id]"
-                            class="px-3 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg disabled:opacity-50 transition-colors"
+                            class="px-3 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg disabled:opacity-50 transition-colors border border-red-200 dark:border-red-900"
                             title="Delete">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                            </svg>
+                            Delete
                         </button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Campaign Editor Modal -->
+        <!-- Modals (Unchanged) -->
         <CampaignEditorModal v-if="showEditorModal" :campaign="selectedCampaign" @close="closeEditor"
             @saved="handleCampaignSaved" />
-
-        <!-- Analytics Modal -->
         <CampaignAnalyticsModal v-if="showAnalyticsModal" :campaign="selectedCampaign"
             @close="showAnalyticsModal = false" />
     </div>
@@ -251,32 +234,22 @@ const handleCampaignSaved = () => {
 }
 
 const sendCampaign = async (campaign) => {
-    if (!confirm(`Are you sure you want to send "${campaign.name}" now?`)) {
-        return
-    }
-
+    if (!confirm(`Are you sure you want to send "${campaign.name}" now?`)) return
     actionLoading[campaign.id] = true
-
     try {
         await emailStore.sendCampaign(campaign.id)
         $toast.success(`Campaign "${campaign.name}" is being sent`)
         await emailStore.fetchCampaigns()
     } catch (error) {
-        console.error('Send campaign error:', error)
-        const errorMessage = error?.response?.data?.message || error?.message || 'Failed to send campaign'
-        $toast.error(errorMessage)
+        $toast.error(error?.response?.data?.message || 'Failed to send campaign')
     } finally {
         actionLoading[campaign.id] = false
     }
 }
 
 const pauseCampaign = async (campaign) => {
-    if (!confirm(`Pause "${campaign.name}"?`)) {
-        return
-    }
-
+    if (!confirm(`Pause "${campaign.name}"?`)) return
     actionLoading[campaign.id] = true
-
     try {
         await emailStore.pauseCampaign(campaign.id)
         $toast.success('Campaign paused')
@@ -289,17 +262,12 @@ const pauseCampaign = async (campaign) => {
 }
 
 const resumeCampaign = async (campaign) => {
-    if (!confirm(`Resume sending "${campaign.name}"?`)) {
-        return
-    }
-
+    if (!confirm(`Resume sending "${campaign.name}"?`)) return
     actionLoading[campaign.id] = true
-
     try {
         const config = useRuntimeConfig()
         const authStore = useAuthStore()
-
-        const response = await $fetch(`${config.public.apiBase}/api/email/campaigns/${campaign.id}/resume`, {
+        await $fetch(`${config.public.apiBase}/api/email/campaigns/${campaign.id}/resume`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${authStore.token}`,
@@ -307,7 +275,6 @@ const resumeCampaign = async (campaign) => {
             },
             body: { send_immediately: true }
         })
-
         $toast.success('Campaign resumed and sending')
         await emailStore.fetchCampaigns()
     } catch (error) {
@@ -318,12 +285,8 @@ const resumeCampaign = async (campaign) => {
 }
 
 const deleteCampaign = async (campaign) => {
-    if (!confirm(`Delete "${campaign.name}"? This cannot be undone.`)) {
-        return
-    }
-
+    if (!confirm(`Delete "${campaign.name}"? This cannot be undone.`)) return
     actionLoading[campaign.id] = true
-
     try {
         await emailStore.deleteCampaign(campaign.id)
         $toast.success('Campaign deleted')
@@ -356,11 +319,7 @@ const formatStatus = (status) => {
 
 const formatDate = (date) => {
     return new Date(date).toLocaleDateString('en-US', {
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
+        month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit'
     })
 }
 </script>

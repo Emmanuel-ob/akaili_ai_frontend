@@ -1,16 +1,16 @@
 <!-- dashboard/email-marketing.vue -->
 <template>
-    <div class="min-h-screen bg-gray-50 dark:bg-slate-950 transition-colors duration-300 p-6">
+    <div class="min-h-screen bg-gray-50 dark:bg-slate-950 transition-colors duration-300 p-4 sm:p-6">
         <!-- Header -->
         <div class="mb-8">
-            <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Email Marketing</h1>
-            <p class="text-gray-600 dark:text-gray-400 mt-2">
+            <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">Email Marketing</h1>
+            <p class="text-sm sm:text-base text-gray-600 dark:text-gray-400 mt-2">
                 Create, manage, and analyze your email campaigns
             </p>
         </div>
 
-        <!-- Quick Stats -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <!-- Quick Stats - FIXED RESPONSIVE GRID -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-6 mb-8">
             <div class="bg-white dark:bg-slate-900 rounded-xl shadow-sm dark:shadow-none border border-gray-100 dark:border-slate-800 p-6 transition-colors">
                 <div class="flex items-center justify-between">
                     <div>
@@ -72,12 +72,12 @@
             </div>
         </div>
 
-        <!-- Navigation Tabs -->
-        <div class="bg-white dark:bg-slate-900 rounded-xl shadow-sm dark:shadow-none border border-gray-200 dark:border-slate-800 mb-6 transition-colors">
-            <div class="border-b border-gray-200 dark:border-slate-800">
-                <nav class="flex -mb-px">
+        <!-- Navigation Tabs - FIXED SCROLLING ON MOBILE -->
+        <div class="bg-white dark:bg-slate-900 rounded-xl shadow-sm dark:shadow-none border border-gray-200 dark:border-slate-800 mb-6 transition-colors overflow-hidden">
+            <div class="border-b border-gray-200 dark:border-slate-800 overflow-x-auto scrollbar-hide">
+                <nav class="flex -mb-px min-w-max">
                     <button v-for="tab in tabs" :key="tab.id" @click="activeTab = tab.id" :class="[
-                        'px-6 py-4 text-sm font-medium border-b-2 transition-colors',
+                        'px-6 py-4 text-sm font-medium border-b-2 transition-colors whitespace-nowrap',
                         activeTab === tab.id
                             ? 'border-purple-600 text-purple-600 dark:text-purple-400'
                             : 'border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:border-gray-300 dark:hover:border-slate-600'
@@ -88,7 +88,7 @@
             </div>
 
             <!-- Tab Content -->
-            <div class="p-6">
+            <div class="p-4 sm:p-6">
                 <!-- Lists Tab -->
                 <div v-if="activeTab === 'lists'">
                     <EmailListsTab />
@@ -113,10 +113,10 @@
 
         <!-- Real-time Notifications -->
         <teleport to="body">
-            <div v-if="notifications.length > 0" class="fixed bottom-4 right-4 space-y-2 z-50">
+            <div v-if="notifications.length > 0" class="fixed bottom-4 right-4 space-y-2 z-50 px-4 w-full max-w-sm ml-auto">
                 <transition-group name="slide-fade">
                     <div v-for="notification in notifications" :key="notification.id"
-                        class="bg-white dark:bg-slate-800 rounded-lg shadow-lg p-4 max-w-sm border-l-4 border-purple-600 dark:border-purple-500">
+                        class="bg-white dark:bg-slate-800 rounded-lg shadow-lg p-4 border-l-4 border-purple-600 dark:border-purple-500 transform transition-all duration-300 hover:scale-102">
                         <div class="flex items-start gap-3">
                             <div class="flex-shrink-0">
                                 <svg v-if="notification.type === 'success'" class="w-6 h-6 text-green-500 dark:text-green-400"
@@ -131,12 +131,12 @@
                                         clip-rule="evenodd" />
                                 </svg>
                             </div>
-                            <div class="flex-1">
-                                <p class="text-sm font-medium text-gray-900 dark:text-white">{{ notification.title }}</p>
-                                <p class="text-sm text-gray-600 dark:text-gray-300 mt-1">{{ notification.message }}</p>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm font-medium text-gray-900 dark:text-white truncate">{{ notification.title }}</p>
+                                <p class="text-sm text-gray-600 dark:text-gray-300 mt-1 break-words">{{ notification.message }}</p>
                             </div>
                             <button @click="removeNotification(notification.id)"
-                                class="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300">
+                                class="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 focus:outline-none">
                                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd"
                                         d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
@@ -259,6 +259,14 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+
 .slide-fade-enter-active {
     transition: all 0.3s ease;
 }

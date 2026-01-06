@@ -2,14 +2,15 @@
 <template>
     <div>
         <!-- Header Actions -->
-        <div class="flex flex-col sm:flex-row items-center justify-between mb-6 gap-4">
-            <div class="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
+        <div class="flex flex-col xl:flex-row items-start xl:items-center justify-between mb-6 gap-4">
+            <!-- Filters -->
+            <div class="flex flex-col sm:flex-row gap-3 w-full xl:w-auto">
                 <input v-model="emailStore.filters.templates.search" @input="debouncedSearch" type="text"
                     placeholder="Search templates..."
-                    class="w-full sm:w-auto px-4 py-2 border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors" />
+                    class="w-full sm:w-64 px-4 py-2 border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors" />
                 
                 <select v-model="emailStore.filters.templates.category" @change="emailStore.fetchTemplates()"
-                    class="w-full sm:w-auto px-4 py-2 border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors">
+                    class="w-full sm:w-40 px-4 py-2 border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors">
                     <option value="">All Categories</option>
                     <option v-for="cat in emailStore.templateCategories" :key="cat" :value="cat">
                         {{ cat }}
@@ -17,14 +18,16 @@
                 </select>
                 
                 <select v-model="emailStore.filters.templates.ownership" @change="emailStore.fetchTemplates()"
-                    class="w-full sm:w-auto px-4 py-2 border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors">
+                    class="w-full sm:w-40 px-4 py-2 border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors">
                     <option value="all">All Templates</option>
                     <option value="my">My Templates</option>
                     <option value="global">Global Templates</option>
                 </select>
             </div>
+
+            <!-- Action Button -->
             <button @click="createTemplate"
-                class="w-full sm:w-auto px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg flex items-center justify-center gap-2 transition-colors">
+                class="w-full xl:w-auto px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 flex items-center justify-center gap-2 transition-colors shadow-sm">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                 </svg>
@@ -33,7 +36,7 @@
         </div>
 
         <!-- Stats -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
             <div class="bg-white dark:bg-slate-900 rounded-lg border border-gray-200 dark:border-slate-800 p-4 transition-colors">
                 <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">Total Templates</p>
                 <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ totalTemplatesCount }}</p>
@@ -63,15 +66,15 @@
             </div>
             <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">No templates yet</h3>
             <p class="text-gray-600 dark:text-gray-400 mb-4">Create your first email template</p>
-            <button @click="createTemplate" class="px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors">
+            <button @click="createTemplate" class="px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
                 Create Template
             </button>
         </div>
 
         <!-- Templates Grid -->
-        <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div v-else class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
             <div v-for="template in emailStore.templates" :key="template.id"
-                class="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-xl overflow-hidden hover:border-purple-300 dark:hover:border-purple-600 hover:shadow-lg transition-all group">
+                class="border border-gray-200 dark:border-slate-800 rounded-xl overflow-hidden hover:border-purple-300 dark:hover:border-purple-600 hover:shadow-lg transition-all group bg-white dark:bg-slate-900">
                 
                 <!-- Thumbnail -->
                 <div class="aspect-video bg-gradient-to-br from-purple-50 to-blue-50 dark:from-slate-800 dark:to-slate-900 relative overflow-hidden">
@@ -94,14 +97,14 @@
 
                     <!-- Badges -->
                     <div class="absolute top-2 right-2 flex flex-col gap-1">
-                        <span v-if="template.is_global" class="px-2 py-1 bg-blue-500 text-white text-xs rounded">
+                        <span v-if="template.is_global" class="px-2 py-1 bg-blue-500 text-white text-xs rounded shadow-sm">
                             Global
                         </span>
-                        <span v-else class="px-2 py-1 bg-purple-500 text-white text-xs rounded">
+                        <span v-else class="px-2 py-1 bg-purple-500 text-white text-xs rounded shadow-sm">
                             My Template
                         </span>
                         <span v-if="template.status === 'draft'"
-                            class="px-2 py-1 bg-yellow-500 text-white text-xs rounded">
+                            class="px-2 py-1 bg-yellow-500 text-white text-xs rounded shadow-sm">
                             Draft
                         </span>
                     </div>
@@ -109,28 +112,28 @@
 
                 <!-- Info -->
                 <div class="p-4">
-                    <h3 class="font-semibold text-gray-900 dark:text-white mb-1">{{ template.name }}</h3>
+                    <h3 class="font-semibold text-gray-900 dark:text-white mb-1 truncate">{{ template.name }}</h3>
                     <p v-if="template.description" class="text-sm text-gray-600 dark:text-gray-400 mb-2 line-clamp-2">
                         {{ template.description }}
                     </p>
 
                     <div class="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 mb-3">
-                        <span v-if="template.category">{{ template.category }}</span>
+                        <span v-if="template.category" class="px-2 py-0.5 bg-gray-100 dark:bg-slate-800 rounded">{{ template.category }}</span>
                         <span v-if="template.usage_count">{{ template.usage_count }} uses</span>
                     </div>
 
                     <!-- Tags -->
                     <div v-if="template.tags && template.tags.length > 0" class="flex flex-wrap gap-1 mb-3">
                         <span v-for="tag in template.tags.slice(0, 3)" :key="tag"
-                            class="px-2 py-0.5 bg-gray-100 dark:bg-slate-800 text-gray-600 dark:text-gray-300 text-xs rounded">
+                            class="px-2 py-0.5 bg-gray-100 dark:bg-slate-800 text-gray-600 dark:text-gray-300 text-xs rounded border border-gray-200 dark:border-slate-700">
                             {{ tag }}
                         </span>
                     </div>
 
                     <!-- Actions -->
-                    <div class="flex items-center gap-2">
+                    <div class="flex items-center gap-2 mt-4 pt-4 border-t border-gray-100 dark:border-slate-800">
                         <button @click="previewTemplate(template)" :disabled="actionLoading[template.id]"
-                            class="flex-1 px-3 py-2 text-sm text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-slate-700 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-800 disabled:opacity-50 transition-colors">
+                            class="flex-1 px-3 py-2 text-sm text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-slate-600 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-800 disabled:opacity-50 transition-colors">
                             <span v-if="actionLoading[template.id]">Loading...</span>
                             <span v-else>Preview</span>
                         </button>
@@ -169,15 +172,13 @@
             </div>
         </div>
 
-        <!-- Fullscreen Template Editor -->
+        <!-- Modals (Unchanged) -->
         <TemplateEditorFullscreen v-if="showEditorModal" :template="selectedTemplate" @close="closeEditor"
             @saved="handleTemplateSaved" />
-
-        <!-- Preview Modal -->
         <EmailPreviewModal v-if="showPreviewModal" :html-content="previewHtml" :subject="previewSubject"
             @close="closePreview" />
-
-        <!-- Duplicate Name Modal -->
+        
+        <!-- Duplicate Modal (Included for completeness) -->
         <div v-if="showDuplicateModal"
             class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
             <div class="bg-white dark:bg-slate-900 rounded-lg w-full max-w-md p-6 shadow-xl border border-gray-200 dark:border-slate-800">
@@ -207,7 +208,6 @@
 </template>
 
 <script setup>
-// Script section remains identical, just ensuring all reactive data handles are in place
 import { ref, computed, reactive } from 'vue'
 import { debounce } from 'lodash-es'
 import TemplateEditorFullscreen from './TemplateEditorFullscreen.vue'

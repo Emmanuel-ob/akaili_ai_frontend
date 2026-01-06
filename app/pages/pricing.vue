@@ -1,22 +1,26 @@
 <template>
-  <section class="relative bg-white dark:bg-slate-950 transition-colors duration-300 min-h-screen">
-    <!-- Updated Padding: pt-32 (mobile) and md:pt-40 (desktop) to clear navbar -->
-    <div class="pt-37 pb-20 md:pt-45 md:pb-28">
+  
+  <section class="relative bg-white dark:bg-slate-950 transition-colors duration-300 min-h-screen overflow-hidden">
+    
+    <!-- Padding adjusted for navbar clearance -->
+    <div class="pt-32 pb-20 md:pt-40 md:pb-28">
 
-      <div class="max-w-7xl mx-auto px-6">
-        <div class="text-center mb-16 max-w-3xl mx-auto">
-          <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 dark:text-white mb-6 tracking-tight">
+      <!-- Changed px-6 to px-4 on mobile for more space -->
+      <div class="max-w-7xl mx-auto px-4 sm:px-6">
+        <div class="text-center mb-12 md:mb-16 max-w-3xl mx-auto">
+          <h2 class="text-3xl md:text-5xl font-extrabold text-slate-900 dark:text-white mb-6 tracking-tight">
             Simple, Transparent Pricing
           </h2>
-          <p class="text-lg md:text-xl text-slate-600 dark:text-gray-400 leading-relaxed">
+          <p class="text-base md:text-xl text-slate-600 dark:text-gray-400 leading-relaxed">
             Choose the plan that best fits your needs. No hidden fees, cancel anytime.
           </p>
         </div>
         
-        <!-- Decorative background glow -->
-        <div aria-hidden class="pointer-events-none absolute left-1/2 top-20 -translate-x-1/2 w-[600px] h-[600px] rounded-full bg-[#9E4CFF]/10 blur-[100px]"></div>
+        <!-- Fixed Blob: Added max-w-full to prevent it from forcing width on mobile -->
+        <div aria-hidden class="pointer-events-none absolute left-1/2 top-20 -translate-x-1/2 w-full max-w-[600px] h-[400px] md:h-[600px] rounded-full bg-[#9E4CFF]/10 blur-[80px] md:blur-[100px]"></div>
         
-        <div class="grid gap-8 md:grid-cols-3 items-stretch relative z-10">
+        <!-- Grid: Ensuring single column on mobile -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 items-stretch relative z-10">
           <!-- STARTER -->
           <PricingCard
             plan-id="starter"
@@ -70,10 +74,8 @@ const router = useRouter()
 
 const handlePlanSelection = (planId) => {
   if (planId === 'starter') {
-    // Free plan goes straight to registration
     router.push('/register?plan=starter')
   } else {
-    // Paid plans go to checkout with query params
     router.push({ path: '/checkout', query: { plan: planId } })
   }
 }
