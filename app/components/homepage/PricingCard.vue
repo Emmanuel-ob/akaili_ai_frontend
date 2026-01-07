@@ -9,7 +9,7 @@
           : 'bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 text-slate-900 dark:text-white z-10 overflow-hidden shadow-sm hover:shadow-lg hover:-translate-y-1'
     ]"
   >
-    <!-- Ribbon for Popular -->
+    <!-- Ribbon for Popular  -->
     <div v-if="featured && !isCurrent" class="absolute left-1/2 -translate-x-1/2 -top-3 pointer-events-none z-50">  
       <span class="inline-block px-4 py-1 rounded-full bg-[#FFD700] text-xs font-bold text-slate-900 shadow-sm uppercase tracking-wider">  
         Most Popular
