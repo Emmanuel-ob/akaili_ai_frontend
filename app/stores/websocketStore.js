@@ -76,11 +76,16 @@ export const useWebSocketStore = defineStore('websocket', {
                 this._handleEvent('faq.deletion.completed', event)
             })
 
+            // ✅ NEW: Listen for deletion failures
+            this.businessChannel.listen('.faq.deletion.failed', (event) => {
+                this._handleEvent('faq.deletion.failed', event)
+            })
+
             this.businessChannel.listen('.job.progress.updated', (event) => {
                 this._handleEvent('job.progress.updated', event)
             })
 
-            // ✅ ADD: Agent Handover Events
+            // Agent Handover Events
             this.businessChannel.listen('.handover.requested', (event) => {
                 console.log('🔔 [WebSocket] Handover Requested:', event)
                 this._handleEvent('handover.requested', event)

@@ -1,7 +1,7 @@
 <!-- components/AppLogo.vue -->
 <template>
   <div class="flex items-center" :class="centerClass">
-   <img src="/Logo.png" alt="logo" class="object-contain max-h-full" />
+   <img src="/logo-big.png" alt="logo" class="object-contain max-h-full" />
   </div>
 </template>
 
