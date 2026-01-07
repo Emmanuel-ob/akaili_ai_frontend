@@ -117,6 +117,8 @@ const error = ref('')
 const success = ref('')
 const showPassword = ref(false)
 
+
+
 const handleRegister = async () => {
   loading.value = true
   error.value = ''
@@ -124,8 +126,26 @@ const handleRegister = async () => {
 
   try {
     await authStore.register(form.value)
-    success.value = 'Account created successfully! Please check your email to verify your account.'
-    form.value = { name: '', email: '', password: '' }
+    
+    
+    const pendingPlan = localStorage.getItem('pendingPlan')
+    
+    if (pendingPlan) {
+      
+      localStorage.removeItem('pendingPlan')
+      
+      
+      if (pendingPlan === 'starter') {
+        router.push('/dashboard/onboarding') 
+      } else {
+        
+        router.push({ path: '/checkout', query: { plan: pendingPlan } })
+      }
+    } else {
+        
+        router.push('/dashboard/onboarding')
+    }
+
   } catch (err) {
     error.value = err.message || 'Registration failed'
   } finally {
@@ -149,4 +169,6 @@ const handleSocialAuth = async (provider) => {
     error.value = err.message || 'Social registration failed'
   }
 }
+
+
 </script>
