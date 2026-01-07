@@ -1,11 +1,12 @@
+<!-- components/chatbot-setup/ColorInput.vue -->
 <template>
   <div class="">
     <!-- Label -->
-    <label class="block text-base font-semibold mt-4">Primary Colour</label>
+    <label class="block text-base font-semibold mt-4 text-gray-900 dark:text-gray-200">Primary Colour</label>
 
     <div class="flex items-center mt-2 space-x-3">
       <!-- Color preview -->
-      <div class="w-12 h-12 rounded-lg border border-gray-300 shadow cursor-pointer"
+      <div class="w-12 h-12 rounded-lg border border-gray-300 dark:border-slate-600 shadow cursor-pointer transition-colors"
         :style="{ backgroundColor: colorWithHash }" @click="$refs.colorPicker.click()">
       </div>
 
@@ -16,13 +17,13 @@
       <!-- Text Input -->
       <div class="flex-1">
         <div class="relative">
-          <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 font-mono">#</span>
+          <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-400 font-mono">#</span>
           <input :value="colorValueDisplay"
-            class="w-full pl-8 pr-3 py-3 text-gray-600 rounded-md border border-gray-300 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 font-mono"
+            class="w-full pl-8 pr-3 py-3 text-gray-600 dark:text-white bg-white dark:bg-slate-800 rounded-md border border-gray-300 dark:border-slate-700 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 font-mono transition-colors"
             type="text" placeholder="6366f1" maxlength="6" pattern="[0-9a-fA-F]{6}" @input="handleTextChange"
             @blur="validateColor" />
         </div>
-        <p class="text-xs text-gray-500 mt-1">Enter 6-digit hex color code (without #)</p>
+        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Enter 6-digit hex color code (without #)</p>
       </div>
     </div>
   </div>
@@ -36,50 +37,34 @@ const props = defineProps({
 })
 const emit = defineEmits(['update:modelValue'])
 
-// Computed property for color with # (this is what we store in DB)
 const colorWithHash = computed(() => {
   let value = props.modelValue || '#6366f1'
-  // Ensure it starts with #
   return value.startsWith('#') ? value : '#' + value
 })
 
-// Computed property for display in text input (without #)
 const colorValueDisplay = computed(() => {
-  return colorWithHash.value.slice(1) // Remove the # for display
+  return colorWithHash.value.slice(1)
 })
 
-// Handle color picker change
 const handleColorChange = (event) => {
-  const colorWithHash = event.target.value // This already includes #
+  const colorWithHash = event.target.value
   emit('update:modelValue', colorWithHash)
 }
 
-// Handle text input change
 const handleTextChange = (event) => {
   let value = event.target.value
-  // Remove any # that user might type
   value = value.replace('#', '')
-  // Only allow hex characters
   value = value.replace(/[^0-9a-fA-F]/g, '')
-  // Limit to 6 characters
   value = value.slice(0, 6)
-
-  // Emit with # prefix
   emit('update:modelValue', '#' + value)
 }
 
-// Validate color on blur
 const validateColor = (event) => {
   let value = event.target.value
-  // Remove # and non-hex chars
   value = value.replace('#', '').replace(/[^0-9a-fA-F]/g, '')
-
-  // If empty or invalid, use default
   if (!value || value.length !== 6) {
     value = '6366f1'
   }
-
-  // Emit with # prefix
   emit('update:modelValue', '#' + value)
 }
 </script>

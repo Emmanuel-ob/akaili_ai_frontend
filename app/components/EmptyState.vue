@@ -1,9 +1,8 @@
-<!-- components/EmptyState.vue -->
-<template>
-  <div class="text-center py-12" :class="containerClass">
-    <component :is="iconComponent" class="mx-auto h-12 w-12 text-gray-400" />
-    <h3 class="mt-2 text-sm font-medium text-gray-900">{{ title }}</h3>
-    <p class="mt-1 text-sm text-gray-500">{{ description }}</p>
+<!-- components/EmptyState.vue --><template>
+  <div class="text-center py-12 px-4 transition-colors duration-300" :class="containerClass">
+    <component :is="iconComponent" class="mx-auto h-12 w-12 text-gray-400 dark:text-gray-600" />
+    <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-white">{{ title }}</h3>
+    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ description }}</p>
     <div v-if="$slots.action" class="mt-6">
       <slot name="action" />
     </div>
@@ -11,21 +10,12 @@
 </template>
 
 <script setup>
-import { h } from 'vue'
+import { h, computed } from 'vue'
 
 const props = defineProps({
-  title: {
-    type: String,
-    required: true
-  },
-  description: {
-    type: String,
-    required: true
-  },
-  icon: {
-    type: String,
-    default: 'document'
-  },
+  title: { type: String, required: true },
+  description: { type: String, required: true },
+  icon: { type: String, default: 'document' },
   variant: {
     type: String,
     default: 'card',
@@ -35,7 +25,7 @@ const props = defineProps({
 
 const containerClass = computed(() => {
   if (props.variant === 'card') {
-    return 'bg-white rounded-lg border border-gray-200'
+    return 'bg-white dark:bg-slate-900 rounded-lg border border-gray-200 dark:border-slate-800'
   }
   return ''
 })
@@ -49,7 +39,6 @@ const iconComponent = computed(() => {
       h('path', { 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'stroke-width': '2', d: 'M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4' })
     ])
   }
-  
   return icons[props.icon] || icons.document
 })
 </script>

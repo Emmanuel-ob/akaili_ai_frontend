@@ -1,13 +1,14 @@
+<!-- dashboard/onboarding.vue -->
 <template>
-  <div class="min-h-screen bg-gray-50 flex flex-col">
+  <div class="min-h-screen bg-gray-50 dark:bg-slate-950 flex flex-col transition-colors duration-300">
     <!-- Header -->
-    <header class="bg-white border-b border-gray-200 py-4 px-6" role="banner">
+    <header class="bg-white dark:bg-slate-900 border-b border-gray-200 dark:border-slate-800 py-4 px-6 transition-colors duration-300" role="banner">
       <div class="max-w-4xl mx-auto flex justify-between items-center">
         <NuxtLink to="/" aria-label="Xeli AI Home">
           <NuxtImg src="/Logo.png" alt="Xeli AI Logo" width="120" height="32" loading="eager" />
         </NuxtLink>
         <button @click="handleLogout"
-          class="text-sm text-gray-600 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 rounded px-3 py-1"
+          class="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 dark:focus:ring-offset-slate-900 rounded px-3 py-1 transition-colors"
           aria-label="Logout">
           Logout
         </button>
@@ -30,8 +31,8 @@
 
         <!-- Step 1: Company Setup -->
         <div v-else-if="currentStep === 'business_setup'"
-          class="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
-          <h2 class="text-2xl font-bold text-gray-900 mb-6">Setup Your Company</h2>
+          class="bg-white dark:bg-slate-900 rounded-lg shadow-sm border border-gray-200 dark:border-slate-800 p-8 transition-colors duration-300">
+          <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">Setup Your Company</h2>
 
           <form @submit.prevent="handleCompanySetup" class="space-y-6">
             <FormInput v-model="companyForm.company_name" label="Company Name" placeholder="Enter your company name"
@@ -46,12 +47,12 @@
             <FormInput v-model="companyForm.address" label="Business Address" placeholder="Enter business address"
               required aria-required="true" />
 
-            <div v-if="error" class="p-4 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm" role="alert">
+            <div v-if="error" class="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-600 dark:text-red-400 text-sm" role="alert">
               {{ error }}
             </div>
 
             <button type="submit" :disabled="setupLoading"
-              class="w-full bg-[#9E4CFF] text-white py-3 px-4 rounded-lg hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-colors">
+              class="w-full bg-[#9E4CFF] text-white py-3 px-4 rounded-lg hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 dark:focus:ring-offset-slate-900 transition-colors">
               {{ setupLoading ? 'Setting up...' : 'Continue' }}
             </button>
           </form>
@@ -59,31 +60,31 @@
 
         <!-- Step 2: Chatbot Creation -->
         <div v-else-if="currentStep === 'chatbot_creation'"
-          class="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
-          <h2 class="text-2xl font-bold text-gray-900 mb-6">Create Your Chatbot</h2>
+          class="bg-white dark:bg-slate-900 rounded-lg shadow-sm border border-gray-200 dark:border-slate-800 p-8 transition-colors duration-300">
+          <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">Create Your Chatbot</h2>
 
           <form @submit.prevent="handleChatbotCreation" class="space-y-6">
             <FormInput v-model="chatbotForm.name" label="Chatbot Name" placeholder="Enter chatbot name" required
               aria-required="true" />
 
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Welcome Message</label>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Welcome Message</label>
               <textarea v-model="chatbotForm.welcome_message" rows="4"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                class="w-full px-3 py-2 border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent placeholder-gray-400 dark:placeholder-gray-500 transition-colors"
                 placeholder="Enter welcome message for your chatbot" required aria-required="true"></textarea>
             </div>
 
-            <div v-if="error" class="p-4 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm" role="alert">
+            <div v-if="error" class="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-600 dark:text-red-400 text-sm" role="alert">
               {{ error }}
             </div>
 
             <div class="flex space-x-4">
               <button type="button" @click="goBack"
-                class="flex-1 border border-gray-300 text-gray-700 py-3 px-4 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors">
+                class="flex-1 border border-gray-300 dark:border-slate-600 text-gray-700 dark:text-gray-300 py-3 px-4 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 dark:focus:ring-offset-slate-900 transition-colors">
                 Back
               </button>
               <button type="submit" :disabled="setupLoading"
-                class="flex-1 bg-[#9E4CFF] text-white py-3 px-4 rounded-lg hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-colors">
+                class="flex-1 bg-[#9E4CFF] text-white py-3 px-4 rounded-lg hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 dark:focus:ring-offset-slate-900 transition-colors">
                 {{ setupLoading ? 'Creating...' : 'Complete Setup' }}
               </button>
             </div>
@@ -92,17 +93,17 @@
 
         <!-- Completed State -->
         <div v-else-if="currentStep === 'completed'"
-          class="bg-white rounded-lg shadow-sm border border-gray-200 p-8 text-center">
-          <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+          class="bg-white dark:bg-slate-900 rounded-lg shadow-sm border border-gray-200 dark:border-slate-800 p-8 text-center transition-colors duration-300">
+          <div class="w-16 h-16 bg-green-100 dark:bg-green-900/20 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-8 h-8 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"
               aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
             </svg>
           </div>
-          <h2 class="text-2xl font-bold text-gray-900 mb-2">Setup Complete!</h2>
-          <p class="text-gray-600 mb-6">Your account is ready to use.</p>
+          <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">Setup Complete!</h2>
+          <p class="text-gray-600 dark:text-gray-400 mb-6">Your account is ready to use.</p>
           <button @click="finishOnboarding"
-            class="bg-[#9E4CFF] text-white py-3 px-8 rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-colors">
+            class="bg-[#9E4CFF] text-white py-3 px-8 rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 dark:focus:ring-offset-slate-900 transition-colors">
             Go to Dashboard
           </button>
         </div>
@@ -213,6 +214,10 @@ const goBack = () => {
   if (currentStep.value === 'chatbot_creation') {
     currentStep.value = 'business_setup'
   }
+}
+
+const finishOnboarding = () => {
+  router.push('/dashboard')
 }
 
 // Single initialization lifecycle hook (async) to avoid nested onMounted calls

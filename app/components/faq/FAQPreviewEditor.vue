@@ -1,8 +1,9 @@
+<!-- components/faq/FAQPreviewEditor.vue -->
 <template>
     <BaseModal :show="show" :title="modalTitle" size="large" @close="$emit('close')">
         <div v-if="loading" class="flex items-center justify-center py-12">
             <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
-            <span class="ml-3 text-gray-600">Loading content...</span>
+            <span class="ml-3 text-gray-600 dark:text-gray-300">Loading content...</span>
         </div>
 
         <div v-else-if="content && content.length">
@@ -10,29 +11,33 @@
             <div class="flex justify-between items-center mb-4">
                 <div class="flex items-center space-x-2">
                     <button @click="editMode = false" :class="[
-                        'px-3 py-1.5 text-sm rounded-md',
-                        !editMode ? 'bg-purple-100 text-purple-700' : 'text-gray-600 hover:bg-gray-100'
+                        'px-3 py-1.5 text-sm rounded-md transition-colors',
+                        !editMode 
+                            ? 'bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300' 
+                            : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-700'
                     ]">
                         Preview
                     </button>
                     <button @click="editMode = true" :class="[
-                        'px-3 py-1.5 text-sm rounded-md',
-                        editMode ? 'bg-purple-100 text-purple-700' : 'text-gray-600 hover:bg-gray-100'
+                        'px-3 py-1.5 text-sm rounded-md transition-colors',
+                        editMode 
+                            ? 'bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300' 
+                            : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-700'
                     ]">
                         Edit
                     </button>
                 </div>
 
-                <span class="text-sm text-gray-600">{{ content.length }} items</span>
+                <span class="text-sm text-gray-600 dark:text-gray-400">{{ content.length }} items</span>
             </div>
 
             <!-- Preview Mode -->
             <div v-if="!editMode" class="space-y-4 max-h-96 overflow-y-auto">
                 <div v-for="(item, index) in content" :key="index"
-                    class="border border-gray-200 rounded-lg p-4 hover:shadow-sm transition-shadow">
+                    class="border border-gray-200 dark:border-slate-700 rounded-lg p-4 hover:shadow-sm transition-shadow">
                     <div class="flex items-start justify-between mb-2">
-                        <span class="text-xs font-medium text-gray-500">Item {{ index + 1 }}</span>
-                        <button @click="deleteItem(index)" class="text-red-500 hover:text-red-700">
+                        <span class="text-xs font-medium text-gray-500 dark:text-gray-400">Item {{ index + 1 }}</span>
+                        <button @click="deleteItem(index)" class="text-red-500 hover:text-red-700 dark:hover:text-red-400">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M6 18L18 6M6 6l12 12" />
@@ -43,25 +48,25 @@
                     <!-- Q&A Format -->
                     <div v-if="item.metadata?.type === 'qa_pair'" class="space-y-2">
                         <div>
-                            <span class="text-sm font-medium text-gray-700">Q:</span>
-                            <p class="text-sm text-gray-900 mt-1">{{ item.metadata.question }}</p>
+                            <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Q:</span>
+                            <p class="text-sm text-gray-900 dark:text-white mt-1">{{ item.metadata.question }}</p>
                         </div>
                         <div>
-                            <span class="text-sm font-medium text-gray-700">A:</span>
-                            <p class="text-sm text-gray-900 mt-1">{{ item.metadata.answer }}</p>
+                            <span class="text-sm font-medium text-gray-700 dark:text-gray-300">A:</span>
+                            <p class="text-sm text-gray-900 dark:text-white mt-1">{{ item.metadata.answer }}</p>
                         </div>
                     </div>
 
                     <!-- Generic Text -->
                     <div v-else>
-                        <p class="text-sm text-gray-900 whitespace-pre-wrap">{{ item.text }}</p>
+                        <p class="text-sm text-gray-900 dark:text-white whitespace-pre-wrap">{{ item.text }}</p>
                     </div>
 
                     <!-- Metadata -->
-                    <div v-if="item.metadata" class="mt-3 pt-3 border-t border-gray-100">
+                    <div v-if="item.metadata" class="mt-3 pt-3 border-t border-gray-100 dark:border-slate-700">
                         <div class="flex flex-wrap gap-2">
                             <span v-for="(value, key) in getDisplayMetadata(item.metadata)" :key="key"
-                                class="inline-flex items-center px-2 py-0.5 rounded text-xs bg-gray-100 text-gray-600">
+                                class="inline-flex items-center px-2 py-0.5 rounded text-xs bg-gray-100 dark:bg-slate-800 text-gray-600 dark:text-gray-300">
                                 {{ key }}: {{ value }}
                             </span>
                         </div>
@@ -72,10 +77,10 @@
             <!-- Edit Mode -->
             <div v-else class="space-y-4 max-h-96 overflow-y-auto">
                 <div v-for="(item, index) in editableContent" :key="index"
-                    class="border border-gray-200 rounded-lg p-4">
+                    class="border border-gray-200 dark:border-slate-700 rounded-lg p-4">
                     <div class="flex items-start justify-between mb-3">
-                        <span class="text-sm font-medium text-gray-700">Item {{ index + 1 }}</span>
-                        <button @click="deleteItem(index)" class="text-red-500 hover:text-red-700">
+                        <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Item {{ index + 1 }}</span>
+                        <button @click="deleteItem(index)" class="text-red-500 hover:text-red-700 dark:hover:text-red-400">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -86,37 +91,37 @@
                     <!-- Q&A Edit -->
                     <div v-if="item.metadata?.type === 'qa_pair'" class="space-y-3">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Question</label>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Question</label>
                             <input v-model="item.metadata.question" type="text"
-                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500" />
+                                class="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-gray-900 dark:text-white rounded-md focus:ring-2 focus:ring-purple-500" />
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Answer</label>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Answer</label>
                             <textarea v-model="item.metadata.answer" rows="3"
-                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500" />
+                                class="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-gray-900 dark:text-white rounded-md focus:ring-2 focus:ring-purple-500" />
                         </div>
                     </div>
 
                     <!-- Generic Text Edit -->
                     <div v-else>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Content</label>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Content</label>
                         <textarea v-model="item.text" rows="4"
-                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500" />
+                            class="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-gray-900 dark:text-white rounded-md focus:ring-2 focus:ring-purple-500" />
                     </div>
                 </div>
             </div>
 
             <!-- Actions -->
-            <div class="flex justify-between items-center mt-6 pt-4 border-t border-gray-200">
+            <div class="flex justify-between items-center mt-6 pt-4 border-t border-gray-200 dark:border-slate-700">
                 <button v-if="editMode && hasChanges" @click="resetChanges"
-                    class="text-sm text-gray-600 hover:text-gray-800">
+                    class="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200">
                     Reset Changes
                 </button>
                 <div v-else></div>
 
                 <div class="flex space-x-3">
                     <button @click="$emit('close')"
-                        class="px-4 py-2 text-sm text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50">
+                        class="px-4 py-2 text-sm text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-slate-600 rounded-md hover:bg-gray-50 dark:hover:bg-slate-800">
                         Cancel
                     </button>
                     <button v-if="editMode" @click="saveChanges" :disabled="saving || !hasChanges"
@@ -132,13 +137,14 @@
             </div>
         </div>
 
-        <div v-else class="text-center py-12 text-gray-500">
+        <div v-else class="text-center py-12 text-gray-500 dark:text-gray-400">
             No content available
         </div>
     </BaseModal>
 </template>
 
 <script setup>
+// ... (Script remains same as original)
 import { ref, computed, watch } from 'vue'
 
 const props = defineProps({
@@ -173,7 +179,6 @@ watch(() => props.show, async (show) => {
     if (show && props.faqSource) {
         await loadContent()
     } else {
-        // Reset when modal closes
         editMode.value = false
         content.value = []
         editableContent.value = []
@@ -183,28 +188,23 @@ watch(() => props.show, async (show) => {
 
 const loadContent = async () => {
     loading.value = true
-
     const result = await faqStore.previewFAQ(props.faqSource.id)
-
     if (result.success) {
         content.value = result.content
         editableContent.value = JSON.parse(JSON.stringify(result.content))
         originalContent.value = JSON.parse(JSON.stringify(result.content))
     }
-
     loading.value = false
 }
 
 const getDisplayMetadata = (metadata) => {
     const display = {}
     const excludeKeys = ['type', 'question', 'answer', 'source']
-
     Object.keys(metadata).forEach(key => {
         if (!excludeKeys.includes(key) && metadata[key]) {
             display[key] = metadata[key]
         }
     })
-
     return display
 }
 
@@ -226,18 +226,13 @@ const resetChanges = () => {
 
 const saveChanges = async () => {
     saving.value = true
-
-    // Sync text with metadata for Q&A pairs
     editableContent.value.forEach(item => {
         if (item.metadata?.type === 'qa_pair') {
             item.text = `Q: ${item.metadata.question}\nA: ${item.metadata.answer}`
         }
     })
-
     const result = await faqStore.updateContent(props.faqSource.id, editableContent.value)
-
     saving.value = false
-
     if (result.success) {
         content.value = JSON.parse(JSON.stringify(editableContent.value))
         originalContent.value = JSON.parse(JSON.stringify(editableContent.value))
@@ -248,11 +243,8 @@ const saveChanges = async () => {
 
 const confirmAndEmbed = async () => {
     embedding.value = true
-
     const result = await faqStore.confirmAndEmbed(props.faqSource.id)
-
     embedding.value = false
-
     if (result.success) {
         emit('embedded', result.embedded_count)
         emit('close')

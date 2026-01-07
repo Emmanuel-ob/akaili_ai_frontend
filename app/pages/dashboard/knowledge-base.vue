@@ -1,64 +1,78 @@
+<!-- dashboard/knowledge-base.vue -->
 <template>
-    <div>
-        <header class="bg-white px-6 py-4 border-b border-gray-200">
-            <div class="flex justify-between items-center">
+    <div class="min-h-screen bg-gray-50 dark:bg-slate-950 transition-colors duration-300">
+        <!-- Header -->
+        <header
+            class="bg-white dark:bg-slate-900 px-4 sm:px-6 py-5 border-b border-gray-200 dark:border-slate-800 transition-colors duration-300">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
                     <h1 class="text-[#9E4CFF] text-2xl font-bold">Knowledge Base</h1>
-                    <p class="text-sm lg:text-base text-[#6B7280]">
+                    <p class="text-sm lg:text-base text-gray-500 dark:text-gray-400 mt-1">
                         Manage your chatbot's FAQ sources and training data
                     </p>
                 </div>
 
                 <div class="flex items-center space-x-4">
-                    <!-- Chatbot Selector -->
-                    <select v-model="selectedChatbotId" @change="onChatbotChange"
-                        class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
-                        <option value="">Select Chatbot</option>
-                        <option v-for="bot in chatbotStore.chatbots" :key="bot.id" :value="bot.id">
-                            {{ bot.name }}
-                        </option>
-                    </select>
+                    <!-- ✅ FIXED: Added label for chatbot selector -->
+                    <div class="flex flex-col">
+                        <label class="text-xs font-medium text-gray-700 mb-1">Active Chatbot</label>
+                        <select v-model="selectedChatbotId" @change="onChatbotChange"
+                            class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                            <option value="">Select Chatbot</option>
+                            <option v-for="bot in chatbotStore.chatbots" :key="bot.id" :value="bot.id">
+                                {{ bot.name }}
+                            </option>
+                        </select>
+                    </div>
                 </div>
             </div>
         </header>
 
         <main class="px-6 py-6">
+            <!-- ✅ FIXED: Loading state on initial page load -->
+            <div v-if="initialLoading"
+                class="flex flex-col items-center justify-center py-12 bg-gray-50 rounded-lg border border-gray-200">
+                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mb-4"></div>
+                <p class="text-gray-600">Loading knowledge base...</p>
+            </div>
+
             <!-- No Chatbot Selected -->
-            <div v-if="!selectedChatbotId"
+            <div v-else-if="!selectedChatbotId"
                 class="text-center py-12 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
                 <svg class="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
                 </svg>
-                <p class="text-lg font-medium text-gray-700 mb-2">Select a Chatbot</p>
-                <p class="text-sm text-gray-500">Choose a chatbot to manage its knowledge base</p>
+                <p class="text-lg font-medium text-gray-700 dark:text-gray-200 mb-2">Select a Chatbot</p>
+                <p class="text-sm text-gray-500 dark:text-gray-400">Choose a chatbot to manage its knowledge base</p>
             </div>
 
             <!-- Main Content -->
             <div v-else>
                 <!-- Stats Cards -->
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                     <StatCard title="Total Sources" :value="faqStore.faqSources.length" icon="folder" color="blue" />
-                    <StatCard title="Active Sources" :value="activeSources" icon="check-circle" color="green" />
+                    <StatCard title="Active Sources" :value="activeSources" icon="check" color="green" />
                     <StatCard title="Total Items" :value="totalItems" icon="document" color="purple" />
-                    <StatCard title="Embedded Items" :value="embeddedItems" icon="database" color="indigo" />
+                    <StatCard title="Embedded Items" :value="embeddedItems" icon="database" color="yellow" />
                 </div>
 
                 <!-- Action Tabs -->
-                <div class="grid grid-cols-2 gap-4 mb-6">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
                     <div @click="handleTabClick('upload')" :class="[
-                        'cursor-pointer rounded-lg border-2 p-6 transition-all',
+                        'cursor-pointer rounded-xl border-2 p-6 transition-all duration-200',
                         activeTab === 'upload'
-                            ? 'border-purple-500 bg-purple-50'
-                            : 'border-gray-200 hover:border-gray-300'
+                            ? 'border-purple-500 bg-purple-50 dark:bg-purple-900/10'
+                            : 'border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-gray-300 dark:hover:border-slate-700'
                     ]">
                         <div class="flex items-center justify-between">
                             <div>
-                                <h3 class="text-lg font-semibold text-gray-900">Upload Documents</h3>
-                                <p class="text-sm text-gray-600 mt-1">PDF, Word, Excel, CSV, TXT, JSON</p>
+                                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Upload Documents</h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">PDF, Word, Excel, CSV, TXT,
+                                    JSON</p>
                             </div>
-                            <svg class="w-10 h-10 text-purple-600" fill="none" stroke="currentColor"
-                                viewBox="0 0 24 24">
+                            <svg class="w-10 h-10 text-purple-600 dark:text-purple-400" fill="none"
+                                stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                             </svg>
@@ -66,18 +80,19 @@
                     </div>
 
                     <div @click="handleTabClick('manual')" :class="[
-                        'cursor-pointer rounded-lg border-2 p-6 transition-all',
+                        'cursor-pointer rounded-xl border-2 p-6 transition-all duration-200',
                         activeTab === 'manual'
-                            ? 'border-purple-500 bg-purple-50'
-                            : 'border-gray-200 hover:border-gray-300'
+                            ? 'border-purple-500 bg-purple-50 dark:bg-purple-900/10'
+                            : 'border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-gray-300 dark:hover:border-slate-700'
                     ]">
                         <div class="flex items-center justify-between">
                             <div>
-                                <h3 class="text-lg font-semibold text-gray-900">Manual Q&A</h3>
-                                <p class="text-sm text-gray-600 mt-1">Create question-answer pairs</p>
+                                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Manual Q&A</h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Create question-answer pairs
+                                </p>
                             </div>
-                            <svg class="w-10 h-10 text-purple-600" fill="none" stroke="currentColor"
-                                viewBox="0 0 24 24">
+                            <svg class="w-10 h-10 text-purple-600 dark:text-purple-400" fill="none"
+                                stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M12 4v16m8-8H4" />
                             </svg>
@@ -86,22 +101,23 @@
                 </div>
 
                 <!-- Upload/Manual Entry Forms -->
-                <div v-if="activeTab === 'upload'" class="mb-6">
+                <div v-if="activeTab === 'upload'" class="mb-8">
                     <FAQUpload :chatbot-id="selectedChatbotId" @uploaded="handleUploaded"
                         @processing="isProcessing = $event" />
                 </div>
 
-                <div v-if="activeTab === 'manual'" class="mb-6">
+                <div v-if="activeTab === 'manual'" class="mb-8">
                     <FAQManualEntry :chatbot-id="selectedChatbotId" :editing-source="editingFAQ" @saved="handleSaved"
                         @processing="isProcessing = $event" @cancel="handleCancelEdit" />
                 </div>
 
                 <!-- FAQ Sources List -->
-                <div class="bg-white rounded-lg border border-gray-200 p-6">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-lg font-semibold text-gray-900">FAQ Sources</h3>
+                <div
+                    class="bg-white dark:bg-slate-900 rounded-xl border border-gray-200 dark:border-slate-800 p-4 sm:p-6 transition-colors duration-300">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-3">
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">FAQ Sources</h3>
                         <button @click="refreshList" :disabled="faqStore.loading"
-                            class="p-2 text-gray-600 hover:text-gray-900 disabled:opacity-50">
+                            class="p-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white disabled:opacity-50 transition-colors self-end sm:self-auto">
                             <svg class="w-5 h-5" :class="{ 'animate-spin': faqStore.loading }" fill="none"
                                 stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -110,8 +126,9 @@
                         </button>
                     </div>
 
-                    <FAQList :faq-sources="faqStore.faqSources" :loading="faqStore.loading" @preview="handlePreview"
-                        @edit="handleEdit" @embed="handleEmbed" @reprocess="handleReprocess" @delete="handleDelete" />
+                    <FAQList :faq-sources="faqStore.faqSources" :loading="faqStore.loading"
+                        :processing-jobs="processingJobs" @preview="handlePreview" @edit="handleEdit"
+                        @embed="handleEmbed" @reprocess="handleReprocess" @delete="handleDelete" @retry="handleRetry" />
                 </div>
             </div>
         </main>
@@ -149,6 +166,8 @@ const isProcessing = ref(false)
 const showPreviewModal = ref(false)
 const selectedFAQ = ref(null)
 const editingFAQ = ref(null)
+const initialLoading = ref(true) // ✅ NEW: Track initial page load
+const processingJobs = ref(new Set()) // ✅ NEW: Track which FAQs are processing
 
 const activeSources = computed(() => {
     return faqStore.faqSources.filter(faq => faq.is_active).length
@@ -176,19 +195,23 @@ const setupEventListeners = () => {
     wsStore.on('faq.embedding.completed', handleEmbeddingCompleted, COMPONENT_ID)
     wsStore.on('faq.embedding.failed', handleEmbeddingFailed, COMPONENT_ID)
     wsStore.on('faq.deletion.completed', handleDeletionCompleted, COMPONENT_ID)
+    wsStore.on('faq.deletion.failed', handleDeletionFailed, COMPONENT_ID) // ✅ NEW
     wsStore.on('job.progress.updated', handleProgressUpdated, COMPONENT_ID)
 }
 
 const handleProcessingCompleted = async (event) => {
+    // ✅ FIXED: Remove from processing jobs
+    processingJobs.value.delete(event.faq_source.id)
+
     await refreshList()
 
-    // Show toast with action button
+    // ✅ FIXED: User-friendly toast message
     toast.success({
         component: ActionToast,
         props: {
             type: 'success',
-            title: 'Processing Complete',
-            message: event.message,
+            title: 'Document Ready',
+            message: `"${event.faq_source.source_name}" has been processed successfully and is ready to embed.`,
             actionLabel: 'Review Now',
             onAction: () => {
                 const faq = faqStore.faqSources.find(f => f.id === event.faq_source.id)
@@ -199,37 +222,53 @@ const handleProcessingCompleted = async (event) => {
 }
 
 const handleProcessingFailed = async (event) => {
+    // ✅ FIXED: Remove from processing jobs
+    processingJobs.value.delete(event.faq_source.id)
+
     await refreshList()
 
+    // ✅ FIXED: User-friendly error message
     toast.error({
         component: ActionToast,
         props: {
             type: 'error',
             title: 'Processing Failed',
-            message: event.message,
+            message: `We couldn't process "${event.faq_source.source_name}". Please try again or contact support if the issue persists.`,
             actionLabel: 'Retry',
             onAction: async () => {
                 const faq = faqStore.faqSources.find(f => f.id === event.faq_source.id)
-                if (faq) await faqStore.reprocess(faq.id)
+                if (faq) await handleRetry(faq)
             }
         }
     }, { timeout: 10000 })
 }
 
 const handleEmbeddingCompleted = async (event) => {
+    // ✅ FIXED: Remove from processing jobs
+    processingJobs.value.delete(event.faq_source.id)
+
     await refreshList()
-    toast.success(event.message, { timeout: 5000 })
+
+    // ✅ FIXED: User-friendly success message
+    toast.success(
+        `"${event.faq_source.source_name}" is now active and ready to answer questions!`,
+        { timeout: 5000 }
+    )
 }
 
 const handleEmbeddingFailed = async (event) => {
+    // ✅ FIXED: Remove from processing jobs
+    processingJobs.value.delete(event.faq_source.id)
+
     await refreshList()
 
+    // ✅ FIXED: User-friendly error with retry
     toast.error({
         component: ActionToast,
         props: {
             type: 'error',
             title: 'Embedding Failed',
-            message: event.message,
+            message: `We couldn't activate "${event.faq_source.source_name}". Please try again.`,
             actionLabel: 'Retry',
             onAction: async () => {
                 const faq = faqStore.faqSources.find(f => f.id === event.faq_source.id)
@@ -240,8 +279,32 @@ const handleEmbeddingFailed = async (event) => {
 }
 
 const handleDeletionCompleted = async (event) => {
+    // ✅ FIXED: Remove from processing jobs
+    processingJobs.value.delete(event.faq_source_id)
+
     await refreshList()
-    toast.success(event.message, { timeout: 3000 })
+    toast.success(`"${event.message}" deleted successfully`, { timeout: 3000 })
+}
+
+// ✅ NEW: Handle deletion failure
+const handleDeletionFailed = async (event) => {
+    processingJobs.value.delete(event.faq_source.id)
+
+    await refreshList()
+
+    toast.error({
+        component: ActionToast,
+        props: {
+            type: 'error',
+            title: 'Deletion Failed',
+            message: event.error, // Already sanitized from backend
+            actionLabel: 'Retry',
+            onAction: async () => {
+                const faq = faqStore.faqSources.find(f => f.id === event.faq_source.id)
+                if (faq) await handleDelete(faq)
+            }
+        }
+    }, { timeout: 10000 })
 }
 
 const handleProgressUpdated = (event) => {
@@ -291,27 +354,54 @@ const handleCancelEdit = () => {
 }
 
 const handleEmbed = async (faqSource) => {
+    // ✅ FIXED: Track processing and show better message
+    processingJobs.value.add(faqSource.id)
+
     const result = await faqStore.confirmAndEmbed(faqSource.id)
     if (result && result.success) {
-        toast.info('Embedding job started...', { timeout: 3000 })
+        toast.info(`Activating "${faqSource.source_name}"...`, { timeout: 3000 })
+    } else {
+        processingJobs.value.delete(faqSource.id)
     }
 }
 
 const handleReprocess = async (faqSource) => {
-    if (confirm('This will delete existing embeddings and recreate them. Continue?')) {
+    if (confirm(`This will recreate the embeddings for "${faqSource.source_name}". Continue?`)) {
+        // ✅ FIXED: Track processing
+        processingJobs.value.add(faqSource.id)
+
         const result = await faqStore.reprocess(faqSource.id)
         if (result && result.success) {
-            toast.info('Reprocessing job started...', { timeout: 3000 })
+            toast.info(`Reprocessing "${faqSource.source_name}"...`, { timeout: 3000 })
+        } else {
+            processingJobs.value.delete(faqSource.id)
         }
     }
 }
 
 const handleDelete = async (faqSource) => {
-    if (confirm('Are you sure you want to delete this FAQ source? This action cannot be undone.')) {
+    if (confirm(`Are you sure you want to delete "${faqSource.source_name}"? This action cannot be undone.`)) {
+        // ✅ FIXED: Track processing
+        processingJobs.value.add(faqSource.id)
+
         const result = await faqStore.deleteFAQ(faqSource.id)
         if (result && result.success) {
-            toast.info('Deletion job started...', { timeout: 3000 })
+            toast.info(`Deleting "${faqSource.source_name}"...`, { timeout: 3000 })
+        } else {
+            processingJobs.value.delete(faqSource.id)
         }
+    }
+}
+
+// ✅ NEW: Manual retry handler
+const handleRetry = async (faqSource) => {
+    processingJobs.value.add(faqSource.id)
+
+    const result = await faqStore.reprocess(faqSource.id)
+    if (result && result.success) {
+        toast.info(`Retrying "${faqSource.source_name}"...`, { timeout: 3000 })
+    } else {
+        processingJobs.value.delete(faqSource.id)
     }
 }
 
@@ -329,12 +419,17 @@ const handleEmbedded = async (count) => {
 }
 
 onMounted(async () => {
+    // ✅ FIXED: Show loading state during initial load
+    initialLoading.value = true
+
     await chatbotStore.fetchChatbots()
 
     if (chatbotStore.chatbots.length > 0) {
         selectedChatbotId.value = chatbotStore.chatbots[0].id
         await onChatbotChange()
     }
+
+    initialLoading.value = false
 
     // Set up event listeners
     setupEventListeners()

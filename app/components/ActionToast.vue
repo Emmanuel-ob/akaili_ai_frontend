@@ -1,3 +1,4 @@
+<!-- components/ActionToast.vue -->
 <template>
   <div class="flex items-start space-x-3 p-1">
     <!-- Icon based on type -->
@@ -18,8 +19,8 @@
 
     <!-- Content -->
     <div class="flex-1 min-w-0">
-      <p v-if="title" class="text-sm font-semibold text-gray-900">{{ title }}</p>
-      <p class="text-sm text-gray-700" :class="{ 'mt-1': title }">{{ message }}</p>
+      <p v-if="title" class="text-sm font-semibold text-gray-900 dark:text-white">{{ title }}</p>
+      <p class="text-sm text-gray-700 dark:text-gray-200" :class="{ 'mt-1': title }">{{ message }}</p>
       
       <!-- Action button -->
       <button 
@@ -67,10 +68,10 @@ const props = defineProps({
 
 const buttonColorClass = computed(() => {
   const colors = {
-    success: 'text-green-600 hover:text-green-700',
-    error: 'text-red-600 hover:text-red-700',
-    warning: 'text-yellow-600 hover:text-yellow-700',
-    info: 'text-blue-600 hover:text-blue-700'
+    success: 'text-green-600 hover:text-green-700 dark:text-green-400 dark:hover:text-green-300',
+    error: 'text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300',
+    warning: 'text-yellow-600 hover:text-yellow-700 dark:text-yellow-400 dark:hover:text-yellow-300',
+    info: 'text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300'
   }
   return colors[props.type] || colors.info
 })
@@ -79,13 +80,8 @@ const handleAction = () => {
   if (props.onAction) {
     props.onAction()
   }
-  // Auto-close toast after action
   if (props.closeToast) {
     props.closeToast()
   }
 }
 </script>
-
-<style scoped>
-/* Optional: Add any custom styles */
-</style>

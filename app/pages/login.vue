@@ -1,14 +1,16 @@
 <template>
-  <div class="min-h-screen pt-[30vh] sm:pt-[40vh] lg:pt-[6rem] bg-white dark:bg-slate-950 flex items-center justify-center p-6 transition-colors duration-300">
+  <!-- UPDATED: Increased top padding to pt-40 md:pt-52 -->
+  <div class="min-h-screen pt-25 md:pt-30 pb-12 bg-white dark:bg-slate-950 flex items-start justify-center p-6 transition-colors duration-300">
     <main class="max-w-md w-full">
-      <!-- Logo -->
+      
       <header class="text-center mb-8">
         <NuxtLink
-          class="flex items-center justify-center mb-4 hover:cursor-pointer focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 rounded-lg"
+          class="inline-flex items-center justify-center mb-6 hover:cursor-pointer focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 rounded-lg"
           to="/" aria-label="Go to homepage">
-          <AppLogo size="md" center />
+          
+          <AppLogo class="h-32 md:h-44 w-auto transition-all duration-300" size="md" center />
         </NuxtLink>
-        <!-- Text Colors -->
+        
         <h1 class="text-2xl font-semibold text-gray-800 dark:text-white mb-2 transition-colors">Welcome back</h1>
         <p class="text-gray-600 dark:text-gray-400 transition-colors">Sign in to your account</p>
       </header>
@@ -78,7 +80,7 @@
         </button>
       </form>
 
-      <!-- Success Message (Adapted for dark mode) -->
+      <!-- Messages -->
       <div v-if="success" class="mt-4 p-3 rounded-lg text-sm border transition-colors
         bg-green-50 border-green-200 text-green-600
         dark:bg-green-900/20 dark:border-green-800 dark:text-green-400"
@@ -86,7 +88,6 @@
         {{ success }}
       </div>
 
-      <!-- Error Message (Adapted for dark mode) -->
       <div v-if="error" class="mt-4 p-3 rounded-lg text-sm border transition-colors
         bg-red-50 border-red-200 text-red-600
         dark:bg-red-900/20 dark:border-red-800 dark:text-red-400" role="alert"
@@ -102,7 +103,6 @@
         </div>
       </div>
 
-      <!-- Sign Up Link -->
       <p class="mt-6 text-center text-sm text-gray-600 dark:text-gray-400 transition-colors">
         Don't have an account?
         <NuxtLink to="/register"
@@ -116,8 +116,9 @@
 
 <script setup>
 import { Eye, EyeOff } from "lucide-vue-next";
+
 definePageMeta({
-  layout: 'empty',
+  layout: 'default',
   middleware: 'guest'
 })
 
@@ -152,8 +153,6 @@ const handleLogin = async () => {
       throw new Error('User data not found after login')
     }
 
-    console.log('Login successful:', user)
-
     if (!user.onboarding_completed) {
       router.push('/dashboard/onboarding')
     } else if (!user.current_business_id) {
@@ -179,11 +178,6 @@ const handleSocialAuth = async (provider) => {
   try {
     const result = await authStore.socialAuth(provider)
     const user = authStore.user
-
-    if (!user) {
-      throw new Error('User data not found after social auth')
-    }
-    console.log('Social auth successful:', user)
 
     if (!user.onboarding_completed) {
       router.push('/dashboard/onboarding')
