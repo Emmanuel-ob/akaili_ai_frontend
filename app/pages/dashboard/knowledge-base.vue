@@ -132,7 +132,9 @@
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
-import { useToast } from 'vue-toastification'
+
+// --- FIX: Import default export to handle CommonJS module ---
+import pkg from 'vue-toastification'
 import FAQUpload from '~/components/faq/FAQUpload.vue'
 import FAQManualEntry from '~/components/faq/FAQManualEntry.vue'
 import FAQList from '~/components/faq/FAQList.vue'
@@ -140,6 +142,7 @@ import FAQPreviewEditor from '~/components/faq/FAQPreviewEditor.vue'
 import StatCard from '~/components/StatCard.vue'
 import ActionToast from '~/components/ActionToast.vue'
 
+const { useToast } = pkg
 definePageMeta({
     layout: 'dashboard'
 })
