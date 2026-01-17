@@ -63,6 +63,20 @@
             Knowledge-base
           </NuxtLink>
 
+          <!-- Knowledge Base -->
+          <NuxtLink to="/dashboard/database"
+            class="flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors duration-200"
+            :class="$route.path === '/dashboard/database'
+              ? 'bg-purple-50 dark:bg-purple-500/10 text-[#9E4CFF] dark:text-purple-400'
+              : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-slate-800 hover:text-gray-900 dark:hover:text-white'">
+            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4">
+              </path>
+            </svg>
+            Database
+          </NuxtLink>
+
           <!-- Conversations -->
           <NuxtLink to="/dashboard/live-monitoring"
             class="flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors duration-200"
@@ -238,6 +252,20 @@
                 </path>
               </svg>
               Knowledge-base
+            </NuxtLink>
+
+            <!-- Knowledge Base -->
+            <NuxtLink to="/dashboard/database"
+              class="flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors duration-200"
+              :class="$route.path === '/dashboard/database'
+                ? 'bg-purple-50 dark:bg-purple-500/10 text-[#9E4CFF] dark:text-purple-400'
+                : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-slate-800 hover:text-gray-900 dark:hover:text-white'">
+              <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4">
+                </path>
+              </svg>
+             Database
             </NuxtLink>
 
             <!-- Conversations -->
