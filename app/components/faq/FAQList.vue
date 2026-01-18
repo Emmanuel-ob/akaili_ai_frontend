@@ -249,8 +249,7 @@ const props = defineProps({
     }
 })
 
-const emit = defineEmits(['preview', 'edit', 'embed', 'reprocess', 'delete', 'retry'])
-
+const emit = defineEmits(['preview', 'edit', 'embed', 'reprocess', 'delete', 'toggle-active'])
 const faqStore = useFAQStore()
 
 // ✅ NEW: Check if FAQ is currently processing

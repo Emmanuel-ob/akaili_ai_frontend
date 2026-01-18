@@ -2,31 +2,31 @@
 <template>
   <div class="p-6 bg-gray-50 dark:bg-slate-950 min-h-screen transition-colors duration-300">
     <!-- Header -->
-    <div class="flex items-center justify-between mb-6">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
       <div>
-        <h1 class="text-2xl font-bold text-gray-800 dark:text-white">Team Members</h1>
-        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Manage your team and assign roles</p>
+        <h1 class="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Team Members</h1>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Manage your team, assign roles, and control access permissions.</p>
       </div>
       <button @click="showAddModal = true"
-        class="bg-[#9E4CFF] hover:bg-[#8B3DFF] text-white px-5 py-2 rounded-lg shadow-lg shadow-purple-500/20 flex items-center gap-2 transition-all">
+        class="bg-[#9E4CFF] hover:bg-[#8B3DFF] text-white px-6 py-2.5 rounded-xl shadow-lg shadow-purple-500/20 flex items-center justify-center gap-2 transition-all transform hover:-translate-y-0.5">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
         </svg>
-        Add Team Member
+        <span class="font-medium">Add Member</span>
       </button>
     </div>
 
     <!-- Statistics Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
       <!-- Total Members -->
-      <div class="bg-white dark:bg-slate-900 p-4 rounded-xl shadow-sm dark:shadow-none border border-gray-100 dark:border-slate-800 transition-colors">
+      <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm dark:shadow-none border border-gray-100 dark:border-slate-800 transition-colors group hover:border-purple-200 dark:hover:border-purple-900/50">
         <div class="flex items-center justify-between">
           <div>
-            <p class="text-sm text-gray-500 dark:text-gray-400">Total Members</p>
-            <p class="text-2xl font-bold text-gray-800 dark:text-white">{{ teamStore.statistics.total_users || 0 }}</p>
+            <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Members</p>
+            <p class="text-3xl font-bold text-gray-900 dark:text-white mt-1">{{ teamStore.statistics.total_users || 0 }}</p>
           </div>
-          <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/20 rounded-full flex items-center justify-center">
-            <svg class="w-6 h-6 text-[#9E4CFF] dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="w-14 h-14 bg-purple-50 dark:bg-purple-900/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+            <svg class="w-7 h-7 text-[#9E4CFF] dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M17 20h5v-2a4 4 0 00-4-4h-1M9 20H4v-2a4 4 0 014-4h1m4-9a4 4 0 11-8 0 4 4 0 018 0zm8 4a4 4 0 11-8 0 4 4 0 018 0z" />
             </svg>
@@ -35,14 +35,14 @@
       </div>
 
       <!-- Active Roles -->
-      <div class="bg-white dark:bg-slate-900 p-4 rounded-xl shadow-sm dark:shadow-none border border-gray-100 dark:border-slate-800 transition-colors">
+      <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm dark:shadow-none border border-gray-100 dark:border-slate-800 transition-colors group hover:border-blue-200 dark:hover:border-blue-900/50">
         <div class="flex items-center justify-between">
           <div>
-            <p class="text-sm text-gray-500 dark:text-gray-400">Active Roles</p>
-            <p class="text-2xl font-bold text-gray-800 dark:text-white">{{ teamStore.statistics.total_roles || 0 }}</p>
+            <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Active Roles</p>
+            <p class="text-3xl font-bold text-gray-900 dark:text-white mt-1">{{ teamStore.statistics.total_roles || 0 }}</p>
           </div>
-          <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/20 rounded-full flex items-center justify-center">
-            <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="w-14 h-14 bg-blue-50 dark:bg-blue-900/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+            <svg class="w-7 h-7 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
             </svg>
@@ -51,14 +51,14 @@
       </div>
 
       <!-- Customer Reps -->
-      <div class="bg-white dark:bg-slate-900 p-4 rounded-xl shadow-sm dark:shadow-none border border-gray-100 dark:border-slate-800 transition-colors">
+      <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm dark:shadow-none border border-gray-100 dark:border-slate-800 transition-colors group hover:border-green-200 dark:hover:border-green-900/50">
         <div class="flex items-center justify-between">
           <div>
-            <p class="text-sm text-gray-500 dark:text-gray-400">Customer Reps</p>
-            <p class="text-2xl font-bold text-gray-800 dark:text-white">{{ teamStore.roleDistribution.customer_rep || 0 }}</p>
+            <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Customer Reps</p>
+            <p class="text-3xl font-bold text-gray-900 dark:text-white mt-1">{{ teamStore.roleDistribution.customer_rep || 0 }}</p>
           </div>
-          <div class="w-12 h-12 bg-green-100 dark:bg-green-900/20 rounded-full flex items-center justify-center">
-            <svg class="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="w-14 h-14 bg-green-50 dark:bg-green-900/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+            <svg class="w-7 h-7 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
             </svg>
@@ -68,69 +68,91 @@
     </div>
 
     <!-- Loading State -->
-    <div v-if="teamStore.loading" class="flex items-center justify-center py-12">
+    <div v-if="teamStore.loading" class="flex items-center justify-center py-20">
       <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-[#9E4CFF]"></div>
     </div>
 
     <!-- Members List -->
-    <div v-else class="bg-white dark:bg-slate-900 rounded-xl shadow-sm dark:shadow-none border border-gray-100 dark:border-slate-800 overflow-hidden transition-colors">
-      <div class="p-4 border-b border-gray-200 dark:border-slate-800">
-        <h2 class="text-lg font-semibold text-gray-700 dark:text-white">Team Members</h2>
+    <div v-else class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm dark:shadow-none border border-gray-200 dark:border-slate-800 overflow-hidden transition-colors">
+      <!-- Table Header (Visible on Desktop) -->
+      <div class="hidden md:grid md:grid-cols-12 gap-4 p-5 border-b border-gray-200 dark:border-slate-800 bg-gray-50/50 dark:bg-slate-800/30 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+        <div class="col-span-4">User Details</div>
+        <div class="col-span-5">Roles & Permissions</div>
+        <div class="col-span-3 text-right">Actions</div>
       </div>
 
-      <div v-if="teamStore.sortedMembers.length === 0" class="p-12 text-center">
-        <svg class="mx-auto h-16 w-16 text-gray-400 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M17 20h5v-2a4 4 0 00-4-4h-1M9 20H4v-2a4 4 0 014-4h1m4-9a4 4 0 11-8 0 4 4 0 018 0zm8 4a4 4 0 11-8 0 4 4 0 018 0z" />
-        </svg>
-        <p class="mt-4 text-gray-500 dark:text-gray-400 text-lg">No team members yet</p>
-        <p class="text-sm text-gray-400 dark:text-gray-500">Add your first member to get started.</p>
+      <div v-if="teamStore.sortedMembers.length === 0" class="p-16 text-center">
+        <div class="bg-gray-50 dark:bg-slate-800/50 w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-10 h-10 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+            </svg>
+        </div>
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-1">No team members yet</h3>
+        <p class="text-gray-500 dark:text-gray-400 mb-6">Invite your colleagues to start collaborating.</p>
+        <button @click="showAddModal = true" class="text-[#9E4CFF] hover:text-[#8B3DFF] font-medium">
+            + Add first member
+        </button>
       </div>
 
       <div v-else class="divide-y divide-gray-200 dark:divide-slate-800">
-        <div v-for="member in teamStore.sortedMembers" :key="member.id" class="p-4 hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors">
-          <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-            <div class="flex-1">
-              <div class="flex items-center gap-2">
-                <h3 class="text-gray-900 dark:text-white font-medium text-lg">{{ member.name }}</h3>
-                <span v-if="member.is_owner"
-                  class="text-xs px-2 py-0.5 rounded bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 font-semibold border border-amber-200 dark:border-amber-800/50">
-                  Owner
-                </span>
+        <div v-for="member in teamStore.sortedMembers" :key="member.id" 
+             class="p-5 hover:bg-gray-50 dark:hover:bg-slate-800/30 transition-colors">
+          <div class="flex flex-col md:grid md:grid-cols-12 gap-4 items-center">
+            
+            <!-- User Info -->
+            <div class="w-full md:col-span-4 flex items-center gap-4">
+              <div class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-100 to-blue-100 dark:from-purple-900/30 dark:to-blue-900/30 flex items-center justify-center text-[#9E4CFF] dark:text-purple-400 font-bold text-lg">
+                {{ member.name.charAt(0).toUpperCase() }}
               </div>
-              <p class="text-gray-500 dark:text-gray-400 text-sm">{{ member.email }}</p>
-
-              <!-- Roles Display -->
-              <div v-if="member.roles && Object.keys(member.roles).length > 0" class="mt-3 flex flex-wrap gap-2">
-                <template v-for="(permissions, roleName) in member.roles" :key="roleName">
-                  <div class="w-full">
-                    <div class="font-semibold text-gray-700 dark:text-gray-300 text-sm mb-1">{{ formatRoleName(roleName) }}</div>
-                    <ul class="ml-4 text-xs text-gray-500 dark:text-gray-400 list-disc">
-                      <li v-for="perm in permissions" :key="perm">
-                        {{ formatRoleName(perm) }}
-                      </li>
-                    </ul>
-                  </div>
-                </template>
-              </div>
-              <div v-else class="mt-2">
-                <span class="text-xs text-gray-400 dark:text-gray-500 italic">No roles assigned</span>
+              <div class="min-w-0">
+                <div class="flex items-center gap-2">
+                    <h3 class="text-gray-900 dark:text-white font-medium text-base truncate">{{ member.name }}</h3>
+                    <span v-if="member.is_owner"
+                    class="text-[10px] px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 font-bold border border-amber-200 dark:border-amber-800/50 uppercase tracking-wide">
+                    Owner
+                    </span>
+                </div>
+                <p class="text-gray-500 dark:text-gray-400 text-sm truncate">{{ member.email }}</p>
               </div>
             </div>
 
-            <div class="flex flex-wrap gap-2">
-              <button v-if="!member.is_owner" @click="openManageRoles(member)"
-                class="px-3 py-1.5 text-sm rounded-lg border border-purple-300 dark:border-purple-700 text-purple-700 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors">
-                Manage Roles
-              </button>
-              <button v-if="!member.is_owner" @click="openEdit(member)"
-                class="px-3 py-1.5 text-sm rounded-lg border border-gray-300 dark:border-slate-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors">
-                Edit
-              </button>
-              <button v-if="!member.is_owner" @click="confirmDelete(member)"
-                class="px-3 py-1.5 text-sm rounded-lg bg-red-500 hover:bg-red-600 text-white transition-colors">
-                Delete
-              </button>
+            <!-- Roles -->
+            <div class="w-full md:col-span-5">
+              <div v-if="member.roles && Object.keys(member.roles).length > 0" class="flex flex-wrap gap-2">
+                <div v-for="(permissions, roleName) in member.roles" :key="roleName" 
+                     class="bg-gray-100 dark:bg-slate-800 rounded-lg px-3 py-2 border border-gray-200 dark:border-slate-700">
+                    <div class="font-semibold text-gray-700 dark:text-gray-200 text-xs uppercase tracking-wide mb-1 flex items-center gap-1">
+                        <div class="w-1.5 h-1.5 rounded-full bg-[#9E4CFF]"></div>
+                        {{ formatRoleName(roleName) }}
+                    </div>
+                    <div v-if="permissions && Object.keys(permissions).length > 0" class="flex flex-wrap gap-1">
+                         <span v-for="perm in permissions" :key="perm" class="text-[10px] text-gray-500 dark:text-gray-400 bg-white dark:bg-slate-700 px-1.5 py-0.5 rounded border border-gray-200 dark:border-slate-600">
+                            {{ formatRoleName(perm) }}
+                         </span>
+                    </div>
+                </div>
+              </div>
+              <div v-else>
+                <span class="text-sm text-gray-400 dark:text-gray-500 italic">No specific roles assigned</span>
+              </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="w-full md:col-span-3 flex md:justify-end gap-2 mt-4 md:mt-0">
+              <div v-if="!member.is_owner" class="flex items-center bg-gray-50 dark:bg-slate-800 rounded-lg p-1 border border-gray-200 dark:border-slate-700">
+                  <button @click="openManageRoles(member)" class="p-2 text-gray-600 dark:text-gray-400 hover:text-[#9E4CFF] hover:bg-white dark:hover:bg-slate-700 rounded-md transition-all" title="Manage Roles">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" /></svg>
+                  </button>
+                  <div class="w-px h-4 bg-gray-300 dark:bg-slate-600 mx-1"></div>
+                  <button @click="openEdit(member)" class="p-2 text-gray-600 dark:text-gray-400 hover:text-blue-600 hover:bg-white dark:hover:bg-slate-700 rounded-md transition-all" title="Edit Details">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+                  </button>
+                  <div class="w-px h-4 bg-gray-300 dark:bg-slate-600 mx-1"></div>
+                  <button @click="confirmDelete(member)" class="p-2 text-gray-600 dark:text-gray-400 hover:text-red-600 hover:bg-white dark:hover:bg-slate-700 rounded-md transition-all" title="Remove Member">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                  </button>
+              </div>
             </div>
           </div>
         </div>
@@ -140,43 +162,53 @@
     <!-- Add Member Modal -->
     <BaseModal :show="showAddModal" @close="closeAddModal">
       <template #header>
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Add Team Member</h3>
+        <h3 class="text-xl font-bold text-gray-900 dark:text-white">Add Team Member</h3>
       </template>
       <template #body>
-        <form @submit.prevent="addMember" class="space-y-4">
+        <form @submit.prevent="addMember" class="space-y-5">
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Name</label>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Full Name</label>
             <input v-model="newMember.name" type="text" required
-              class="w-full border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-gray-900 dark:text-white rounded-lg p-2.5 focus:ring-2 focus:ring-purple-500 outline-none transition-colors"
-              placeholder="Enter name" />
+              class="w-full border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-gray-900 dark:text-white rounded-xl p-3 focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all shadow-sm"
+              placeholder="e.g. Jane Doe" />
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email</label>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Email Address</label>
             <input v-model="newMember.email" type="email" required
-              class="w-full border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-gray-900 dark:text-white rounded-lg p-2.5 focus:ring-2 focus:ring-purple-500 outline-none transition-colors"
-              placeholder="Enter email" />
+              class="w-full border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-gray-900 dark:text-white rounded-xl p-3 focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all shadow-sm"
+              placeholder="jane@company.com" />
           </div>
 
           <!-- Roles Selection -->
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Assign Roles</label>
-            <div class="space-y-3 max-h-96 overflow-y-auto border border-gray-200 dark:border-slate-700 rounded-lg p-4 bg-gray-50 dark:bg-slate-900/50">
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Assign Roles & Permissions</label>
+            <div class="max-h-80 overflow-y-auto custom-scrollbar border border-gray-200 dark:border-slate-700 rounded-xl bg-gray-50/50 dark:bg-slate-900/50 p-4 space-y-3">
               <div v-for="role in teamStore.rolesList" :key="role.name"
-                class="border-b border-gray-200 dark:border-slate-700 pb-3 last:border-0 last:pb-0">
-                <label class="flex items-center gap-3 cursor-pointer group">
-                  <input type="checkbox" v-model="newMember.roles[role.name].enabled"
-                    @change="toggleRole(newMember.roles, role.name)" class="w-4 h-4 text-purple-600 rounded border-gray-300 focus:ring-purple-500 cursor-pointer" />
-                  <span class="font-medium text-gray-800 dark:text-gray-200 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">{{ role.label }}</span>
+                class="bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg p-3 transition-colors hover:border-purple-200 dark:hover:border-purple-800">
+                <label class="flex items-center gap-3 cursor-pointer select-none">
+                  <div class="relative flex items-center">
+                    <input type="checkbox" v-model="newMember.roles[role.name].enabled"
+                      @change="toggleRole(newMember.roles, role.name)" 
+                      class="peer h-5 w-5 cursor-pointer appearance-none rounded-md border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 transition-all checked:border-[#9E4CFF] checked:bg-[#9E4CFF]" />
+                    <svg class="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-white opacity-0 peer-checked:opacity-100 w-3.5 h-3.5" viewBox="0 0 14 14" fill="none"><path d="M3 8L6 11L11 3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                  </div>
+                  <span class="font-semibold text-gray-800 dark:text-white">{{ role.label }}</span>
                 </label>
 
                 <!-- Subroles -->
-                <div v-if="role.subroles.length > 0 && newMember.roles[role.name].enabled" class="ml-7 mt-2 space-y-2">
+                <div v-if="role.subroles.length > 0" 
+                     class="mt-3 ml-2 pl-4 border-l-2 border-gray-200 dark:border-slate-700 space-y-2 transition-all duration-300"
+                     :class="newMember.roles[role.name].enabled ? 'opacity-100 max-h-96' : 'opacity-40 grayscale max-h-0 overflow-hidden'">
                   <label v-for="subrole in role.subroles" :key="subrole.name"
-                    class="flex items-center gap-2 cursor-pointer group">
-                    <input type="checkbox" v-model="newMember.roles[role.name].permissions[subrole.name]"
-                      class="w-4 h-4 text-purple-600 rounded border-gray-300 focus:ring-purple-500 cursor-pointer" />
-                    <span class="text-sm text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-gray-200 transition-colors">{{ subrole.label }}</span>
+                    class="flex items-center gap-2.5 cursor-pointer select-none group">
+                     <div class="relative flex items-center">
+                        <input type="checkbox" v-model="newMember.roles[role.name].permissions[subrole.name]"
+                          :disabled="!newMember.roles[role.name].enabled"
+                          class="peer h-4 w-4 cursor-pointer appearance-none rounded border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 transition-all checked:border-purple-500 checked:bg-purple-500 disabled:cursor-not-allowed" />
+                        <svg class="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-white opacity-0 peer-checked:opacity-100 w-3 h-3" viewBox="0 0 14 14" fill="none"><path d="M3 8L6 11L11 3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                     </div>
+                    <span class="text-sm text-gray-600 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">{{ subrole.label }}</span>
                   </label>
                 </div>
               </div>
@@ -185,11 +217,11 @@
 
           <div class="flex justify-end gap-3 pt-4 border-t border-gray-100 dark:border-slate-800">
             <button type="button" @click="closeAddModal"
-              class="px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors">
+              class="px-5 py-2.5 border border-gray-300 dark:border-slate-600 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800 font-medium transition-colors">
               Cancel
             </button>
             <button type="submit" :disabled="teamStore.loading"
-              class="px-4 py-2 bg-[#9E4CFF] hover:bg-[#8B3DFF] text-white rounded-lg disabled:opacity-50 transition-colors">
+              class="px-5 py-2.5 bg-[#9E4CFF] hover:bg-[#8B3DFF] text-white rounded-xl shadow-lg shadow-purple-500/20 font-medium disabled:opacity-50 disabled:shadow-none transition-all">
               {{ teamStore.loading ? 'Adding...' : 'Add Member' }}
             </button>
           </div>
@@ -200,38 +232,38 @@
     <!-- Edit Member Modal -->
     <BaseModal :show="showEditModal" @close="closeEditModal">
       <template #header>
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Edit Team Member</h3>
+        <h3 class="text-xl font-bold text-gray-900 dark:text-white">Edit Team Member</h3>
       </template>
       <template #body>
-        <form @submit.prevent="updateMember" class="space-y-4">
+        <form @submit.prevent="updateMember" class="space-y-5">
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Name</label>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Full Name</label>
             <input v-model="editMember.name" type="text" required
-              class="w-full border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-gray-900 dark:text-white rounded-lg p-2.5 focus:ring-2 focus:ring-purple-500 outline-none transition-colors" />
+              class="w-full border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-gray-900 dark:text-white rounded-xl p-3 focus:ring-2 focus:ring-purple-500 outline-none transition-colors" />
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email</label>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Email Address</label>
             <input v-model="editMember.email" type="email" required
-              class="w-full border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-gray-900 dark:text-white rounded-lg p-2.5 focus:ring-2 focus:ring-purple-500 outline-none transition-colors" />
+              class="w-full border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-gray-900 dark:text-white rounded-xl p-3 focus:ring-2 focus:ring-purple-500 outline-none transition-colors" />
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              New Password (leave blank to keep current)
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+              New Password <span class="text-gray-400 font-normal ml-1">(Optional)</span>
             </label>
             <input v-model="editMember.password" type="password"
-              class="w-full border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-gray-900 dark:text-white rounded-lg p-2.5 focus:ring-2 focus:ring-purple-500 outline-none transition-colors"
+              class="w-full border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-gray-900 dark:text-white rounded-xl p-3 focus:ring-2 focus:ring-purple-500 outline-none transition-colors"
               placeholder="Leave blank to keep current password" />
           </div>
 
           <div class="flex justify-end gap-3 pt-4 border-t border-gray-100 dark:border-slate-800">
             <button type="button" @click="closeEditModal"
-              class="px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors">
+              class="px-5 py-2.5 border border-gray-300 dark:border-slate-600 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800 font-medium transition-colors">
               Cancel
             </button>
             <button type="submit" :disabled="teamStore.loading"
-              class="px-4 py-2 bg-[#9E4CFF] hover:bg-[#8B3DFF] text-white rounded-lg disabled:opacity-50 transition-colors">
+              class="px-5 py-2.5 bg-[#9E4CFF] hover:bg-[#8B3DFF] text-white rounded-xl shadow-lg shadow-purple-500/20 font-medium disabled:opacity-50 disabled:shadow-none transition-all">
               {{ teamStore.loading ? 'Updating...' : 'Update Member' }}
             </button>
           </div>
@@ -242,26 +274,39 @@
     <!-- Manage Roles Modal -->
     <BaseModal :show="showRolesModal" @close="closeRolesModal">
       <template #header>
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Manage Roles - {{ rolesMember?.name }}</h3>
+        <div class="flex flex-col">
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white">Manage Roles</h3>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Editing permissions for <span class="text-purple-600 dark:text-purple-400 font-medium">{{ rolesMember?.name }}</span></p>
+        </div>
       </template>
       <template #body>
         <form @submit.prevent="updateRoles" class="space-y-4">
-          <div class="space-y-3 max-h-96 overflow-y-auto border border-gray-200 dark:border-slate-700 rounded-lg p-4 bg-gray-50 dark:bg-slate-900/50">
-            <div v-for="role in teamStore.rolesList" :key="role.name" class="border border-gray-200 dark:border-slate-700 rounded-lg p-3 bg-white dark:bg-slate-800">
-              <label class="flex items-center gap-3 cursor-pointer">
-                <input type="checkbox" v-model="editRoles[role.name].enabled" @change="toggleRole(editRoles, role.name)"
-                  class="w-4 h-4 text-purple-600 rounded border-gray-300 focus:ring-purple-500 cursor-pointer" />
-                <span class="font-medium text-gray-800 dark:text-white">{{ role.label }}</span>
+          <div class="max-h-[500px] overflow-y-auto custom-scrollbar border border-gray-200 dark:border-slate-700 rounded-xl p-4 bg-gray-50 dark:bg-slate-900/50 space-y-3">
+            <div v-for="role in teamStore.rolesList" :key="role.name" 
+                 class="bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg p-3 transition-all hover:shadow-md">
+              <label class="flex items-center gap-3 cursor-pointer select-none">
+                 <div class="relative flex items-center">
+                    <input type="checkbox" v-model="editRoles[role.name].enabled" @change="toggleRole(editRoles, role.name)"
+                      class="peer h-5 w-5 cursor-pointer appearance-none rounded-md border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 transition-all checked:border-purple-500 checked:bg-purple-500" />
+                    <svg class="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-white opacity-0 peer-checked:opacity-100 w-3.5 h-3.5" viewBox="0 0 14 14" fill="none"><path d="M3 8L6 11L11 3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                 </div>
+                <span class="font-bold text-gray-800 dark:text-white">{{ role.label }}</span>
               </label>
 
               <!-- Subroles -->
-              <div v-if="role.subroles.length > 0 && editRoles[role.name].enabled"
-                class="ml-7 mt-3 space-y-2 pl-3 border-l-2 border-gray-100 dark:border-slate-700">
-                <p class="text-xs text-gray-500 dark:text-gray-400 mb-2 uppercase font-bold tracking-wider">Permissions:</p>
+              <div v-if="role.subroles.length > 0" 
+                   class="mt-3 ml-2 pl-4 border-l-2 border-gray-200 dark:border-slate-700 space-y-2 transition-all duration-300"
+                   :class="editRoles[role.name].enabled ? 'opacity-100 max-h-96' : 'opacity-40 grayscale pointer-events-none'">
+                <p class="text-[10px] uppercase font-bold text-gray-400 dark:text-gray-500 tracking-wider mb-2">Detailed Permissions</p>
                 <label v-for="subrole in role.subroles" :key="subrole.name"
-                  class="flex items-center gap-2 cursor-pointer hover:bg-gray-50 dark:hover:bg-slate-700/50 p-1 rounded">
-                  <input type="checkbox" v-model="editRoles[role.name].permissions[subrole.name]" class="w-4 h-4 text-purple-600 rounded border-gray-300 focus:ring-purple-500 cursor-pointer" />
-                  <span class="text-sm text-gray-700 dark:text-gray-300">{{ subrole.label }}</span>
+                  class="flex items-center gap-2.5 cursor-pointer select-none group p-1.5 rounded hover:bg-gray-50 dark:hover:bg-slate-700/50">
+                  <div class="relative flex items-center">
+                    <input type="checkbox" v-model="editRoles[role.name].permissions[subrole.name]" 
+                        :disabled="!editRoles[role.name].enabled"
+                        class="peer h-4 w-4 cursor-pointer appearance-none rounded border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 transition-all checked:border-purple-500 checked:bg-purple-500 disabled:cursor-not-allowed" />
+                    <svg class="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-white opacity-0 peer-checked:opacity-100 w-3 h-3" viewBox="0 0 14 14" fill="none"><path d="M3 8L6 11L11 3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                  </div>
+                  <span class="text-sm text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">{{ subrole.label }}</span>
                 </label>
               </div>
             </div>
@@ -269,12 +314,12 @@
 
           <div class="flex justify-end gap-3 pt-4 border-t border-gray-100 dark:border-slate-800">
             <button type="button" @click="closeRolesModal"
-              class="px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors">
+              class="px-5 py-2.5 border border-gray-300 dark:border-slate-600 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800 font-medium transition-colors">
               Cancel
             </button>
             <button type="submit" :disabled="teamStore.loading"
-              class="px-4 py-2 bg-[#9E4CFF] hover:bg-[#8B3DFF] text-white rounded-lg disabled:opacity-50 transition-colors">
-              {{ teamStore.loading ? 'Updating...' : 'Update Roles' }}
+              class="px-5 py-2.5 bg-[#9E4CFF] hover:bg-[#8B3DFF] text-white rounded-xl shadow-lg shadow-purple-500/20 font-medium disabled:opacity-50 disabled:shadow-none transition-all">
+              {{ teamStore.loading ? 'Updating...' : 'Save Roles' }}
             </button>
           </div>
         </form>
@@ -283,19 +328,21 @@
 
     <!-- Error Toast -->
     <div v-if="teamStore.error"
-      class="fixed bottom-4 right-4 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-3 z-50 animate-fade-in">
-      <span>{{ teamStore.error }}</span>
-      <button @click="teamStore.clearError()" class="text-white hover:text-gray-200">
-        ×
+      class="fixed bottom-6 right-6 bg-red-600 text-white px-6 py-3.5 rounded-xl shadow-2xl flex items-center gap-3 z-50 animate-fade-in max-w-sm">
+      <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+      <span class="text-sm font-medium">{{ teamStore.error }}</span>
+      <button @click="teamStore.clearError()" class="text-white/80 hover:text-white ml-auto">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
       </button>
     </div>
 
     <!-- Success Toast -->
     <div v-if="successMessage"
-      class="fixed bottom-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-3 z-50 animate-fade-in">
-      <span>{{ successMessage }}</span>
-      <button @click="successMessage = ''" class="text-white hover:text-gray-200">
-        ×
+      class="fixed bottom-6 right-6 bg-green-600 text-white px-6 py-3.5 rounded-xl shadow-2xl flex items-center gap-3 z-50 animate-fade-in max-w-sm">
+      <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+      <span class="text-sm font-medium">{{ successMessage }}</span>
+      <button @click="successMessage = ''" class="text-white/80 hover:text-white ml-auto">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
       </button>
     </div>
   </div>
@@ -349,8 +396,6 @@ const editMember = reactive({
 
 const editRoles = reactive({})
 const rolesMember = ref(null)
-
-
 
 // Toggle role and handle subroles
 const toggleRole = (rolesObj, roleName) => {
@@ -460,7 +505,7 @@ const addMember = async () => {
       email: newMember.email,
       roles: apiRoles
     })
-    successMessage.value = 'Team member invited successfully! They will receive an email with login credentials.'
+    successMessage.value = 'Team member invited successfully!'
     closeAddModal()
     setTimeout(() => { successMessage.value = '' }, 5000)
   } catch (error) {
@@ -524,5 +569,27 @@ onMounted(async () => {
 }
 .animate-fade-in {
   animation: fade-in 0.3s ease-out;
+}
+
+/* Custom Scrollbar for Modal content */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+}
+.dark .custom-scrollbar {
+  scrollbar-color: #475569 transparent;
+}
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #cbd5e1;
+  border-radius: 20px;
+}
+.dark .custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #475569;
 }
 </style>
