@@ -1,114 +1,255 @@
 // stores/subscriptionStore.js
 import { defineStore } from 'pinia'
+import { useAuthStore } from '~/stores/authStore'
 
 export const useSubscriptionStore = defineStore('subscription', {
   state: () => ({
-    currentPlan: {
-      id: 'starter',
-      name: 'Starter',
-      price: '$0.00',
-      status: 'active', 
-      billingCycle: 'monthly',
-      nextBillingDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-      limits: {
-        conversations: { used: 0, total: 1000 },
-        chatbots: { used: 0, total: 1 }
-      }
-    },
-    loading: false
+    currentPlan: null,
+    usage: null,
+    invoices: [],
+    paymentMethods: [],
+    loading: false,
+    error: null
   }),
 
+  getters: {
+    isOnFreePlan: (state) => state.currentPlan?.plan_id === 'starter',
+
+    isActive: (state) => state.currentPlan?.status === 'active' || state.currentPlan?.status === 'trialing',
+
+    onTrial: (state) => state.currentPlan?.on_trial === true,
+
+    isCanceled: (state) => state.currentPlan?.cancel_at_period_end === true,
+
+    daysRemaining: (state) => state.currentPlan?.days_remaining || 0,
+
+    hasActiveSubscription: (state) => {
+      return state.currentPlan && (
+        state.currentPlan.status === 'active' ||
+        state.currentPlan.status === 'trialing'
+      )
+    }
+  },
+
   actions: {
-    // 1. Fetch: Check LocalStorage first, otherwise use default
+    /**
+     * Fetch current subscription details
+     */
     async fetchSubscription() {
+      const config = useRuntimeConfig()
+      const authStore = useAuthStore()
+
       this.loading = true
-      
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 500))
+      this.error = null
 
-      if (import.meta.client) {
-        const stored = localStorage.getItem('xeli_subscription')
-        if (stored) {
-          this.currentPlan = JSON.parse(stored)
+      try {
+        const response = await $fetch(`${config.public.apiBase}/api/subscription`, {
+          headers: { Authorization: `Bearer ${authStore.token}` }
+        })
+
+        if (response.success) {
+          this.currentPlan = response.data.subscription
+          this.usage = response.data.usage
         }
-      }
-      
-      this.loading = false
-    },
-
-    // 2. Upgrade: Called by Checkout Page
-    async upgradeSubscription(planId) {
-      this.loading = true
-      
-      // Define plan details (Mock Database)
-      const plans = {
-        starter: { 
-            name: 'Starter', price: '$0.00', 
-            limits: { conversations: { used: 0, total: 1000 }, chatbots: { used: 0, total: 1 } } 
-        },
-        professional: { 
-            name: 'Professional', price: '$99.00', 
-            limits: { conversations: { used: 0, total: 10000 }, chatbots: { used: 0, total: 5 } } 
-        },
-        enterprise: { 
-            name: 'Enterprise', price: '$299.00', 
-            limits: { conversations: { used: 0, total: 999999 }, chatbots: { used: 0, total: 999 } } 
-        }
-      }
-
-      // Update State
-      const newPlan = plans[planId] || plans.starter
-      
-      this.currentPlan = {
-        ...this.currentPlan,
-        id: planId,
-        name: newPlan.name,
-        price: newPlan.price,
-        status: 'active',
-        limits: newPlan.limits,
-        nextBillingDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
-      }
-
-      // Save to LocalStorage (Persist the change)
-      if (import.meta.client) {
-        localStorage.setItem('xeli_subscription', JSON.stringify(this.currentPlan))
-      }
-
-      this.loading = false
-      return true
-    },
-
-    // 3. Change Plan (From Settings)
-    async changePlan(planId) {
-      return this.upgradeSubscription(planId) // Reuse the upgrade logic
-    },
-
-    // 4. Cancel
-    async cancelSubscription(reason) {
-      this.loading = true
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      
-      this.currentPlan.status = 'canceled'
-      
-      if (import.meta.client) {
-        localStorage.setItem('xeli_subscription', JSON.stringify(this.currentPlan))
-      }
-      
-      this.loading = false
-      return true
-    },
-    
-    // 5. Reactivate
-    async reactivateSubscription() {
-        this.loading = true
-        await new Promise(resolve => setTimeout(resolve, 1000))
-        this.currentPlan.status = 'active'
-        
-        if (import.meta.client) {
-            localStorage.setItem('xeli_subscription', JSON.stringify(this.currentPlan))
-        }
-        
+      } catch (error) {
+        this.error = error.data?.message || 'Failed to fetch subscription'
+        console.error('Fetch subscription error:', error)
+      } finally {
         this.loading = false
+      }
+    },
+
+    /**
+     * Fetch usage statistics
+     */
+    async fetchUsage() {
+      const config = useRuntimeConfig()
+      const authStore = useAuthStore()
+
+      try {
+        const response = await $fetch(`${config.public.apiBase}/api/subscription/usage`, {
+          headers: { Authorization: `Bearer ${authStore.token}` }
+        })
+
+        if (response.success) {
+          this.usage = response.data.usage
+        }
+      } catch (error) {
+        console.error('Fetch usage error:', error)
+      }
+    },
+
+    /**
+     * Change subscription plan (upgrade/downgrade)
+     */
+    async changePlan(newPlanId, prorate = true) {
+      const config = useRuntimeConfig()
+      const authStore = useAuthStore()
+
+      this.loading = true
+      this.error = null
+
+      try {
+        const response = await $fetch(`${config.public.apiBase}/api/subscription/change-plan`, {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${authStore.token}` },
+          body: { new_plan_id: newPlanId, prorate }
+        })
+
+        if (response.success) {
+          // Refresh subscription data
+          await this.fetchSubscription()
+          return { success: true, data: response.data }
+        }
+      } catch (error) {
+        this.error = error.data?.message || 'Failed to change plan'
+        return { success: false, error: this.error }
+      } finally {
+        this.loading = false
+      }
+    },
+
+    /**
+     * Cancel subscription at period end
+     */
+    async cancelSubscription(reason, detailedFeedback = null) {
+      const config = useRuntimeConfig()
+      const authStore = useAuthStore()
+
+      this.loading = true
+      this.error = null
+
+      try {
+        const response = await $fetch(`${config.public.apiBase}/api/subscription/cancel`, {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${authStore.token}` },
+          body: { reason, detailed_feedback: detailedFeedback }
+        })
+
+        if (response.success) {
+          await this.fetchSubscription()
+          return { success: true, data: response.data }
+        }
+      } catch (error) {
+        this.error = error.data?.message || 'Failed to cancel subscription'
+        return { success: false, error: this.error }
+      } finally {
+        this.loading = false
+      }
+    },
+
+    /**
+     * Resume canceled subscription
+     */
+    async resumeSubscription() {
+      const config = useRuntimeConfig()
+      const authStore = useAuthStore()
+
+      this.loading = true
+      this.error = null
+
+      try {
+        const response = await $fetch(`${config.public.apiBase}/api/subscription/resume`, {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${authStore.token}` }
+        })
+
+        if (response.success) {
+          await this.fetchSubscription()
+          return { success: true }
+        }
+      } catch (error) {
+        this.error = error.data?.message || 'Failed to resume subscription'
+        return { success: false, error: this.error }
+      } finally {
+        this.loading = false
+      }
+    },
+
+    /**
+     * Fetch invoices
+     */
+    async fetchInvoices() {
+      const config = useRuntimeConfig()
+      const authStore = useAuthStore()
+
+      try {
+        const response = await $fetch(`${config.public.apiBase}/api/billing/invoices`, {
+          headers: { Authorization: `Bearer ${authStore.token}` }
+        })
+
+        if (response.success) {
+          this.invoices = response.data.invoices
+        }
+      } catch (error) {
+        console.error('Fetch invoices error:', error)
+      }
+    },
+
+    /**
+     * Fetch payment methods
+     */
+    async fetchPaymentMethods() {
+      const config = useRuntimeConfig()
+      const authStore = useAuthStore()
+
+      try {
+        const response = await $fetch(`${config.public.apiBase}/api/billing/payment-methods`, {
+          headers: { Authorization: `Bearer ${authStore.token}` }
+        })
+
+        if (response.success) {
+          this.paymentMethods = response.data.payment_methods
+        }
+      } catch (error) {
+        console.error('Fetch payment methods error:', error)
+      }
+    },
+
+    /**
+     * Get usage percentage for a limit type
+     */
+    getUsagePercentage(limitType) {
+      if (!this.usage || !this.usage[limitType]) return 0
+
+      const data = this.usage[limitType]
+      return data.percentage || 0
+    },
+
+    /**
+     * Check if limit is exceeded
+     */
+    isLimitExceeded(limitType) {
+      if (!this.usage || !this.usage[limitType]) return false
+
+      const data = this.usage[limitType]
+
+      // Check for unlimited
+      if (data.limit === 999999 || data.limit === -1) return false
+
+      return data.used >= data.limit
+    },
+
+    /**
+     * Get remaining quota
+     */
+    getRemainingQuota(limitType) {
+      if (!this.usage || !this.usage[limitType]) return 0
+
+      const data = this.usage[limitType]
+      return data.remaining
+    },
+
+    /**
+     * Clear store
+     */
+    clearStore() {
+      this.currentPlan = null
+      this.usage = null
+      this.invoices = []
+      this.paymentMethods = []
+      this.loading = false
+      this.error = null
     }
   }
 })
