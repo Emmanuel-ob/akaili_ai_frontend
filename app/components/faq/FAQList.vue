@@ -155,7 +155,7 @@ const props = defineProps({
     loading: { type: Boolean, default: false }
 })
 
-const emit = defineEmits(['preview', 'edit', 'embed', 'reprocess', 'delete'])
+const emit = defineEmits(['preview', 'edit', 'embed', 'reprocess', 'delete', 'toggle-active'])
 const faqStore = useFAQStore()
 
 const getStatusColor = (status) => {
