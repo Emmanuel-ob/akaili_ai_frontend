@@ -276,6 +276,7 @@ const setupEventListeners = () => {
     wsStore.on('faq.embedding.completed', handleEmbeddingCompleted, COMPONENT_ID)
     wsStore.on('faq.embedding.failed', handleEmbeddingFailed, COMPONENT_ID)
     wsStore.on('faq.deletion.completed', handleDeletionCompleted, COMPONENT_ID)
+    wsStore.on('faq.deletion.failed', handleDeletionFailed, COMPONENT_ID) // ✅ NEW
     wsStore.on('job.progress.updated', handleProgressUpdated, COMPONENT_ID)
 }
 
@@ -362,6 +363,9 @@ const handleCancelEdit = () => {
 }
 
 const handleEmbed = async (faqSource) => {
+    // ✅ FIXED: Track processing and show better message
+    processingJobs.value.add(faqSource.id)
+
     const result = await faqStore.confirmAndEmbed(faqSource.id)
     if (result && result.success) {
         toast.info('Embedding job started...', { timeout: 3000 })
@@ -370,7 +374,10 @@ const handleEmbed = async (faqSource) => {
 }
 
 const handleReprocess = async (faqSource) => {
-    if (confirm('This will delete existing embeddings and recreate them. Continue?')) {
+    if (confirm(`This will recreate the embeddings for "${faqSource.source_name}". Continue?`)) {
+        // ✅ FIXED: Track processing
+        processingJobs.value.add(faqSource.id)
+
         const result = await faqStore.reprocess(faqSource.id)
         if (result && result.success) {
             toast.info('Reprocessing job started...', { timeout: 3000 })

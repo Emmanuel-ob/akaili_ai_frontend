@@ -15,7 +15,7 @@ export default defineNuxtPlugin(() => {
             wsHost: config.public.reverbHost || 'localhost',
             wsPort: Number(config.public.reverbPort || 8080),
             wssPort: Number(config.public.reverbPort || 8080),
-            forceTLS: false,
+            forceTLS: config.public.reverbScheme === 'https',
             enabledTransports: ['ws', 'wss'],
             disableStats: true,
 

@@ -16,10 +16,10 @@
         </div>
 
         <div v-else-if="availableChatbots.length === 0" class="text-center py-12">
-            <div class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-6 max-w-lg mx-auto">
-                <h3 class="text-lg font-medium text-yellow-800 dark:text-yellow-200 mb-2">No Chatbots Found</h3>
-                <p class="text-yellow-700 dark:text-yellow-300/80 mb-4">
-                    You need to create a chatbot first before you can test it.
+            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-6 max-w-lg mx-auto">
+                <h3 class="text-lg font-medium text-yellow-800 mb-2">No Chatbots Found</h3>
+                <p class="text-yellow-700 mb-4">
+                    You need to create a chatbot first before you can test it here.
                 </p>
                 <NuxtLink to="/dashboard/chatbot-setup"
                     class="inline-flex items-center px-4 py-2 bg-[#9E4CFF] text-white rounded-lg hover:bg-purple-700 transition-colors">
