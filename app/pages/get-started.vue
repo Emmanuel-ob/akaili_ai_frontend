@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen bg-white dark:bg-slate-950 flex items-center justify-center p-6 transition-colors duration-300">
     <div class="text-center max-w-lg">
-      <AppLogo size="lg" center class="mb-8" />
+      <AppLogo class="h-32 md:h-44 w-auto transition-all duration-300" size="md" center />
       
       <h2 class="text-3xl font-semibold text-gray-800 dark:text-white mb-4 transition-colors">Welcome to Xeli ai</h2>
       <p class="text-gray-600 dark:text-gray-400 mb-8 text-lg leading-relaxed transition-colors">
