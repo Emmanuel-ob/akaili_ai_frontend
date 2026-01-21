@@ -198,6 +198,7 @@ const handleChatbotCreation = async () => {
 
     if (result.success) {
       const onb = await onboardingStore.completeOnboarding();
+      console.log('Onboarding completion result:', onb);
       await onboardingStore.getStatus()
       if (!onb.success) {
         error.value = onb.message || 'Failed to complete onboarding'
