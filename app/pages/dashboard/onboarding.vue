@@ -198,6 +198,14 @@ const handleChatbotCreation = async () => {
 
     if (result.success) {
       await onboardingStore.getStatus()
+      const onb = await onboardingStore.completeOnboarding();
+      if (!onb.success) {
+        error.value = onb.message || 'Failed to complete onboarding'
+        setupLoading.value = false
+        return
+      }
+
+      
       currentStep.value = 'completed'
     } else {
       error.value = result.message || 'Failed to create chatbot'
