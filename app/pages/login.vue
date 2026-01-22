@@ -1,16 +1,16 @@
 <template>
-  <!-- UPDATED: Increased top padding to pt-40 md:pt-52 -->
-  <div class="min-h-screen pt-25 md:pt-30 pb-12 bg-white dark:bg-slate-950 flex items-start justify-center p-6 transition-colors duration-300">
+  <div
+    class="min-h-screen pt-25 md:pt-30 pb-12 bg-white dark:bg-slate-950 flex items-start justify-center p-6 transition-colors duration-300">
     <main class="max-w-md w-full">
-      
+
       <header class="text-center mb-8">
         <NuxtLink
           class="inline-flex items-center justify-center mb-6 hover:cursor-pointer focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 rounded-lg"
           to="/" aria-label="Go to homepage">
-          
+
           <AppLogo class="h-32 md:h-44 w-auto transition-all duration-300" size="md" center />
         </NuxtLink>
-        
+
         <h1 class="text-2xl font-semibold text-gray-800 dark:text-white mb-2 transition-colors">Welcome back</h1>
         <p class="text-gray-600 dark:text-gray-400 transition-colors">Sign in to your account</p>
       </header>
@@ -24,35 +24,26 @@
       <!-- Login Form -->
       <form class="space-y-4" @submit.prevent="handleLogin" aria-label="Login form">
         <div>
-          <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 transition-colors">Email</label>
-          <input id="email" v-model="form.email" type="email" required autocomplete="email"
-            class="w-full px-3 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors
+          <label for="email"
+            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 transition-colors">Email</label>
+          <input id="email" v-model="form.email" type="email" required autocomplete="email" class="w-full px-3 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors
             bg-white border-gray-300 text-gray-900 placeholder-gray-400
             dark:bg-slate-900 dark:border-slate-700 dark:text-white dark:placeholder-gray-500"
             placeholder="Enter your email" aria-required="true">
         </div>
 
         <div>
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 transition-colors">Password</label>
+          <label
+            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 transition-colors">Password</label>
 
           <div class="relative">
-            <input
-              v-model="form.password"
-              :type="showPassword ? 'text' : 'password'"
-              required
-              minlength="8"
-              class="w-full px-3 py-3 pr-12 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors
+            <input v-model="form.password" :type="showPassword ? 'text' : 'password'" required minlength="8" class="w-full px-3 py-3 pr-12 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors
               bg-white border-gray-300 text-gray-900 placeholder-gray-400
               dark:bg-slate-900 dark:border-slate-700 dark:text-white dark:placeholder-gray-500"
-              placeholder="Create a password (min. 8 characters)"
-            />
+              placeholder="Enter your password" />
 
-            <!-- Toggle Icon -->
-            <button
-              type="button"
-              @click="showPassword = !showPassword"
-              class="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-            >
+            <button type="button" @click="showPassword = !showPassword"
+              class="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
               <Eye v-if="!showPassword" class="w-5 h-5" />
               <EyeOff v-else class="w-5 h-5" />
             </button>
@@ -83,19 +74,16 @@
       <!-- Messages -->
       <div v-if="success" class="mt-4 p-3 rounded-lg text-sm border transition-colors
         bg-green-50 border-green-200 text-green-600
-        dark:bg-green-900/20 dark:border-green-800 dark:text-green-400"
-        role="alert" aria-live="polite">
+        dark:bg-green-900/20 dark:border-green-800 dark:text-green-400" role="alert" aria-live="polite">
         {{ success }}
       </div>
 
       <div v-if="error" class="mt-4 p-3 rounded-lg text-sm border transition-colors
         bg-red-50 border-red-200 text-red-600
-        dark:bg-red-900/20 dark:border-red-800 dark:text-red-400" role="alert"
-        aria-live="assertive">
+        dark:bg-red-900/20 dark:border-red-800 dark:text-red-400" role="alert" aria-live="assertive">
         {{ error }}
         <div v-if="verificationExpired && expiredEmail" class="mt-2">
-          <button @click="resendVerification" :disabled="resendLoading"
-            class="text-sm font-medium underline focus:outline-none focus:ring-2 focus:ring-red-500 rounded
+          <button @click="resendVerification" :disabled="resendLoading" class="text-sm font-medium underline focus:outline-none focus:ring-2 focus:ring-red-500 rounded
             text-red-700 hover:text-red-800
             dark:text-red-400 dark:hover:text-red-300">
             {{ resendLoading ? 'Sending...' : 'Resend verification email' }}
@@ -105,7 +93,7 @@
 
       <p class="mt-6 text-center text-sm text-gray-600 dark:text-gray-400 transition-colors">
         Don't have an account?
-        <NuxtLink to="/register"
+        <NuxtLink :to="planLink"
           class="font-medium text-[#9E4CFF] hover:text-purple-500 dark:text-purple-400 dark:hover:text-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 rounded transition-colors">
           Sign up
         </NuxtLink>
@@ -139,6 +127,12 @@ const expiredEmail = ref('')
 const resendLoading = ref(false)
 const showPassword = ref(false)
 
+// UPDATED: Include plan in sign up link if present
+const planLink = computed(() => {
+  const plan = route.query.plan || localStorage.getItem('pendingPlan')
+  return plan ? `/register?plan=${plan}` : '/register'
+})
+
 const handleLogin = async () => {
   loading.value = true
   error.value = ''
@@ -147,24 +141,48 @@ const handleLogin = async () => {
 
   try {
     const response = await authStore.login(form.value)
+
+    if (!response.success) {
+      throw response
+    }
+
     const user = authStore.user
 
     if (!user) {
       throw new Error('User data not found after login')
     }
 
-    if (!user.onboarding_completed) {
-      router.push('/dashboard/onboarding')
-    } else if (!user.current_business_id) {
-      router.push('/select-business')
+    // UPDATED: Check URL first, then localStorage
+    const pendingPlan = route.query.plan || localStorage.getItem('pendingPlan')
+
+    if (pendingPlan) {
+      if (!user.onboarding_completed) {
+        // Keep in localStorage for after onboarding
+        router.push('/dashboard/onboarding')
+      } else if (!user.current_business_id) {
+        // Keep in localStorage for after business selection
+        router.push('/select-business')
+      } else {
+        // Clear and go to checkout
+        localStorage.removeItem('pendingPlan')
+        router.push({ path: '/checkout', query: { plan: pendingPlan } })
+      }
     } else {
-      router.push('/dashboard')
+      // Normal login flow
+      if (!user.onboarding_completed) {
+        router.push('/dashboard/onboarding')
+      } else if (!user.current_business_id) {
+        router.push('/select-business')
+      } else {
+        router.push('/dashboard')
+      }
     }
   } catch (err) {
-    error.value = err.message || 'Login failed'
+    error.value = err.error || err.message || 'Login failed'
+
     if (err.needs_verification) {
       verificationExpired.value = true
-      expiredEmail.value = form.value.email
+      expiredEmail.value = err.email || form.value.email
     }
   } finally {
     loading.value = false
@@ -176,15 +194,38 @@ const handleSocialAuth = async (provider) => {
   success.value = ''
 
   try {
+    // UPDATED: Store plan in localStorage before social auth
+    const planFromUrl = route.query.plan
+    if (planFromUrl) {
+      localStorage.setItem('pendingPlan', planFromUrl)
+    }
+
     const result = await authStore.socialAuth(provider)
     const user = authStore.user
 
-    if (!user.onboarding_completed) {
-      router.push('/dashboard/onboarding')
-    } else if (!user.current_business_id) {
-      router.push('/select-business')
+    // Check for pending plan from URL or localStorage
+    const pendingPlan = route.query.plan || localStorage.getItem('pendingPlan')
+
+    if (pendingPlan) {
+      if (!user.onboarding_completed) {
+        // Keep in localStorage for after onboarding
+        router.push('/dashboard/onboarding')
+      } else if (!user.current_business_id) {
+        // Keep in localStorage for after business selection
+        router.push('/select-business')
+      } else {
+        // Clear and go to checkout
+        localStorage.removeItem('pendingPlan')
+        router.push({ path: '/checkout', query: { plan: pendingPlan } })
+      }
     } else {
-      router.push('/dashboard')
+      if (!user.onboarding_completed) {
+        router.push('/dashboard/onboarding')
+      } else if (!user.current_business_id) {
+        router.push('/select-business')
+      } else {
+        router.push('/dashboard')
+      }
     }
   } catch (err) {
     error.value = err.message || 'Social login failed'
@@ -209,10 +250,25 @@ const resendVerification = async () => {
   }
 }
 
+// UPDATED: Store plan in localStorage on mount if present in URL
 onMounted(() => {
+  if (route.query.plan) {
+    localStorage.setItem('pendingPlan', route.query.plan)
+  }
+
+  // Handle registration success
+  if (route.query.registered === 'true') {
+    const email = route.query.email
+    if (email) {
+      success.value = `Registration successful! We've sent a verification email to ${email}. Please check your inbox and verify your email before logging in.`
+      form.value.email = email
+    }
+  }
+
   if (route.query.success) {
     success.value = decodeURIComponent(route.query.success)
   }
+
   if (route.query.error) {
     error.value = decodeURIComponent(route.query.error)
     if (route.query.expired === 'true' && route.query.email) {

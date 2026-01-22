@@ -53,7 +53,6 @@ const success = ref(false)
 const error = ref('')
 const countdown = ref(3)
 
-// Handle email verification
 onMounted(async () => {
   const token = route.query.token
   const email = route.query.email
@@ -65,7 +64,6 @@ onMounted(async () => {
   }
 
   try {
-    // Call verification API
     const config = useRuntimeConfig()
     await $fetch(`${config.public.apiBase}/api/auth/verify-email`, {
       method: 'GET',
@@ -75,7 +73,7 @@ onMounted(async () => {
     processing.value = false
     success.value = true
 
-    // Start countdown and redirect
+    // UPDATED: Plan is in localStorage, will be picked up in onboarding
     const countdownInterval = setInterval(() => {
       countdown.value--
       if (countdown.value <= 0) {

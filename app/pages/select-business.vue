@@ -13,8 +13,8 @@
 
             <!-- Business Cards -->
             <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <button v-for="business in businesses" :key="business.id" @click="selectBusiness(business.id)"
-                    class="p-6 bg-gray-900 border border-gray-700 rounded-lg hover:border-purple-500 transition-all text-left group">
+                <button v-for="business in businesses" :key="business.id" class="p-6 bg-gray-900 border border-gray-700 rounded-lg hover:border-purple-500 transition-all text-left group"
+                    @click="selectBusiness(business.id)">
                     <div class="flex items-start justify-between mb-3">
                         <div>
                             <h3 class="text-lg font-semibold text-white group-hover:text-purple-400 transition-colors">
@@ -36,8 +36,7 @@
             <!-- No Businesses -->
             <div v-if="!loading && businesses.length === 0" class="text-center py-12">
                 <p class="text-gray-400 mb-4">You don't belong to any business yet</p>
-                <button @click="navigateTo('/dashboard/onboarding')"
-                    class="px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
+                <button class="px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors" @click="navigateTo('/dashboard/onboarding')">
                     Create Your Business
                 </button>
             </div>
@@ -63,7 +62,16 @@ const selectBusiness = async (businessId) => {
     const result = await businessStore.switchBusiness(businessId)
 
     if (result.success) {
-        await navigateTo('/dashboard')
+        // UPDATED: Check localStorage for pending plan
+        const pendingPlan = localStorage.getItem('pendingPlan')
+
+        if (pendingPlan) {
+            // Clear it and go to checkout
+            localStorage.removeItem('pendingPlan')
+            await navigateTo({ path: '/checkout', query: { plan: pendingPlan } })
+        } else {
+            await navigateTo('/dashboard')
+        }
     }
 }
 

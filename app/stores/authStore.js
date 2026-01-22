@@ -38,18 +38,30 @@ export const useAuthStore = defineStore('auth', {
                     }
                 })
 
-                // Set auth and mark as needing onboarding
-                this.setAuth(data.token, {
-                    ...data.data.user,
-                    onboarding_completed: false
-                })
-
-                return { success: true, data }
+                // Don't set auth since user needs to verify email first
+                return {
+                    success: true,
+                    message: data.message,
+                    email: data.data.email
+                }
             } catch (error) {
                 console.error('[AUTH STORE] Registration error:', error)
+
+                // UPDATED: Extract and format validation errors
+                let formattedErrors = {}
+                if (error.data?.errors) {
+                    // Laravel returns errors as { field: [array of messages] }
+                    // Convert to { field: 'first message' }
+                    Object.keys(error.data.errors).forEach(field => {
+                        const messages = error.data.errors[field]
+                        formattedErrors[field] = Array.isArray(messages) ? messages[0] : messages
+                    })
+                }
+
                 return {
                     success: false,
-                    error: error.data?.message || error.message || 'Registration failed'
+                    error: error.data?.message || error.message || 'Registration failed',
+                    errors: formattedErrors // Include field-specific errors
                 }
             }
         },
@@ -66,7 +78,6 @@ export const useAuthStore = defineStore('auth', {
                     }
                 })
 
-                // Handle different response formats
                 const userData = response.data?.user || response.user
                 const token = response.token
 
@@ -85,9 +96,13 @@ export const useAuthStore = defineStore('auth', {
                 return { success: true, data: response }
             } catch (error) {
                 console.error('[AUTH STORE] Login error:', error)
+
+                // UPDATED: Pass through needs_verification flag and email
                 return {
                     success: false,
-                    error: error.data?.message || error.message || 'Login failed'
+                    error: error.data?.message || error.message || 'Login failed',
+                    needs_verification: error.data?.needs_verification || false,
+                    email: error.data?.email || null
                 }
             }
         },
