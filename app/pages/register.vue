@@ -1,12 +1,18 @@
 <template>
-  <div class="min-h-screen pt-[30vh] sm:pt-[40vh] lg:pt-[6rem] bg-white dark:bg-slate-950 flex items-center justify-center p-6 transition-colors duration-300">
+  <!-- UPDATED: Increased top padding to pt-40 md:pt-52 -->
+  <div class="min-h-screen  pt-25 md:pt-30 pb-12 bg-white dark:bg-slate-950 flex items-start justify-center p-6 transition-colors duration-300">
     <div class="max-w-md w-full">
-      <!-- Logo -->
+      
+      <!-- Logo Section -->
       <div class="text-center mb-8">
-        <NuxtLink class="hover:cursor-pointer" to="/">
-          <AppLogo size="md" center />
+        <NuxtLink 
+          class="inline-flex items-center justify-center mb-6 hover:cursor-pointer focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 rounded-lg" 
+          to="/"
+        >
+          <AppLogo class="h-32 md:h-44 w-auto transition-all duration-300" size="md" center />
         </NuxtLink>
-        <h2 class="text-2xl font-semibold text-gray-800 dark:text-white mb-2 mt-4 transition-colors">Create your account</h2>
+        
+        <h2 class="text-2xl font-semibold text-gray-800 dark:text-white mb-2 mt-2 transition-colors">Create your account</h2>
         <p class="text-gray-600 dark:text-gray-400 transition-colors">Start building your intelligent chatbot</p>
       </div>
 
@@ -81,7 +87,7 @@
       <!-- Sign In Link -->
       <p class="mt-6 text-center text-sm text-gray-600 dark:text-gray-400 transition-colors">
         Already have an account?
-        <NuxtLink to="/login" class="font-medium text-purple-600 hover:text-purple-500 dark:text-purple-400 dark:hover:text-purple-300 transition-colors">
+        <NuxtLink to="/login" class="font-medium text-[#9E4CFF] hover:text-purple-500 dark:text-purple-400 dark:hover:text-purple-300 transition-colors">
           Sign in
         </NuxtLink>
       </p>
@@ -93,7 +99,7 @@
 import { Eye, EyeOff } from "lucide-vue-next";
 
 definePageMeta({
-  layout: 'empty',
+  layout: 'default',
   middleware: 'guest'
 })
 
@@ -111,6 +117,8 @@ const error = ref('')
 const success = ref('')
 const showPassword = ref(false)
 
+
+
 const handleRegister = async () => {
   loading.value = true
   error.value = ''
@@ -118,8 +126,26 @@ const handleRegister = async () => {
 
   try {
     await authStore.register(form.value)
-    success.value = 'Account created successfully! Please check your email to verify your account.'
-    form.value = { name: '', email: '', password: '' }
+    
+    
+    const pendingPlan = localStorage.getItem('pendingPlan')
+    
+    if (pendingPlan) {
+      
+      localStorage.removeItem('pendingPlan')
+      
+      
+      if (pendingPlan === 'starter') {
+        router.push('/dashboard/onboarding') 
+      } else {
+        
+        router.push({ path: '/checkout', query: { plan: pendingPlan } })
+      }
+    } else {
+        
+        router.push('/dashboard/onboarding')
+    }
+
   } catch (err) {
     error.value = err.message || 'Registration failed'
   } finally {
@@ -143,4 +169,6 @@ const handleSocialAuth = async (provider) => {
     error.value = err.message || 'Social registration failed'
   }
 }
+
+
 </script>

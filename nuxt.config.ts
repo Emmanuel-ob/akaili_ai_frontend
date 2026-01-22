@@ -89,6 +89,8 @@ export default defineNuxtConfig({
       reverbScheme: process.env.NODE_ENV === 'production'
         ? 'https'
         : (process.env.NUXT_PUBLIC_REVERB_SCHEME || 'http'),
+      stripePublishableKey: process.env.STRIPE_KEY,
+      paystackPublicKey: process.env.PAYSTACK_PUBLIC_KEY
     },
   },
 
