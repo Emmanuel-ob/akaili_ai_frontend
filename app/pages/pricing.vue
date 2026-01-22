@@ -81,12 +81,10 @@ const subscriptionStore = useSubscriptionStore()
 
 const showDowngradeModal = ref(false)
 
-// Helper to determine if a plan is active
 const isCurrentPlan = (planId) => {
-    return authStore.isLoggedIn && subscriptionStore.currentPlan?.id === planId
+  return authStore.isLoggedIn && subscriptionStore.currentPlan?.id === planId
 }
 
-// Helper for button text
 const getButtonText = (planId) => {
   if (isCurrentPlan(planId)) return 'Current Plan'
   return planId === 'starter' ? 'Get Started Free' : (planId === 'enterprise' ? 'Contact Sales' : 'Get Started')
@@ -98,8 +96,8 @@ const handlePlanSelection = async (planId) => {
 
   // 2. Auth Check
   if (!authStore.isLoggedIn) {
-    localStorage.setItem('pendingPlan', planId)
-    return router.push('/register')
+    // UPDATED: Pass plan via URL instead of localStorage
+    return router.push({ path: '/register', query: { plan: planId } })
   }
 
   // 3. Handle Downgrade to Free
@@ -112,17 +110,16 @@ const handlePlanSelection = async (planId) => {
 }
 
 const confirmDowngrade = async () => {
-    await subscriptionStore.changePlan('starter')
-    showDowngradeModal.value = false
-    router.push('/dashboard/settings')
+  await subscriptionStore.changePlan('starter')
+  showDowngradeModal.value = false
+  router.push('/dashboard/settings')
 }
 
 onMounted(() => {
-  // Ensure store has latest data to render "Current Plan" correctly
   if (authStore.isLoggedIn) {
     subscriptionStore.fetchSubscription()
   }
-  
+
   if (window.AOS) {
     window.AOS.init({ duration: 1000, once: true })
   }
