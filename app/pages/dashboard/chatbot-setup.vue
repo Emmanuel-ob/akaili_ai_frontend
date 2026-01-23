@@ -1,12 +1,11 @@
 <!-- dashboard/chatbot-setup.vue -->
-<!-- dashboard/chatbot-setup.vue -->
 <template>
     <div class="min-h-screen bg-white dark:bg-slate-950 transition-colors duration-300">
         
         <!-- No Chatbot Warning -->
-        <div v-if="!hasChatbot && !chatbotStore.loading" class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700/50 px-6 py-4 mb-6 mx-6 mt-6 rounded-lg">
+        <div v-if="!hasChatbot && !chatbotStore.loading" class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700/50 px-4 md:px-6 py-4 mb-6 mx-4 md:mx-6 mt-6 rounded-lg">
             <div class="flex items-center">
-                <svg class="w-5 h-5 text-yellow-600 dark:text-yellow-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-5 h-5 text-yellow-600 dark:text-yellow-500 mr-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
                 </svg>
@@ -19,7 +18,7 @@
 
         <!-- Chatbot Selector -->
         <div v-if="chatbotStore.chatbots.length > 1 && !chatbotStore.loading"
-            class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700/50 px-6 py-4 mb-6 mx-6 mt-6 rounded-lg">
+            class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700/50 px-4 md:px-6 py-4 mb-6 mx-4 md:mx-6 mt-6 rounded-lg">
             <label class="block text-sm font-medium text-blue-800 dark:text-blue-200 mb-2">
                 Select Chatbot to Edit:
             </label>
@@ -31,20 +30,20 @@
             </select>
         </div>
 
-        <header class="bg-white dark:bg-slate-900 px-6 py-5 border-b border-gray-200 dark:border-slate-800 transition-colors duration-300">
+        <header class="bg-white dark:bg-slate-900 px-4 md:px-6 py-5 border-b border-gray-200 dark:border-slate-800 transition-colors duration-300 sticky top-0 z-20">
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                    <h1 class="text-[#9E4CFF] text-2xl font-bold">
+                    <h1 class="text-[#9E4CFF] text-xl md:text-2xl font-bold">
                         {{ isEditing ? 'Edit Chatbot' : 'Create Chatbot' }}
                     </h1>
-                    <p class="text-sm lg:text-base text-gray-500 dark:text-gray-400 mt-1">
+                    <p class="text-xs md:text-sm lg:text-base text-gray-500 dark:text-gray-400 mt-1">
                         {{ isEditing ? 'Update your AI chatbot settings' : 'Configure and customize your new AI chatbot' }}
                     </p>
                 </div>
 
-                <div class="flex items-center space-x-4">
+                <div class="flex items-center space-x-4 w-full sm:w-auto">
                     <button @click="saveChanges" :disabled="chatbotStore.saving || chatbotStore.loading"
-                        class="px-6 py-3 nav_primary_btn text-sm lg:text-base text-white rounded-xl shadow-lg shadow-purple-500/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all hover:shadow-purple-500/30">
+                        class="flex-1 sm:flex-none px-6 py-3 nav_primary_btn text-sm lg:text-base text-white rounded-xl shadow-lg shadow-purple-500/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all hover:shadow-purple-500/30 font-medium">
                         {{ chatbotStore.saving ? 'Saving...' : (isEditing ? 'Update Chatbot' : 'Create Chatbot') }}
                     </button>
                 </div>
@@ -52,18 +51,20 @@
         </header>
 
         <!-- Tabs -->
-        <div class="grid grid-cols-3 gap-2 text-center mx-6 mb-8 mt-8 bg-gray-100 dark:bg-slate-900 p-1.5 rounded-xl border border-gray-200 dark:border-slate-800">
-            <div v-for="tab in tabs" :key="tab.key"
-                class="py-2.5 cursor-pointer transition-all duration-200 rounded-lg text-sm font-medium"
-                :class="activeTab === tab.key 
-                    ? 'bg-white dark:bg-slate-800 text-[#9E4CFF] shadow-sm' 
-                    : 'text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-slate-800/50'" 
-                @click="activeTab = tab.key">
-                {{ tab.label }}
+        <div class="sticky top-[80px] z-10 bg-white dark:bg-slate-950 pb-2 pt-2 px-4 md:px-6 border-b border-gray-100 dark:border-slate-800/50 md:static md:border-0 md:p-0 md:bg-transparent md:mx-6 md:mb-8 md:mt-8">
+             <div class="grid grid-cols-3 gap-2 text-center bg-gray-100 dark:bg-slate-900 p-1.5 rounded-xl border border-gray-200 dark:border-slate-800">
+                <div v-for="tab in tabs" :key="tab.key"
+                    class="py-2.5 cursor-pointer transition-all duration-200 rounded-lg text-xs md:text-sm font-medium"
+                    :class="activeTab === tab.key 
+                        ? 'bg-white dark:bg-slate-800 text-[#9E4CFF] shadow-sm' 
+                        : 'text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-slate-800/50'" 
+                    @click="activeTab = tab.key">
+                    {{ tab.label }}
+                </div>
             </div>
         </div>
 
-        <main class="px-6 pb-20">
+        <main class="px-0 md:px-6 pb-20">
             <!-- Loading State -->
             <div v-if="chatbotStore.loading" class="flex flex-col items-center justify-center py-20">
                 <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-[#9E4CFF]"></div>
@@ -71,22 +72,25 @@
             </div>
 
             <!-- Form Content -->
-            <div v-else class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-sm dark:shadow-none overflow-hidden transition-colors duration-300">
-                <div class="p-6 md:p-8">
-                    <div v-if="activeTab === 'basic'">
-                        <BasicChatbotSetup />
-                    </div>
-                    <div v-else-if="activeTab === 'appearance'">
-                        <AppearanceChatbotSetup />
-                    </div>
-                    <div v-else-if="activeTab === 'behaviour'">
-                        <BehaviourChatbotSetup />
-                    </div>
+            <!-- Mobile: No Border, No Radius, No Shadow. Desktop: Borders, Radius, Shadow -->
+            <div v-else class="bg-transparent md:bg-white md:dark:bg-slate-900 border-0 md:border md:border-gray-200 md:dark:border-slate-800 rounded-none md:rounded-2xl shadow-none md:shadow-sm overflow-hidden transition-colors duration-300">
+                <div class="p-4 md:p-8">
+                    <keep-alive>
+                        <div v-if="activeTab === 'basic'">
+                            <BasicChatbotSetup />
+                        </div>
+                        <div v-else-if="activeTab === 'appearance'">
+                            <AppearanceChatbotSetup />
+                        </div>
+                        <div v-else-if="activeTab === 'behaviour'">
+                            <BehaviourChatbotSetup />
+                        </div>
+                    </keep-alive>
                 </div>
             </div>
 
-            <!-- Embed Code Generator - Always show if chatbot exists -->
-            <div v-if="selectedChatbot" class="mt-12">
+            <!-- Embed Code Generator -->
+            <div v-if="selectedChatbot" class="mt-8 px-4 md:px-0">
                 <div v-if="!selectedChatbot.is_active" class="bg-yellow-50 dark:bg-yellow-900/10 border border-yellow-200 dark:border-yellow-700/30 rounded-xl p-4 mb-6">
                     <div class="flex">
                         <div class="flex-shrink-0">
@@ -109,7 +113,7 @@
                     </div>
                 </div>
                 
-                <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-sm dark:shadow-none p-6 md:p-8">
+                <div class="bg-transparent md:bg-white md:dark:bg-slate-900 rounded-none md:rounded-2xl border-0 md:border md:border-gray-200 md:dark:border-slate-800 shadow-none md:shadow-sm p-0 md:p-8">
                     <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-6">Integration</h3>
                     <EmbedCodeGenerator :chatbot-id="selectedChatbot.id"
                         :chatbot-name="selectedChatbot.name || 'AI Assistant'" />
