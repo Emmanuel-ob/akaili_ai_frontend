@@ -35,17 +35,37 @@
           <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">Setup Your Company</h2>
 
           <form @submit.prevent="handleCompanySetup" class="space-y-6">
-            <FormInput v-model="companyForm.company_name" label="Company Name" placeholder="Enter your company name"
-              required aria-required="true" />
+            <!-- Company Name -->
+            <div>
+               <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Company Name</label>
+               <input v-model="companyForm.company_name" type="text" required placeholder="Enter your company name"
+                  class="w-full rounded-lg p-3 outline-none transition-all border border-gray-300 bg-white text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-purple-500 dark:bg-slate-900/50 dark:border-slate-700 dark:text-white dark:placeholder-gray-500 dark:focus:ring-purple-500 dark:focus:border-purple-500"
+               />
+            </div>
 
-            <FormInput v-model="companyForm.business_email" label="Business Email" type="email"
-              placeholder="Enter business email" required aria-required="true" />
+            <!-- Business Email -->
+            <div>
+               <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Business Email</label>
+               <input v-model="companyForm.business_email" type="email" required placeholder="Enter business email"
+                  class="w-full rounded-lg p-3 outline-none transition-all border border-gray-300 bg-white text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-purple-500 dark:bg-slate-900/50 dark:border-slate-700 dark:text-white dark:placeholder-gray-500 dark:focus:ring-purple-500 dark:focus:border-purple-500"
+               />
+            </div>
 
-            <FormInput v-model="companyForm.business_phone" label="Business Phone" type="tel"
-              placeholder="Enter phone number" required aria-required="true" />
+            <!-- Business Phone -->
+            <div>
+               <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Business Phone</label>
+               <input v-model="companyForm.business_phone" type="tel" required placeholder="Enter phone number"
+                  class="w-full rounded-lg p-3 outline-none transition-all border border-gray-300 bg-white text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-purple-500 dark:bg-slate-900/50 dark:border-slate-700 dark:text-white dark:placeholder-gray-500 dark:focus:ring-purple-500 dark:focus:border-purple-500"
+               />
+            </div>
 
-            <FormInput v-model="companyForm.address" label="Business Address" placeholder="Enter business address"
-              required aria-required="true" />
+            <!-- Business Address -->
+            <div>
+               <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Business Address</label>
+               <input v-model="companyForm.address" type="text" required placeholder="Enter business address"
+                  class="w-full rounded-lg p-3 outline-none transition-all border border-gray-300 bg-white text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-purple-500 dark:bg-slate-900/50 dark:border-slate-700 dark:text-white dark:placeholder-gray-500 dark:focus:ring-purple-500 dark:focus:border-purple-500"
+               />
+            </div>
 
             <div v-if="error" class="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-600 dark:text-red-400 text-sm" role="alert">
               {{ error }}
@@ -64,13 +84,19 @@
           <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">Create Your Chatbot</h2>
 
           <form @submit.prevent="handleChatbotCreation" class="space-y-6">
-            <FormInput v-model="chatbotForm.name" label="Chatbot Name" placeholder="Enter chatbot name" required
-              aria-required="true" />
+            <!-- Chatbot Name -->
+            <div>
+               <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Chatbot Name</label>
+               <input v-model="chatbotForm.name" type="text" required placeholder="Enter chatbot name"
+                  class="w-full rounded-lg p-3 outline-none transition-all border border-gray-300 bg-white text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-purple-500 dark:bg-slate-900/50 dark:border-slate-700 dark:text-white dark:placeholder-gray-500 dark:focus:ring-purple-500 dark:focus:border-purple-500"
+               />
+            </div>
 
+            <!-- Welcome Message -->
             <div>
               <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Welcome Message</label>
               <textarea v-model="chatbotForm.welcome_message" rows="4"
-                class="w-full px-3 py-2 border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent placeholder-gray-400 dark:placeholder-gray-500 transition-colors"
+                class="w-full rounded-lg p-3 outline-none resize-none transition-all border border-gray-300 bg-white text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-purple-500 dark:bg-slate-900/50 dark:border-slate-700 dark:text-white dark:placeholder-gray-500 dark:focus:ring-purple-500 dark:focus:border-purple-500"
                 placeholder="Enter welcome message for your chatbot" required aria-required="true"></textarea>
             </div>
 
@@ -141,22 +167,6 @@ const chatbotForm = ref({
   welcome_message: 'Hello! How can I help you today?'
 })
 
-// Options
-const companySizeOptions = [
-  { value: '1-10', label: '1-10 employees' },
-  { value: '11-50', label: '11-50 employees' },
-  { value: '51-200', label: '51-200 employees' },
-  { value: '201-500', label: '201-500 employees' },
-  { value: '500+', label: '500+ employees' }
-]
-
-const chatbotTypeOptions = [
-  { value: 'general', label: 'General Purpose' },
-  { value: 'customer_service', label: 'Customer Service' },
-  { value: 'sales', label: 'Sales' },
-  { value: 'support', label: 'Technical Support' }
-]
-
 // Computed
 const currentStepNumber = computed(() => {
   if (currentStep.value === 'business_setup') return 1
@@ -218,7 +228,6 @@ const handleChatbotCreation = async () => {
   }
 }
 
-// Rename to match template's "goBack" handler
 const goBack = () => {
   if (currentStep.value === 'chatbot_creation') {
     currentStep.value = 'business_setup'
@@ -226,14 +235,21 @@ const goBack = () => {
 }
 
 const finishOnboarding = () => {
-  router.push('/dashboard')
+  // UPDATED: Check localStorage for pending plan
+  const pendingPlan = localStorage.getItem('pendingPlan')
+
+  if (pendingPlan) {
+    // Clear it and go to checkout
+    localStorage.removeItem('pendingPlan')
+    router.push({ path: '/checkout', query: { plan: pendingPlan } })
+  } else {
+    router.push('/dashboard')
+  }
 }
 
-// Single initialization lifecycle hook (async) to avoid nested onMounted calls
+// Single initialization lifecycle hook (async)
 onMounted(async () => {
   try {
-    // await authStore.initializeAuth()
-
     if (!authStore.isLoggedIn) {
       router.push('/login')
       return
@@ -255,7 +271,6 @@ onMounted(async () => {
     }
   } catch (err) {
     console.error('Failed to get onboarding status or initialize auth:', err)
-    // If there's an error, redirect to login
     router.push('/login')
   } finally {
     loading.value = false

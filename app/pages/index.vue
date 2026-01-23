@@ -1,6 +1,3 @@
-
-
-
 <template>
     <div class="overflow-hidden">
       <Hero />

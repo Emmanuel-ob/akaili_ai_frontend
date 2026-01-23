@@ -1,18 +1,18 @@
 <template>
-  <!-- UPDATED: Increased top padding to pt-40 md:pt-52 -->
+  
   <div class="min-h-screen  pt-25 md:pt-30 pb-12 bg-white dark:bg-slate-950 flex items-start justify-center p-6 transition-colors duration-300">
     <div class="max-w-md w-full">
-      
+
       <!-- Logo Section -->
       <div class="text-center mb-8">
-        <NuxtLink 
-          class="inline-flex items-center justify-center mb-6 hover:cursor-pointer focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 rounded-lg" 
-          to="/"
-        >
+        <NuxtLink
+          class="inline-flex items-center justify-center mb-6 hover:cursor-pointer focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 rounded-lg"
+          to="/">
           <AppLogo class="h-32 md:h-44 w-auto transition-all duration-300" size="md" center />
         </NuxtLink>
-        
-        <h2 class="text-2xl font-semibold text-gray-800 dark:text-white mb-2 mt-2 transition-colors">Create your account</h2>
+
+        <h2 class="text-2xl font-semibold text-gray-800 dark:text-white mb-2 mt-2 transition-colors">Create your account
+        </h2>
         <p class="text-gray-600 dark:text-gray-400 transition-colors">Start building your intelligent chatbot</p>
       </div>
 
@@ -25,48 +25,51 @@
       <!-- Register Form -->
       <form class="space-y-4" @submit.prevent="handleRegister">
         <div>
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 transition-colors">Full Name</label>
-          <input v-model="form.name" type="text" required
-            class="w-full px-3 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 transition-colors">Full
+            Name</label>
+          <input v-model="form.name" type="text" required class="w-full px-3 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors
             bg-white border-gray-300 text-gray-900 placeholder-gray-400
             dark:bg-slate-900 dark:border-slate-700 dark:text-white dark:placeholder-gray-500"
-            placeholder="Enter your full name">
+            :class="{ 'border-red-500': fieldErrors.name }" placeholder="Enter your full name">
+          <!-- UPDATED: Show field-specific error -->
+          <p v-if="fieldErrors.name" class="mt-1 text-sm text-red-600 dark:text-red-400">
+            {{ fieldErrors.name }}
+          </p>
         </div>
 
         <div>
           <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 transition-colors">Email</label>
-          <input v-model="form.email" type="email" required
-            class="w-full px-3 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors
+          <input v-model="form.email" type="email" required class="w-full px-3 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors
             bg-white border-gray-300 text-gray-900 placeholder-gray-400
             dark:bg-slate-900 dark:border-slate-700 dark:text-white dark:placeholder-gray-500"
-            placeholder="Enter your email">
+            :class="{ 'border-red-500': fieldErrors.email }" placeholder="Enter your email">
+          <!-- UPDATED: Show field-specific error -->
+          <p v-if="fieldErrors.email" class="mt-1 text-sm text-red-600 dark:text-red-400">
+            {{ fieldErrors.email }}
+          </p>
         </div>
 
         <div>
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 transition-colors">Password</label>
+          <label
+            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 transition-colors">Password</label>
 
           <div class="relative">
-            <input
-              v-model="form.password"
-              :type="showPassword ? 'text' : 'password'"
-              required
-              minlength="8"
-              class="w-full px-3 py-3 pr-12 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors
+            <input v-model="form.password" :type="showPassword ? 'text' : 'password'" required minlength="8" class="w-full px-3 py-3 pr-12 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors
               bg-white border-gray-300 text-gray-900 placeholder-gray-400
               dark:bg-slate-900 dark:border-slate-700 dark:text-white dark:placeholder-gray-500"
-              placeholder="Create a password (min. 8 characters)"
-            />
+              :class="{ 'border-red-500': fieldErrors.password }" placeholder="Create a password (min. 8 characters)" />
 
             <!-- Toggle Icon -->
-            <button
-              type="button"
-              @click="showPassword = !showPassword"
-              class="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-            >
+            <button type="button" @click="showPassword = !showPassword"
+              class="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
               <Eye v-if="!showPassword" class="w-5 h-5" />
               <EyeOff v-else class="w-5 h-5" />
             </button>
           </div>
+          <!-- UPDATED: Show field-specific error -->
+          <p v-if="fieldErrors.password" class="mt-1 text-sm text-red-600 dark:text-red-400">
+            {{ fieldErrors.password }}
+          </p>
         </div>
 
         <button type="submit" :disabled="loading"
@@ -76,18 +79,22 @@
       </form>
 
       <!-- Success/Error Messages -->
-      <div v-if="success" class="mt-4 p-3 rounded-lg text-sm border transition-colors bg-green-50 border-green-200 text-green-600 dark:bg-green-900/20 dark:border-green-800 dark:text-green-400">
+      <div v-if="success"
+        class="mt-4 p-3 rounded-lg text-sm border transition-colors bg-green-50 border-green-200 text-green-600 dark:bg-green-900/20 dark:border-green-800 dark:text-green-400">
         {{ success }}
       </div>
 
-      <div v-if="error" class="mt-4 p-3 rounded-lg text-sm border transition-colors bg-red-50 border-red-200 text-red-600 dark:bg-red-900/20 dark:border-red-800 dark:text-red-400">
+      <!-- UPDATED: Only show general error if no field errors -->
+      <div v-if="error && !hasFieldErrors"
+        class="mt-4 p-3 rounded-lg text-sm border transition-colors bg-red-50 border-red-200 text-red-600 dark:bg-red-900/20 dark:border-red-800 dark:text-red-400">
         {{ error }}
       </div>
 
       <!-- Sign In Link -->
       <p class="mt-6 text-center text-sm text-gray-600 dark:text-gray-400 transition-colors">
         Already have an account?
-        <NuxtLink to="/login" class="font-medium text-[#9E4CFF] hover:text-purple-500 dark:text-purple-400 dark:hover:text-purple-300 transition-colors">
+        <NuxtLink to="/login"
+          class="font-medium text-[#9E4CFF] hover:text-purple-500 dark:text-purple-400 dark:hover:text-purple-300 transition-colors">
           Sign in
         </NuxtLink>
       </p>
@@ -105,6 +112,7 @@ definePageMeta({
 
 const authStore = useAuthStore()
 const router = useRouter()
+const route = useRoute()
 
 const form = ref({
   name: '',
@@ -116,36 +124,49 @@ const loading = ref(false)
 const error = ref('')
 const success = ref('')
 const showPassword = ref(false)
+const fieldErrors = ref({})
 
-
+const hasFieldErrors = computed(() => {
+  return Object.keys(fieldErrors.value).length > 0
+})
 
 const handleRegister = async () => {
   loading.value = true
   error.value = ''
   success.value = ''
+  fieldErrors.value = {}
 
   try {
-    await authStore.register(form.value)
-    
-    
-    const pendingPlan = localStorage.getItem('pendingPlan')
-    
-    if (pendingPlan) {
-      
-      localStorage.removeItem('pendingPlan')
-      
-      
-      if (pendingPlan === 'starter') {
-        router.push('/dashboard/onboarding') 
-      } else {
-        
-        router.push({ path: '/checkout', query: { plan: pendingPlan } })
-      }
-    } else {
-        
-        router.push('/dashboard/onboarding')
-    }
+    const result = await authStore.register(form.value)
 
+    if (result.success) {
+      // UPDATED: Store plan in localStorage if it exists
+      if (route.query.plan) {
+        localStorage.setItem('pendingPlan', route.query.plan)
+      }
+
+      const query = {
+        registered: 'true',
+        email: result.email
+      }
+
+      // Pass plan in URL as well for immediate access
+      if (route.query.plan) {
+        query.plan = route.query.plan
+      }
+
+      await router.push({
+        path: '/login',
+        query
+      })
+    } else {
+      if (result.errors) {
+        fieldErrors.value = result.errors
+        error.value = 'Please fix the errors below'
+      } else {
+        error.value = result.error
+      }
+    }
   } catch (err) {
     error.value = err.message || 'Registration failed'
   } finally {
@@ -155,20 +176,48 @@ const handleRegister = async () => {
 
 const handleSocialAuth = async (provider) => {
   try {
+    // UPDATED: Store plan in localStorage before social auth
+    if (route.query.plan) {
+      localStorage.setItem('pendingPlan', route.query.plan)
+    }
+
     await authStore.socialAuth(provider)
     const user = authStore.user
 
-    if (!user.onboarding_completed) {
-      router.push('/dashboard/onboarding')
-    } else if (!user.current_business_id) {
-      router.push('/select-business')
+    // Check for pending plan from URL or localStorage
+    const pendingPlan = route.query.plan || localStorage.getItem('pendingPlan')
+
+    if (pendingPlan) {
+      if (!user.onboarding_completed) {
+        // Keep in localStorage for after onboarding
+        router.push('/dashboard/onboarding')
+      } else if (!user.current_business_id) {
+        // Keep in localStorage for after business selection
+        router.push('/select-business')
+      } else {
+        // Clear and go to checkout
+        localStorage.removeItem('pendingPlan')
+        router.push({ path: '/checkout', query: { plan: pendingPlan } })
+      }
     } else {
-      router.push('/dashboard')
+      // Normal flow without pending plan
+      if (!user.onboarding_completed) {
+        router.push('/dashboard/onboarding')
+      } else if (!user.current_business_id) {
+        router.push('/select-business')
+      } else {
+        router.push('/dashboard')
+      }
     }
   } catch (err) {
     error.value = err.message || 'Social registration failed'
   }
 }
 
-
+// UPDATED: Store plan in localStorage on mount if present in URL
+onMounted(() => {
+  if (route.query.plan) {
+    localStorage.setItem('pendingPlan', route.query.plan)
+  }
+})
 </script>

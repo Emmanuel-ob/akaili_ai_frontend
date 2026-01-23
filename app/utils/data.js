@@ -1,10 +1,10 @@
 // ~/utils/data.js (or wherever you export navLinks)
 export const navLinks = [
   { id: 1, url: '/',           more: '',                  label: 'Home' },
-  { id: 2, url: '/products',   more: '/nav-chevron.png',  label: 'Products' },
-  { id: 3, url: '/testimonial',more: '',                  label: 'Testimonial' },
+  { id: 2, url: '/about',   more:'',   label: 'About' },
+  { id: 3, url: '/products',more: '',                  label: 'Products' },
   { id: 4, url: '/pricing',    more: '',                  label: 'Pricing' },
-  { id: 5, url: '#',       more: '',                  label: 'Blog' },
+  { id: 5, url: 'https://blog.xeliai.com',       more: '',                  label: 'Blog' },
   { id: 6, url: '/contact',    more: '',                  label: 'Contact' },
 ]
 

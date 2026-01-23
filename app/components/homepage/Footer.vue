@@ -46,7 +46,6 @@
         <nav class="flex flex-col space-y-2 text-sm">
           <NuxtLink to="/features" class="text-[#9CA3AF] hover:text-gray-200">Features</NuxtLink>
           <NuxtLink to="/pricing" class="text-[#9CA3AF] hover:text-gray-200">Pricing</NuxtLink>
-          <NuxtLink to="/interogations" class="text-[#9CA3AF] hover:text-gray-200">Interogations</NuxtLink>
           <NuxtLink to="/api" class="text-[#9CA3AF] hover:text-gray-200">API</NuxtLink>
           
         </nav>
@@ -57,9 +56,10 @@
         <h3 class=" text-white text-xl font-bold">Company</h3>
         <nav class="flex flex-col space-y-2 text-sm">
           <NuxtLink to="/about" class="text-[#9CA3AF] hover:text-gray-200">About</NuxtLink>
-          <NuxtLink to="/blog" class="text-[#9CA3AF] hover:text-gray-200">Blog</NuxtLink>
-          <NuxtLink to="/carrers" class="text-[#9CA3AF] hover:text-gray-200">Careers</NuxtLink>
-          <NuxtLink to="/press" class="text-[#9CA3AF] hover:text-gray-200">Press</NuxtLink>
+          <NuxtLink 
+            href="https://blog.xeliai.com"
+            target="_blank" 
+            rel="noopener noreferrer" class="text-[#9CA3AF] hover:text-gray-200">Blog</NuxtLink>
         </nav>
       </div>
 
@@ -67,10 +67,10 @@
       <div class="space-y-5">
         <h3 class=" text-white text-xl font-bold">Support</h3>
         <nav class="flex flex-col space-y-2 text-sm">
-          <NuxtLink to="/help" class="text-[#9CA3AF] hover:text-gray-200">Help Center</NuxtLink>
+          <NuxtLink to="/contact" class="text-[#9CA3AF] hover:text-gray-200">Help Center</NuxtLink>
           <NuxtLink to="/contact" class="text-[#9CA3AF] hover:text-gray-200">Contact</NuxtLink>
-          <NuxtLink to="/privacy" class="text-[#9CA3AF] hover:text-gray-200">Privacy</NuxtLink>
-          <NuxtLink to="/terms" class="text-[#9CA3AF] hover:text-gray-200">Terms</NuxtLink>
+          <NuxtLink to="/contact" class="text-[#9CA3AF] hover:text-gray-200">Privacy</NuxtLink>
+          <NuxtLink to="/about" class="text-[#9CA3AF] hover:text-gray-200">Terms</NuxtLink>
         </nav>
       </div>
     </div>

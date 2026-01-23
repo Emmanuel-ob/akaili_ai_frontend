@@ -5,7 +5,7 @@
     class="relative overflow-hidden pt-32 pb-16 md:pt-40 md:pb-32 transition-colors duration-300 bg-white dark:bg-slate-950"
     aria-label="Hero section"
   >
-    <!-- Background Gradients -->
+    
     <div class="absolute inset-0 overflow-hidden pointer-events-none">
       <!-- Top Orb -->
       <div class="absolute -top-[20%] -right-[10%] w-[70%] h-[70%] rounded-full blur-[100px] transition-all duration-500 bg-purple-100/50 mix-blend-multiply dark:bg-purple-900/20 dark:mix-blend-screen"></div>

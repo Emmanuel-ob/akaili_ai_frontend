@@ -2,12 +2,11 @@
 <template>
   <div class="min-h-screen bg-gray-50 dark:bg-slate-950 transition-colors duration-300">
     
-    <!-- Desktop Sidebar (Wider: w-72) -->
     <div
       class="lg:w-72 bg-white dark:bg-slate-900 shadow-sm border-r border-gray-200 dark:border-slate-800 fixed h-full hidden lg:flex flex-col justify-between transition-colors duration-300">
       
       <div class="flex flex-col h-full">
-        <!-- LOGO (Fixed constraints) -->
+    
         <div class="h-20 flex justify-center items-center border-b border-gray-50 dark:border-slate-800/50">
           <NuxtLink to="/" class="flex justify-center items-center w-full px-6" aria-label="Xeli AI Home">
             <!-- Added object-contain and explicit dimensions to prevent squishing -->
@@ -301,9 +300,10 @@
     </div>
 
     <!-- Floating Hamburger FAB -->
-    <button @click="toggleSidebar"
-      class="lg:hidden fixed left-4 bottom-[20%] z-50 bg-[#9E4CFF] text-white rounded-full p-4 shadow-lg hover:bg-[#6C47B5] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#9E4CFF] transition-transform active:scale-95">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+    <button
+      class="lg:hidden fixed right-4 bottom-[5%] z-50 bg-[rgba(158,76,255,0.8)] text-white rounded-full p-4 shadow-lg hover:bg-[#6C47B5] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#9E4CFF] transition-transform active:scale-95"
+      @click="toggleSidebar">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
         stroke-width="2">
         <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
       </svg>
