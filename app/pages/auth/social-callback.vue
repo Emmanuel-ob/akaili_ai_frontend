@@ -11,7 +11,7 @@
 <script setup>
 definePageMeta({
   layout: 'empty',
-  middleware: [] // No middleware, we'll handle auth manually
+  middleware: []
 })
 
 const route = useRoute()
@@ -27,7 +27,6 @@ onMounted(async () => {
     if (!token || !userParam) {
       statusMessage.value = 'Invalid authentication data'
 
-      // Send error to opener
       if (window.opener) {
         window.opener.postMessage({
           type: 'social-auth-error',
@@ -35,7 +34,6 @@ onMounted(async () => {
         }, window.location.origin)
         window.close()
       } else {
-        // If not in popup, redirect to login
         setTimeout(() => {
           navigateTo('/login?error=' + encodeURIComponent('Invalid authentication data'))
         }, 2000)
@@ -52,7 +50,6 @@ onMounted(async () => {
       throw new Error('Invalid user data format')
     }
 
-    // Validate user data has required fields
     if (!user || !user.id || !user.email) {
       throw new Error('Incomplete user data')
     }
@@ -62,7 +59,6 @@ onMounted(async () => {
     // Set auth in store
     authStore.setAuth(token, user)
 
-    // Verify auth was set correctly
     if (!authStore.isLoggedIn || !authStore.user) {
       throw new Error('Failed to set authentication')
     }
@@ -78,20 +74,36 @@ onMounted(async () => {
         verified: verified
       }, window.location.origin)
 
-      // Close popup after a short delay
       setTimeout(() => {
         window.close()
       }, 500)
     } else {
-      // If not in popup, redirect based on user state
+      // UPDATED: If not in popup, check localStorage for plan
       await nextTick()
 
-      if (!user.onboarding_completed) {
-        navigateTo('/dashboard/onboarding')
-      } else if (!user.current_business_id) {
-        navigateTo('/select-business')
+      const pendingPlan = localStorage.getItem('pendingPlan')
+
+      if (pendingPlan) {
+        if (!user.onboarding_completed) {
+          // Keep in localStorage for after onboarding
+          navigateTo('/dashboard/onboarding')
+        } else if (!user.current_business_id) {
+          // Keep in localStorage for after business selection
+          navigateTo('/select-business')
+        } else {
+          // Clear and go to checkout
+          localStorage.removeItem('pendingPlan')
+          navigateTo({ path: '/checkout', query: { plan: pendingPlan } })
+        }
       } else {
-        navigateTo('/dashboard')
+        // Normal flow without pending plan
+        if (!user.onboarding_completed) {
+          navigateTo('/dashboard/onboarding')
+        } else if (!user.current_business_id) {
+          navigateTo('/select-business')
+        } else {
+          navigateTo('/dashboard')
+        }
       }
     }
   } catch (error) {

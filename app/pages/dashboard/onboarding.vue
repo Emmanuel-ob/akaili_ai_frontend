@@ -235,7 +235,16 @@ const goBack = () => {
 }
 
 const finishOnboarding = () => {
-  router.push('/dashboard')
+  // UPDATED: Check localStorage for pending plan
+  const pendingPlan = localStorage.getItem('pendingPlan')
+
+  if (pendingPlan) {
+    // Clear it and go to checkout
+    localStorage.removeItem('pendingPlan')
+    router.push({ path: '/checkout', query: { plan: pendingPlan } })
+  } else {
+    router.push('/dashboard')
+  }
 }
 
 // Single initialization lifecycle hook (async)
