@@ -1,16 +1,22 @@
-@import "tailwindcss"; 
-
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap");
+@import "tailwindcss";
 
 @theme {
-  --font-sans: 'Geist', 'ui-sans-serif', 'system-ui', sans-serif, -apple-system,"Segoe UI", Roboto;
+  --font-sans:
+    "Geist", "ui-sans-serif", "system-ui", sans-serif, -apple-system,
+    "Segoe UI", Roboto;
+  --font-heading:
+    "Poppins", "ui-sans-serif", "system-ui", sans-serif, -apple-system,
+    "Segoe UI", Roboto;
+  --font-subheading:
+    "Inter", "ui-sans-serif", "system-ui", sans-serif, -apple-system,
+    "Segoe UI", Roboto;
 }
-
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-
-
-html, body {
+html,
+body {
   font-family: var(--site-font);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -33,18 +39,17 @@ html, body {
 }
 
 .nav_primary_btn {
-  @apply bg-[#9E4CFF] hover:bg-purple-700;
+  @apply bg-[#9E4CFF] hover:bg-purple-600;
 }
 .font_color {
   @apply text-[#111827];
 }
-.main_header{
+.main_header {
   @apply md:text-4xl text-4xl font-bold text-[#111827];
 }
-.main_subheader{
+.main_subheader {
   @apply mt-5 text-xl text-gray-500;
 }
-.active_chatbot_setup{
+.active_chatbot_setup {
   @apply bg-purple-100 text-[#9E4CFF] rounded-xl hover:bg-[#9E4CFF] hover:text-purple-100;
 }
-

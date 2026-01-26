@@ -23,3 +23,7 @@ logs
 .env.*
 project-tree.txt
 !.env.example
+
+# Playwright
+playwright-report/
+test-results/

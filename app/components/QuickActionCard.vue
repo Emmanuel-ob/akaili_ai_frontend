@@ -2,7 +2,7 @@
  <template>
   <NuxtLink
     :to="to"
-    class="relative group flex items-center p-4 rounded-xl transition-all duration-200
+    class="relative group flex items-center p-4 rounded-lg transition-all duration-200
            bg-gray-50 dark:bg-slate-800/40 
            border border-gray-100 dark:border-slate-700/50 
            hover:bg-white dark:hover:bg-slate-800 
@@ -11,7 +11,7 @@
     <!-- Icon Container -->
     <div 
       class="w-12 h-12 rounded-lg flex items-center justify-center mr-4 transition-colors duration-200 border border-transparent"
-      :class="[iconBgClass, 'group-hover:border-current group-hover:bg-opacity-20']"
+      :class="[iconBgClass, 'group-hover:border-black/30 group-hover:bg-opacity-20']"
     >
       <svg class="w-6 h-6" :class="iconTextClass" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" :d="iconPath"/>
@@ -20,10 +20,10 @@
 
     <!-- Text Content -->
     <div>
-      <h4 class="text-base font-semibold text-gray-900 dark:text-white transition-colors" :class="titleHoverClass">
+      <h4 class="text-base font-semibold text-gray-900 dark:text-white transition-colors font-subheading" :class="titleHoverClass">
         {{ title }}
       </h4>
-      <p class="text-xs text-gray-500 dark:text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300 transition-colors">
+      <p class="text-xs text-gray-500 dark:text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300 transition-colors font-sans">
         {{ description }}
       </p>
     </div>
