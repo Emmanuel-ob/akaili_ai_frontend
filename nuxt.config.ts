@@ -28,37 +28,37 @@ export default defineNuxtConfig({
           NodeGlobalsPolyfillPlugin({
             buffer: true,
             process: true,
-            crypto: true,
+            // crypto: true,
           }),
         ],
       },
     },
 
     plugins: [
-      {
-        name: "polyfill-crypto-hash",
-        enforce: "pre",
-        async config() {
-          if (
-            typeof globalThis.crypto === "undefined" ||
-            !globalThis.crypto.hash
-          ) {
-            const { webcrypto } = await import("node:crypto");
-            if (!globalThis.crypto) {
-              globalThis.crypto = webcrypto;
-            }
-            if (!globalThis.crypto.hash) {
-              globalThis.crypto.hash = async (
-                algorithm: string,
-                data: BufferSource,
-              ) => {
-                const digest = await webcrypto.subtle.digest(algorithm, data);
-                return new Uint8Array(digest);
-              };
-            }
-          }
-        },
-      },
+      // {
+      //   name: "polyfill-crypto-hash",
+      //   enforce: "pre",
+      //   async config() {
+      //     if (
+      //       typeof globalThis.crypto === "undefined" ||
+      //       !globalThis.crypto.hash
+      //     ) {
+      //       const { webcrypto } = await import("node:crypto");
+      //       if (!globalThis.crypto) {
+      //         globalThis.crypto = webcrypto;
+      //       }
+      //       if (!globalThis.crypto.hash) {
+      //         globalThis.crypto.hash = async (
+      //           algorithm: string,
+      //           data: BufferSource,
+      //         ) => {
+      //           const digest = await webcrypto.subtle.digest(algorithm, data);
+      //           return new Uint8Array(digest);
+      //         };
+      //       }
+      //     }
+      //   },
+      // },
       tailwindcss(),
     ],
     define: {
