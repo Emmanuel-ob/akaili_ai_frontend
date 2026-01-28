@@ -45,7 +45,7 @@
 
             <!-- Content Area -->
             <div v-else>
-                <!-- Stats Cards (Staggered Animation 1) -->
+                <!-- Stats Cards -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8 transition-all duration-700 delay-100"
                      :class="isPageLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'">
                     <StatCard title="Total Sources" :value="faqStore.faqSources.length" icon="folder" color="blue" />
@@ -54,7 +54,7 @@
                     <StatCard title="Embedded Items" :value="embeddedItems" icon="database" color="yellow" />
                 </div>
 
-                <!-- Action Tabs (Staggered Animation 2) -->
+                <!-- Action Tabs -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8 transition-all duration-700 delay-200"
                      :class="isPageLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'">
                     <div @click="handleTabClick('upload')" :class="[
@@ -96,7 +96,7 @@
                     </div>
                 </div>
 
-                <!-- Forms Container (Staggered Animation 3) -->
+                <!-- Forms Container -->
                 <div class="transition-all duration-700 delay-300"
                      :class="isPageLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'">
                     <transition name="fade" mode="out-in">
@@ -121,7 +121,7 @@
                     </transition>
                 </div>
 
-                <!-- FAQ Sources List (Staggered Animation 4) -->
+                <!-- FAQ Sources List -->
                 <div class="bg-white dark:bg-slate-900 rounded-xl border border-gray-200 dark:border-slate-800 p-4 sm:p-6 transition-all duration-700 delay-500"
                      :class="isPageLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'">
                     <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-3">
@@ -132,7 +132,7 @@
                              </span>
                         </div>
                         
-                        <!-- REFRESH BUTTON (Auto-clicks logic attached to isRefreshing) -->
+                        <!-- REFRESH BUTTON -->
                         <button @click="triggerReloadAnimation" :disabled="isRefreshing || faqStore.loading"
                             class="p-2 text-gray-600 dark:text-gray-400 hover:text-purple-600 dark:hover:text-purple-400 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-lg disabled:opacity-50 transition-all"
                             title="Refresh List">
@@ -203,8 +203,6 @@
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
-
-// Import default export to handle CommonJS module
 import { useToast } from "vue-toastification/dist/index.mjs" 
 import FAQUpload from '~/components/faq/FAQUpload.vue'
 import FAQManualEntry from '~/components/faq/FAQManualEntry.vue'
@@ -233,7 +231,8 @@ const showPreviewModal = ref(false)
 const selectedFAQ = ref(null)
 const editingFAQ = ref(null)
 const isRefreshing = ref(false)
-const isPageLoaded = ref(false) // Controls entry animations
+const isPageLoaded = ref(false)
+let refreshTimer = null
 
 // Delete Modal State
 const showDeleteModal = ref(false)
@@ -246,19 +245,18 @@ const activeSources = computed(() => faqStore.faqSources.filter(faq => faq.is_ac
 const totalItems = computed(() => faqStore.faqSources.reduce((sum, faq) => sum + (faq.total_items || 0), 0))
 const embeddedItems = computed(() => faqStore.faqSources.reduce((sum, faq) => sum + (faq.embedded_items || 0), 0))
 
-// --- GLOBAL RELOAD LOGIC ---
+// --- RELOAD LOGIC ---
 const triggerReloadAnimation = async () => {
-    // This makes the SVG spin
+    if (!selectedChatbotId.value) return
     isRefreshing.value = true
     try {
         await faqStore.fetchFAQSources(selectedChatbotId.value)
     } catch (error) {
         console.error('Reload failed:', error)
     } finally {
-        // Keep spinner for at least 600ms for visual feedback
         setTimeout(() => {
             isRefreshing.value = false
-        }, 600)
+        }, 800)
     }
 }
 
@@ -269,22 +267,43 @@ const onChatbotChange = async () => {
     }
 }
 
-// WebSocket Listeners
-const setupEventListeners = () => {
-    wsStore.on('faq.processing.completed', handleProcessingCompleted, COMPONENT_ID)
-    wsStore.on('faq.processing.failed', handleProcessingFailed, COMPONENT_ID)
-    wsStore.on('faq.embedding.completed', handleEmbeddingCompleted, COMPONENT_ID)
-    wsStore.on('faq.embedding.failed', handleEmbeddingFailed, COMPONENT_ID)
-    wsStore.on('faq.deletion.completed', handleDeletionCompleted, COMPONENT_ID)
-    wsStore.on('faq.deletion.failed', handleDeletionFailed, COMPONENT_ID) // ✅ NEW
-    wsStore.on('job.progress.updated', handleProgressUpdated, COMPONENT_ID)
-}
+// --- RECURSIVE POLLING LOGIC (Every 15s) ---
+const startAutoRefreshLoop = () => {
+    if (refreshTimer) clearTimeout(refreshTimer);
 
+    refreshTimer = setTimeout(async () => {
+        console.log("Auto-Refresh Loop triggered...");
+        await triggerReloadAnimation();
+
+        // Check if any source is still 'pending' or 'processing'
+        const hasProcessingItems = faqStore.faqSources.some(
+            f => f.status === 'processing' || f.status === 'pending'
+        );
+
+        if (hasProcessingItems) {
+            console.log("Items still processing, scheduling next refresh in 15s");
+            startAutoRefreshLoop();
+        } else {
+            console.log("All items ready. Polling stopped.");
+        }
+    }, 15000);
+};
+
+// --- WEBSOCKET HANDLERS ---
 const handleProcessingCompleted = async (event) => {
     triggerReloadAnimation()
     toast.success({
         component: ActionToast,
-        props: { type: 'success', title: 'Processing Complete', message: event.message, actionLabel: 'Review', onAction: () => { const faq = faqStore.faqSources.find(f => f.id === event.faq_source.id); if (faq) handlePreview(faq) } }
+        props: { 
+            type: 'success', 
+            title: 'Processing Complete', 
+            message: event.message, 
+            actionLabel: 'Review', 
+            onAction: () => { 
+                const faq = faqStore.faqSources.find(f => f.id === event.faq_source.id); 
+                if (faq) handlePreview(faq) 
+            } 
+        }
     }, { timeout: 8000 })
 }
 
@@ -292,51 +311,79 @@ const handleProcessingFailed = async (event) => {
     triggerReloadAnimation()
     toast.error({
         component: ActionToast,
-        props: { type: 'error', title: 'Processing Failed', message: event.message, actionLabel: 'Retry', onAction: async () => { const faq = faqStore.faqSources.find(f => f.id === event.faq_source.id); if (faq) await faqStore.reprocess(faq.id) } }
+        props: { 
+            type: 'error', 
+            title: 'Processing Failed', 
+            message: event.message, 
+            actionLabel: 'Retry', 
+            onAction: async () => { 
+                if (event.faq_source) await faqStore.reprocess(event.faq_source.id) 
+            } 
+        }
     }, { timeout: 10000 })
 }
 
 const handleEmbeddingCompleted = async (event) => {
     triggerReloadAnimation()
-    toast.success(event.message, { timeout: 5000 })
+    toast.success(event.message || 'Embedding successful!', { timeout: 5000 })
 }
 
 const handleEmbeddingFailed = async (event) => {
     triggerReloadAnimation()
     toast.error({
         component: ActionToast,
-        props: { type: 'error', title: 'Embedding Failed', message: event.message, actionLabel: 'Retry', onAction: async () => { const faq = faqStore.faqSources.find(f => f.id === event.faq_source.id); if (faq) await faqStore.confirmAndEmbed(faq.id) } }
+        props: { 
+            type: 'error', 
+            title: 'Embedding Failed', 
+            message: event.message || 'Error occurred during embedding', 
+            actionLabel: 'Retry', 
+            onAction: async () => { 
+                if (event.faq_source) await faqStore.confirmAndEmbed(event.faq_source.id) 
+            } 
+        }
     }, { timeout: 10000 })
 }
 
 const handleDeletionCompleted = async (event) => {
     triggerReloadAnimation()
-    toast.success(event.message, { timeout: 3000 })
+    toast.success(event.message || 'Source deleted', { timeout: 3000 })
+}
+
+const handleDeletionFailed = async (event) => {
+    triggerReloadAnimation()
+    toast.error(event.message || 'Failed to delete source', { timeout: 5000 })
 }
 
 const handleProgressUpdated = (event) => {
     const faq = faqStore.faqSources.find(f => f.id === event.faq_source_id)
     if (faq) {
         faq.progress = event.progress
+        if (event.progress >= 100) {
+            setTimeout(triggerReloadAnimation, 1500)
+        }
     }
 }
 
-// Button Actions
+const setupEventListeners = () => {
+    wsStore.on('faq.processing.completed', handleProcessingCompleted, COMPONENT_ID)
+    wsStore.on('faq.processing.failed', handleProcessingFailed, COMPONENT_ID)
+    wsStore.on('faq.embedding.completed', handleEmbeddingCompleted, COMPONENT_ID)
+    wsStore.on('faq.embedding.failed', handleEmbeddingFailed, COMPONENT_ID)
+    wsStore.on('faq.deletion.completed', handleDeletionCompleted, COMPONENT_ID)
+    wsStore.on('faq.deletion.failed', handleDeletionFailed, COMPONENT_ID)
+    wsStore.on('job.progress.updated', handleProgressUpdated, COMPONENT_ID)
+}
+
+// --- UI ACTIONS ---
 const handleTabClick = (tab) => {
     activeTab.value = tab
     if (tab !== 'manual') editingFAQ.value = null
 }
 
 const handleUploaded = () => {
-    // 1. Immediate Visual Feedback
-    toast.success("File Queued. It may take 30s - 1min to process.")
+    toast.success("File Queued! AI processing started.")
     triggerReloadAnimation()
-
-    // 2. Set Timer to reload automatically at 30 seconds
-    setTimeout(() => {
-        console.log("30s timeout reached, refreshing list...")
-        triggerReloadAnimation()
-    }, 30000)
+    startAutoRefreshLoop() // Trigger the 15s recursive logic
 }
 
 const handleSaved = () => {
@@ -363,9 +410,6 @@ const handleCancelEdit = () => {
 }
 
 const handleEmbed = async (faqSource) => {
-    // ✅ FIXED: Track processing and show better message
-    processingJobs.value.add(faqSource.id)
-
     const result = await faqStore.confirmAndEmbed(faqSource.id)
     if (result && result.success) {
         toast.info('Embedding job started...', { timeout: 3000 })
@@ -375,43 +419,30 @@ const handleEmbed = async (faqSource) => {
 
 const handleReprocess = async (faqSource) => {
     if (confirm(`This will recreate the embeddings for "${faqSource.source_name}". Continue?`)) {
-        // ✅ FIXED: Track processing
-        processingJobs.value.add(faqSource.id)
-
         const result = await faqStore.reprocess(faqSource.id)
         if (result && result.success) {
-            toast.info('Reprocessing job started...', { timeout: 3000 })
+            toast.info('Reprocessing started...', { timeout: 3000 })
             triggerReloadAnimation()
         }
     }
 }
 
-const handleToggleActive = async (faqSource) => {
-    // Immediate Reload animation + Toast
+const handleToggleActive = async (faqSourceId) => {
     try {
-        await faqStore.toggleActive(faqSource.id)
-        // Check new status (store should have updated it, or we toggle visually)
-        const statusText = !faqSource.is_active ? 'Activated' : 'Deactivated'
-        toast.success(`Source ${statusText} successfully`)
+        await faqStore.toggleActive(faqSourceId)
+        toast.success('Status updated')
         triggerReloadAnimation()
     } catch (error) {
         toast.error('Failed to toggle status')
     }
 }
 
-// ----- DELETE LOGIC (Optimistic + Enter Key) -----
 const handleDelete = (faqSource) => {
     faqToDelete.value = faqSource
     showDeleteModal.value = true
-    
-    // Focus the modal container so keydown works
     nextTick(() => {
-        if (deleteModalContainer.value) {
-            deleteModalContainer.value.focus()
-        }
+        if (deleteModalContainer.value) deleteModalContainer.value.focus()
     })
-    
-    // Add global listener as backup
     window.addEventListener('keydown', handleEnterKey)
 }
 
@@ -420,9 +451,7 @@ const handleEnterKey = (e) => {
         e.preventDefault()
         confirmDelete()
     }
-    if (e.key === 'Escape') {
-        closeDeleteModal()
-    }
+    if (e.key === 'Escape') closeDeleteModal()
 }
 
 const closeDeleteModal = () => {
@@ -434,26 +463,19 @@ const closeDeleteModal = () => {
 const confirmDelete = async () => {
     if (!faqToDelete.value) return
     const id = faqToDelete.value.id
-
-    // 1. Close Modal Immediately (Optimistic UI)
     closeDeleteModal()
 
-    // 2. Perform Delete
     const result = await faqStore.deleteFAQ(id)
-    
-    // 3. Trigger Reload WITH DELAY
     if (result && result.success) {
-        toast.info('Deletion job started...')
-        // Wait 6 seconds before refreshing, as requested
+        toast.info('Deletion started...')
         setTimeout(() => {
             triggerReloadAnimation()
         }, 10000)
     } else {
-        toast.error('Failed to delete source')
+        toast.error('Failed to delete')
         triggerReloadAnimation() 
     }
 }
-// ----------------------------------------------
 
 const closePreviewModal = () => {
     showPreviewModal.value = false
@@ -471,7 +493,6 @@ const handleEmbedded = () => {
 
 // Lifecycle
 onMounted(async () => {
-    // Wait slightly to trigger page entry animation
     setTimeout(() => {
         isPageLoaded.value = true
     }, 100)
@@ -486,6 +507,7 @@ onMounted(async () => {
 
 onUnmounted(() => {
     wsStore.offAll(COMPONENT_ID)
+    if (refreshTimer) clearTimeout(refreshTimer)
     window.removeEventListener('keydown', handleEnterKey)
 })
 </script>
@@ -499,5 +521,13 @@ onUnmounted(() => {
 .fade-enter-from,
 .fade-leave-to {
     opacity: 0;
+}
+
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
 }
 </style>

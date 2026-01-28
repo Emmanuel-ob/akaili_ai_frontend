@@ -72,23 +72,30 @@ export default defineNuxtConfig({
    plugins: [
     '~/plugins/03.aos.client.js'
   ],
+  // nuxt.config.ts
   runtimeConfig: {
     public: {
       apiBase: process.env.NODE_ENV === 'production'
         ? 'https://api.xeliai.com'
         : (process.env.API_BASE_URL || 'http://localhost:8000'),
+
+      // CHANGE THESE:
       reverbAppKey: process.env.NODE_ENV === 'production'
-        ? 'your-production-app-key'
-        : (process.env.NUXT_PUBLIC_REVERB_APP_KEY || 'your-app-key'),
+        ? 'icwpzvsxp2ehqfk8z3wo'  // ← MUST match backend .env REVERB_APP_KEY
+        : (process.env.NUXT_PUBLIC_REVERB_APP_KEY || 'icwpzvsxp2ehqfk8z3wo'),
+
       reverbHost: process.env.NODE_ENV === 'production'
         ? 'api.xeliai.com'
         : (process.env.NUXT_PUBLIC_REVERB_HOST || 'localhost'),
+
       reverbPort: process.env.NODE_ENV === 'production'
-        ? '443'
+        ? '443'  // ← CHANGE FROM 8080 to 443 (uses Apache proxy)
         : (process.env.NUXT_PUBLIC_REVERB_PORT || '8080'),
+
       reverbScheme: process.env.NODE_ENV === 'production'
-        ? 'https'
+        ? 'https'  // ← Keep this as https
         : (process.env.NUXT_PUBLIC_REVERB_SCHEME || 'http'),
+
       stripePublishableKey: process.env.STRIPE_KEY,
       paystackPublicKey: process.env.PAYSTACK_PUBLIC_KEY
     },
@@ -97,8 +104,8 @@ export default defineNuxtConfig({
   // UPDATED APP CONFIGURATION
   app: {
     // 1. Enable Page Transitions
-    pageTransition: { name: 'page', mode: 'out-in' },
-    layoutTransition: { name: 'layout', mode: 'out-in' },
+    pageTransition: { name: 'page' },
+    layoutTransition: { name: 'layout' },
     
     head: {
       title: 'Xeli ai - Intelligent Chatbot Platform',
