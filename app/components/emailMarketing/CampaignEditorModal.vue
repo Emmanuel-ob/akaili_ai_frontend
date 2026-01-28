@@ -1,285 +1,287 @@
 <template>
-    <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-        <div class="bg-white rounded-lg w-full max-w-6xl max-h-[90vh] overflow-hidden flex flex-col">
+    <!-- Modal Backdrop: p-0 on mobile for maximum edge-to-edge viewing -->
+    <div class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-0 sm:p-4 transition-colors duration-300">
+        
+        <!-- Main Modal: h-full on mobile, max-h-90 on desktop -->
+        <div class="bg-white dark:bg-slate-900 w-full max-w-6xl h-full sm:h-auto sm:max-h-[90vh] sm:rounded-2xl shadow-2xl overflow-hidden flex flex-col border-none sm:border dark:border-slate-800 transition-all duration-300">
+            
             <!-- Header -->
-            <div class="flex items-center justify-between p-6 border-b border-gray-200">
+            <div class="flex items-center justify-between p-5 sm:p-6 border-b border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-900 z-10">
                 <div class="flex items-center gap-4">
-                    <h2 class="text-2xl font-bold text-gray-900">
+                    <h2 class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
                         {{ isEditing ? 'Edit Campaign' : 'Create Campaign' }}
                     </h2>
-                    <span v-if="autoSaveStatus" class="text-sm text-gray-600 px-3 py-1 bg-blue-50 rounded-lg">
+                    <span v-if="autoSaveStatus" class="hidden sm:inline-block text-xs font-medium text-blue-600 dark:text-blue-400 px-3 py-1 bg-blue-50 dark:bg-blue-900/30 rounded-full">
                         {{ autoSaveStatus }}
                     </span>
                 </div>
-                <button @click="$emit('close')" class="text-gray-400 hover:text-gray-600">
+                <button @click="$emit('close')" class="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-full transition-colors">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M6 18L18 6M6 6l12 12" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 </button>
             </div>
 
             <!-- Body -->
-            <div class="flex-1 overflow-y-auto p-6">
-                <!-- Step Progress -->
-                <div class="mb-8">
-                    <div class="flex items-center justify-between mb-4">
+            <div class="flex-1 overflow-y-auto p-5 sm:p-8 custom-scrollbar bg-white dark:bg-slate-900">
+                
+                <!-- Step Progress: Responsive & Dark Mode -->
+                <div class="mb-10 overflow-x-auto pb-4 sm:pb-0 no-scrollbar">
+                    <div class="flex items-center min-w-[500px] sm:min-w-full">
                         <div v-for="(step, index) in steps" :key="step.id" class="flex-1 flex items-center"
                             :class="{ 'pl-4': index > 0 }">
                             <div class="flex items-center flex-1">
                                 <div :class="[
-                                    'w-10 h-10 rounded-full flex items-center justify-center font-semibold text-sm',
+                                    'w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center font-bold text-xs sm:text-sm transition-all duration-300 shrink-0 border-2',
                                     currentStep >= index + 1
-                                        ? 'bg-purple-600 text-white'
-                                        : 'bg-gray-200 text-gray-600'
+                                        ? 'bg-purple-600 border-purple-600 text-white shadow-lg shadow-purple-500/20'
+                                        : 'bg-transparent border-gray-200 dark:border-slate-700 text-gray-400 dark:text-slate-600'
                                 ]">
                                     {{ index + 1 }}
                                 </div>
                                 <div class="ml-3 flex-1">
                                     <p :class="[
-                                        'text-sm font-medium',
-                                        currentStep >= index + 1 ? 'text-purple-600' : 'text-gray-600'
+                                        'text-[10px] sm:text-xs font-bold uppercase tracking-widest',
+                                        currentStep >= index + 1 ? 'text-purple-600 dark:text-purple-400' : 'text-gray-400 dark:text-slate-600'
                                     ]">
                                         {{ step.label }}
                                     </p>
                                 </div>
                             </div>
-                            <div v-if="index < steps.length - 1" class="w-full h-0.5 bg-gray-200 mx-2">
-                                <div v-if="currentStep > index + 1" class="h-full bg-purple-600 transition-all"></div>
+                            <div v-if="index < steps.length - 1" class="w-full h-1 bg-gray-100 dark:bg-slate-800 mx-2 rounded-full overflow-hidden">
+                                <div :class="['h-full bg-purple-600 transition-all duration-500', currentStep > index + 1 ? 'w-full' : 'w-0']"></div>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Step 1: Basic Info -->
-                <div v-show="currentStep === 1" class="space-y-6">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Campaign Name *</label>
-                        <input v-model="formData.name" type="text" placeholder="e.g., Summer Sale 2024"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
-                            required />
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
-                        <textarea v-model="formData.description" rows="3"
-                            placeholder="Briefly describe this campaign..."
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"></textarea>
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Subject Line *</label>
-                        <input v-model="formData.subject" type="text" placeholder="e.g., 🔥 Big Summer Sale - 50% Off!"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
-                            required />
-                        <p class="text-sm text-gray-500 mt-1">
-                            Use variables: {{ first_name }}, {{ last_name }}, {{ company_name }}
-                        </p>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">From Name *</label>
-                            <input v-model="formData.from_name" type="text" placeholder="e.g., John from Xeli AI"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                <div v-show="currentStep === 1" class="space-y-8 max-w-4xl mx-auto">
+                    <div class="grid grid-cols-1 gap-6">
+                        <div class="space-y-2">
+                            <label class="block text-sm font-semibold text-gray-700 dark:text-slate-300">Campaign Name *</label>
+                            <input v-model="formData.name" type="text" placeholder="e.g., Summer Sale 2024"
+                                class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl text-gray-900 dark:text-white focus:ring-2 focus:ring-purple-500/20 focus:border-purple-600 outline-none transition-all placeholder:text-gray-400 dark:placeholder:text-slate-600"
                                 required />
                         </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">From Email *</label>
-                            <input v-model="formData.from_email" type="email" placeholder="e.g., john@xeliai.com"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
-                                required />
-                        </div>
-                    </div>
 
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Reply-To Email</label>
-                        <input v-model="formData.reply_to" type="email" placeholder="e.g., support@xeliai.com"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" />
+                        <div class="space-y-2">
+                            <label class="block text-sm font-semibold text-gray-700 dark:text-slate-300">Description</label>
+                            <textarea v-model="formData.description" rows="3"
+                                placeholder="Briefly describe this campaign..."
+                                class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl text-gray-900 dark:text-white focus:ring-2 focus:ring-purple-500/20 focus:border-purple-600 outline-none transition-all placeholder:text-gray-400 dark:placeholder:text-slate-600"></textarea>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="block text-sm font-semibold text-gray-700 dark:text-slate-300">Subject Line *</label>
+                            <input v-model="formData.subject" type="text" placeholder="e.g., 🔥 Big Summer Sale - 50% Off!"
+                                class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl text-gray-900 dark:text-white focus:ring-2 focus:ring-purple-500/20 focus:border-purple-600 outline-none transition-all"
+                                required />
+                            <p class="text-xs text-gray-500 dark:text-slate-500">
+                                Use variables: @{{ first_name }}, @{{ last_name }}, @{{ company_name }}
+                            </p>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                            <div class="space-y-2">
+                                <label class="block text-sm font-semibold text-gray-700 dark:text-slate-300">From Name *</label>
+                                <input v-model="formData.from_name" type="text" placeholder="John from Xeli AI"
+                                    class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl text-gray-900 dark:text-white focus:ring-2 focus:ring-purple-500/20 focus:border-purple-600 outline-none transition-all"
+                                    required />
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block text-sm font-semibold text-gray-700 dark:text-slate-300">From Email *</label>
+                                <input v-model="formData.from_email" type="email" placeholder="john@xeliai.com"
+                                    class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl text-gray-900 dark:text-white focus:ring-2 focus:ring-purple-500/20 focus:border-purple-600 outline-none transition-all"
+                                    required />
+                            </div>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="block text-sm font-semibold text-gray-700 dark:text-slate-300">Reply-To Email</label>
+                            <input v-model="formData.reply_to" type="email" placeholder="support@xeliai.com"
+                                class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl text-gray-900 dark:text-white focus:ring-2 focus:ring-purple-500/20 focus:border-purple-600 outline-none transition-all" />
+                        </div>
                     </div>
                 </div>
 
                 <!-- Step 2: Recipients -->
-                <div v-show="currentStep === 2" class="space-y-6">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Email List *</label>
+                <div v-show="currentStep === 2" class="space-y-8 max-w-4xl mx-auto">
+                    <div class="space-y-2">
+                        <label class="block text-sm font-semibold text-gray-700 dark:text-slate-300">Email List *</label>
                         <select v-model="formData.list_id" @change="onListSelected"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                            class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl text-gray-900 dark:text-white focus:ring-2 focus:ring-purple-500/20 focus:border-purple-600 outline-none transition-all appearance-none"
                             required>
-                            <option value="">Select a list...</option>
-                            <option v-for="list in emailStore.lists" :key="list.id" :value="list.id">
+                            <option value="" class="dark:bg-slate-900">Select a list...</option>
+                            <option v-for="list in emailStore.lists" :key="list.id" :value="list.id" class="dark:bg-slate-900">
                                 {{ list.name }} ({{ list.total_subscribers }} subscribers)
                             </option>
                         </select>
                     </div>
 
-                    <div v-if="formData.list_id && availableTags.length > 0">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                    <div v-if="formData.list_id && availableTags.length > 0" class="space-y-4">
+                        <label class="block text-sm font-semibold text-gray-700 dark:text-slate-300">
                             Filter by Tags (optional)
                         </label>
-                        <div class="border border-gray-300 rounded-lg p-4 space-y-2 max-h-48 overflow-y-auto">
+                        <div class="border border-gray-200 dark:border-slate-700 rounded-2xl p-4 bg-gray-50 dark:bg-slate-800/50 space-y-2 max-h-64 overflow-y-auto custom-scrollbar">
                             <label v-for="tag in availableTags" :key="tag"
-                                class="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded">
+                                class="flex items-center gap-3 cursor-pointer hover:bg-white dark:hover:bg-slate-700 p-3 rounded-xl transition-colors group">
                                 <input type="checkbox" :value="tag" v-model="formData.tag_groups"
-                                    class="rounded text-purple-600 focus:ring-purple-500" />
-                                <span class="text-sm text-gray-700">{{ tag }}</span>
+                                    class="w-5 h-5 rounded border-gray-300 dark:border-slate-600 text-purple-600 focus:ring-purple-500 dark:bg-slate-800" />
+                                <span class="text-sm font-medium text-gray-700 dark:text-slate-300 group-hover:text-purple-600 dark:group-hover:text-purple-400">{{ tag }}</span>
                             </label>
                         </div>
-                        <p class="text-sm text-gray-500 mt-2">
-                            Selected: {{ selectedContactsCount }} contacts
-                        </p>
+                        <div class="flex items-center gap-2 p-4 bg-purple-50 dark:bg-purple-900/20 rounded-xl border border-purple-100 dark:border-purple-800/30">
+                            <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a4 4 0 00-4-4h-1M9 20H4v-2a4 4 0 014-4h1m4-9a4 4 0 11-8 0 4 4 0 018 0zm8 4a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                            <p class="text-sm font-bold text-purple-700 dark:text-purple-300">
+                                Target Reach: {{ selectedContactsCount }} contacts
+                            </p>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Step 3: Design -->
-                <div v-show="currentStep === 3" class="space-y-6">
-                    <div class="flex items-center justify-between mb-4">
+                <div v-show="currentStep === 3" class="space-y-6 flex flex-col h-full">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-2">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Choose Template</label>
-                            <p class="text-sm text-gray-500">Start with a template or build from scratch</p>
+                            <label class="block text-lg font-bold text-gray-900 dark:text-white">Design Content</label>
+                            <p class="text-sm text-gray-500 dark:text-slate-400">Choose a template or use the editor below</p>
                         </div>
                         <button @click="showTemplateSelector = true"
-                            class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700">
+                            class="w-full sm:w-auto px-6 py-3 bg-purple-600 text-white font-bold rounded-xl hover:bg-purple-700 shadow-lg shadow-purple-500/20 transition-all active:scale-95">
                             Browse Templates
                         </button>
                     </div>
 
-                    <div v-if="selectedTemplate" class="p-4 bg-purple-50 rounded-lg border border-purple-200">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <p class="font-medium text-gray-900">{{ selectedTemplate.name }}</p>
-                                <p class="text-sm text-gray-600">{{ selectedTemplate.category }}</p>
-                            </div>
-                            <button @click="clearTemplate" class="text-sm text-purple-600 hover:text-purple-700">
-                                Change Template
-                            </button>
+                    <div v-if="selectedTemplate" class="p-4 bg-purple-50 dark:bg-purple-900/20 rounded-xl border border-purple-200 dark:border-purple-800/50 flex items-center justify-between">
+                        <div>
+                            <p class="font-bold text-gray-900 dark:text-white">{{ selectedTemplate.name }}</p>
+                            <p class="text-xs text-gray-600 dark:text-slate-400 uppercase tracking-tighter">{{ selectedTemplate.category }}</p>
                         </div>
+                        <button @click="clearTemplate" class="text-sm font-bold text-purple-600 dark:text-purple-400 hover:underline">
+                            Change
+                        </button>
                     </div>
 
-                    <!-- Unlayer Editor -->
-                    <div class="border border-gray-300 rounded-lg overflow-hidden">
+                    <!-- Unlayer Editor: Removed borders on mobile -->
+                    <div class="border border-gray-200 dark:border-slate-800 sm:rounded-2xl overflow-hidden -mx-5 sm:mx-0">
                         <div id="unlayer-editor" style="height: 600px;"></div>
                     </div>
 
-                    <div class="flex items-center gap-4">
+                    <div class="flex flex-wrap items-center gap-4 pt-4">
                         <button @click="previewEmail"
-                            class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200">
+                            class="flex-1 sm:flex-none px-6 py-3 bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-slate-300 font-bold rounded-xl hover:bg-gray-200 dark:hover:bg-slate-700 transition-colors">
                             Preview
                         </button>
                         <button @click="sendTestEmail"
-                            class="px-4 py-2 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200">
+                            class="flex-1 sm:flex-none px-6 py-3 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 font-bold rounded-xl hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors">
                             Send Test Email
                         </button>
                     </div>
                 </div>
 
                 <!-- Step 4: Schedule -->
-                <div v-show="currentStep === 4" class="space-y-6">
+                <div v-show="currentStep === 4" class="space-y-8 max-w-4xl mx-auto">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-4">When to send?</label>
-                        <div class="space-y-3">
+                        <label class="block text-lg font-bold text-gray-900 dark:text-white mb-6 text-center sm:text-left">Delivery Preference</label>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <label
-                                class="flex items-center gap-3 p-4 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
-                                <input type="radio" v-model="sendOption" value="now"
-                                    class="text-purple-600 focus:ring-purple-500" />
+                                :class="['flex items-start gap-4 p-6 border-2 rounded-2xl cursor-pointer transition-all', sendOption === 'now' ? 'border-purple-600 bg-purple-50 dark:bg-purple-900/20' : 'border-gray-100 dark:border-slate-800 hover:border-gray-200 dark:hover:border-slate-700']">
+                                <input type="radio" v-model="sendOption" value="now" class="mt-1 w-5 h-5 text-purple-600" />
                                 <div>
-                                    <p class="font-medium text-gray-900">Send Now</p>
-                                    <p class="text-sm text-gray-600">Campaign will be sent immediately</p>
+                                    <p class="font-bold text-gray-900 dark:text-white">🚀 Send Immediately</p>
+                                    <p class="text-sm text-gray-500 dark:text-slate-400">Campaign will be processed instantly.</p>
                                 </div>
                             </label>
 
                             <label
-                                class="flex items-center gap-3 p-4 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
-                                <input type="radio" v-model="sendOption" value="schedule"
-                                    class="text-purple-600 focus:ring-purple-500" />
+                                :class="['flex items-start gap-4 p-6 border-2 rounded-2xl cursor-pointer transition-all', sendOption === 'schedule' ? 'border-purple-600 bg-purple-50 dark:bg-purple-900/20' : 'border-gray-100 dark:border-slate-800 hover:border-gray-200 dark:hover:border-slate-700']">
+                                <input type="radio" v-model="sendOption" value="schedule" class="mt-1 w-5 h-5 text-purple-600" />
                                 <div>
-                                    <p class="font-medium text-gray-900">Schedule for Later</p>
-                                    <p class="text-sm text-gray-600">Choose a specific date and time</p>
+                                    <p class="font-bold text-gray-900 dark:text-white">📅 Schedule Event</p>
+                                    <p class="text-sm text-gray-500 dark:text-slate-400">Choose the perfect time for your list.</p>
                                 </div>
                             </label>
                         </div>
                     </div>
 
-                    <div v-if="sendOption === 'schedule'" class="mt-4">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Schedule Date & Time</label>
+                    <div v-if="sendOption === 'schedule'" class="p-6 bg-gray-50 dark:bg-slate-800/50 rounded-2xl border border-gray-100 dark:border-slate-800">
+                        <label class="block text-sm font-bold text-gray-700 dark:text-slate-300 mb-2">Schedule Date & Time</label>
                         <input v-model="formData.send_date" type="datetime-local" :min="minDateTime"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" />
+                            class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl text-gray-900 dark:text-white focus:ring-2 focus:ring-purple-500" />
                     </div>
 
                     <!-- Campaign Summary -->
-                    <div class="mt-8 p-6 bg-gray-50 rounded-lg">
-                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Campaign Summary</h3>
-                        <div class="space-y-2 text-sm">
-                            <div class="flex justify-between">
-                                <span class="text-gray-600">Campaign Name:</span>
-                                <span class="font-medium text-gray-900">{{ formData.name || 'Not set' }}</span>
+                    <div class="p-6 sm:p-8 bg-slate-900 dark:bg-black rounded-3xl text-white shadow-xl">
+                        <h3 class="text-xl font-bold mb-6 border-b border-white/10 pb-4">Campaign Summary</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                            <div class="space-y-1">
+                                <span class="text-[10px] uppercase tracking-widest text-slate-400 font-bold">Name</span>
+                                <p class="font-medium truncate">{{ formData.name || 'Not set' }}</p>
                             </div>
-                            <div class="flex justify-between">
-                                <span class="text-gray-600">Recipients:</span>
-                                <span class="font-medium text-gray-900">{{ selectedContactsCount }} contacts</span>
+                            <div class="space-y-1">
+                                <span class="text-[10px] uppercase tracking-widest text-slate-400 font-bold">Audience</span>
+                                <p class="font-medium">{{ selectedContactsCount }} contacts</p>
                             </div>
-                            <div class="flex justify-between">
-                                <span class="text-gray-600">Subject:</span>
-                                <span class="font-medium text-gray-900">{{ formData.subject || 'Not set' }}</span>
+                            <div class="space-y-1">
+                                <span class="text-[10px] uppercase tracking-widest text-slate-400 font-bold">Subject</span>
+                                <p class="font-medium truncate">{{ formData.subject || 'Not set' }}</p>
                             </div>
-                            <div class="flex justify-between">
-                                <span class="text-gray-600">Send Time:</span>
-                                <span class="font-medium text-gray-900">
-                                    {{ sendOption === 'now' ? 'Immediately' : formatScheduledDate(formData.send_date) }}
-                                </span>
+                            <div class="space-y-1">
+                                <span class="text-[10px] uppercase tracking-widest text-slate-400 font-bold">Delivery Time</span>
+                                <p class="font-medium text-purple-400">
+                                    {{ sendOption === 'now' ? 'Instant Blast' : formatScheduledDate(formData.send_date) }}
+                                </p>
                             </div>
                         </div>
                     </div>
 
                     <!-- Validation Errors -->
-                    <div v-if="validationErrors.length > 0" class="p-4 bg-red-50 rounded-lg border border-red-200">
-                        <p class="text-sm font-medium text-red-800 mb-2">Please fix the following issues:</p>
-                        <ul class="list-disc list-inside text-sm text-red-700 space-y-1">
+                    <div v-if="validationErrors.length > 0" class="p-5 bg-red-50 dark:bg-red-900/20 rounded-2xl border border-red-100 dark:border-red-900/40">
+                        <p class="text-sm font-bold text-red-800 dark:text-red-400 mb-2 flex items-center gap-2">
+                             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+                             Requirements Check
+                        </p>
+                        <ul class="list-disc list-inside text-xs text-red-700 dark:text-red-400/80 space-y-1 ml-2">
                             <li v-for="error in validationErrors" :key="error">{{ error }}</li>
                         </ul>
                     </div>
                 </div>
             </div>
 
-            <!-- Footer -->
-            <div class="flex items-center justify-between p-6 border-t border-gray-200">
+            <!-- Footer: Sticky with Dark Mode -->
+            <div class="flex items-center justify-between p-5 sm:p-6 border-t border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-[0_-4px_20px_rgba(0,0,0,0.03)] dark:shadow-none">
                 <button v-if="currentStep > 1" @click="previousStep"
-                    class="px-6 py-2 text-gray-600 hover:text-gray-900">
+                    class="px-6 py-3 text-sm font-bold text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white transition-colors">
                     ← Back
                 </button>
                 <div v-else></div>
 
                 <div class="flex items-center gap-3">
                     <button @click="saveDraft"
-                        class="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">
+                        class="hidden sm:inline-block px-6 py-3 border border-gray-200 dark:border-slate-700 text-sm font-bold text-gray-700 dark:text-slate-300 rounded-xl hover:bg-gray-50 dark:hover:bg-slate-800 transition-all">
                         Save Draft
                     </button>
                     <button v-if="currentStep < 4" @click="nextStep"
-                        class="px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700">
-                        Continue →
+                        class="px-10 py-3 bg-purple-600 text-white font-bold rounded-xl hover:bg-purple-700 shadow-lg shadow-purple-500/20 transition-all active:scale-95">
+                        Continue
                     </button>
                     <button v-else @click="submitCampaign" :disabled="!canSubmit" :class="[
-                        'px-6 py-2 rounded-lg font-medium',
+                        'px-10 py-3 rounded-xl font-bold shadow-xl transition-all active:scale-95 flex items-center gap-2',
                         canSubmit
-                            ? 'bg-green-600 text-white hover:bg-green-700'
-                            : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                            ? 'bg-green-600 text-white hover:bg-green-700 shadow-green-500/20'
+                            : 'bg-gray-200 dark:bg-slate-800 text-gray-400 dark:text-slate-600 cursor-not-allowed shadow-none'
                     ]">
-                        {{ sendOption === 'now' ? '🚀 Send Campaign' : '📅 Schedule Campaign' }}
+                        {{ sendOption === 'now' ? '🚀 Launch Campaign' : '📅 Set Schedule' }}
                     </button>
                 </div>
             </div>
         </div>
 
-        <!-- Template Selector Modal -->
-        <TemplateSelectorModal v-if="showTemplateSelector" @select="selectTemplate"
-            @close="showTemplateSelector = false" />
-
-        <!-- Test Email Modal -->
+        <!-- Modals: Kept exactly as original -->
+        <TemplateSelectorModal v-if="showTemplateSelector" @select="selectTemplate" @close="showTemplateSelector = false" />
         <TestEmailModal v-if="showTestEmailModal" @send="handleSendTest" @close="showTestEmailModal = false" />
-
-        <!-- Preview Modal -->
-        <EmailPreviewModal v-if="showPreviewModal" :html-content="previewContent" :subject="formData.subject"
-            @close="showPreviewModal = false" />
+        <EmailPreviewModal v-if="showPreviewModal" :html-content="previewContent" :subject="formData.subject" @close="showPreviewModal = false" />
     </div>
 </template>
 
@@ -469,11 +471,8 @@ const onListSelected = async () => {
 }
 
 watch(() => formData.value.tag_groups, () => {
-    // Recalculate selected contacts count based on tags
-    // This is simplified - backend will do actual filtering
     const list = emailStore.lists.find(l => l.id === formData.value.list_id)
     if (list && formData.value.tag_groups.length > 0) {
-        // Estimate based on tags
         selectedContactsCount.value = Math.floor(list.total_subscribers * 0.7)
     } else if (list) {
         selectedContactsCount.value = list.total_subscribers
@@ -490,10 +489,8 @@ const selectTemplate = async (template) => {
             ? JSON.parse(template.unlayer_design)
             : template.unlayer_design
 
-        // Use toRaw to strip Vue reactivity
         const cleanDesign = toRaw(design)
 
-        // Wait for editor to be ready
         setTimeout(() => {
             unlayer.loadDesign(cleanDesign)
         }, 300)
@@ -565,12 +562,10 @@ const submitCampaign = async () => {
             formData.value.unlayer_design = JSON.stringify(data.design)
 
             if (sendOption.value === 'now') {
-                // Send immediately
                 const campaign = await emailStore.createCampaign(formData.value)
                 await emailStore.sendCampaign(campaign.id)
                 $toast.success('Campaign is being sent!')
             } else {
-                // Schedule
                 const campaign = await emailStore.createCampaign(formData.value)
                 await emailStore.scheduleCampaign(campaign.id, formData.value.send_date)
                 $toast.success('Campaign scheduled successfully!')
@@ -624,7 +619,6 @@ onMounted(async () => {
             sendOption.value = 'schedule'
         }
 
-        // Load Unlayer design for editing with toRaw
         if (props.campaign.unlayer_design) {
             const design = typeof props.campaign.unlayer_design === 'string'
                 ? JSON.parse(props.campaign.unlayer_design)
@@ -651,3 +645,26 @@ onUnmounted(() => {
     }
 })
 </script>
+
+<style scoped>
+.custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #e2e8f0;
+    border-radius: 10px;
+}
+.dark .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #1e293b;
+}
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+</style>

@@ -2,10 +2,10 @@
 <template>
   <div class="min-h-screen bg-gray-50 dark:bg-slate-950 flex flex-col transition-colors duration-300">
     <!-- Header -->
-    <header class="bg-white dark:bg-slate-900 border-b border-gray-200 dark:border-slate-800 py-4 px-6 transition-colors duration-300" role="banner">
+    <header class="bg-white dark:bg-slate-900 border-b border-gray-200 dark:border-slate-800 py-1 px-6 transition-colors duration-300" role="banner">
       <div class="max-w-4xl mx-auto flex justify-between items-center">
         <NuxtLink to="/" aria-label="Xeli AI Home">
-          <NuxtImg src="/Logo.png" alt="Xeli AI Logo" width="120" height="32" loading="eager" />
+          <NuxtImg width="100" height="60" src="/logo-small.png" format="webp" alt="Xeli AI Logo" loading="eager" />
         </NuxtLink>
         <button @click="handleLogout"
           class="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 dark:focus:ring-offset-slate-900 rounded px-3 py-1 transition-colors"
