@@ -1,98 +1,145 @@
 <template>
-  <div class="p-6">
-    <div class="mb-6">
-      <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
-        Database Connections
-      </h1>
-      <p class="text-gray-600 dark:text-gray-400 mt-1">
-        Connect your databases to power AI-driven insights
-      </p>
-    </div>
+  <div>
+    <header class="bg-white px-6 py-4">
+      <div class="flex justify-between items-center">
+        <div>
+          <h1 class="text-[#9E4CFF] text-2xl font-bold">Database Connections</h1>
+          <p class="text-sm lg:text-base text-[#6B7280]">
+            Manage your chatbot's data sources and connections
+          </p>
+        </div>
 
-    <!-- Usage Meter -->
-    <div v-if="subscription.hasFeature('database_integration')" class="mb-6">
-      <UsageMeter v-if="databaseUsage" label="Database Connections" :used="databaseUsage.used"
-        :limit="databaseUsage.limit" @upgrade="handleUpgrade" />
-    </div>
+        <div class="flex items-center space-x-4">
+          <!-- Usage Meter (if feature is available) -->
+          <UsageMeter v-if="subscription.hasFeature('database_integration') && databaseUsage" label="Databases"
+            :used="databaseUsage.used" :limit="databaseUsage.limit" :compact="true" />
+
+          <!-- Add Database Button -->
+          <button :disabled="subscription.isLimitExceeded('databases')" :class="[
+            'px-5 py-4 text-sm lg:text-base flex items-center gap-2 text-white rounded-lg transition-colors',
+            subscription.isLimitExceeded('databases')
+              ? 'bg-gray-400 cursor-not-allowed'
+              : 'nav_primary_btn hover:bg-purple-700'
+          ]" @click="handleAddDatabase">
+            <Plus class="w-5 h-5" />
+            <span v-if="!subscription.isLimitExceeded('databases')">Add Database</span>
+            <span v-else>Limit Reached</span>
+          </button>
+        </div>
+      </div>
+    </header>
 
     <!-- Feature Locked State -->
-    <div v-if="!subscription.hasFeature('database_integration')" class="text-center py-12">
-      <div class="max-w-md mx-auto">
+    <div v-if="!subscription.hasFeature('database_integration')" class="text-center py-12 px-6">
+      <div class="max-w-md mx-auto bg-white rounded-lg shadow-sm p-8">
         <svg class="w-20 h-20 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
             d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
         </svg>
-        <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+        <h3 class="text-xl font-semibold text-gray-900 mb-2">
           Database Integration Locked
         </h3>
-        <p class="text-gray-600 dark:text-gray-400 mb-6">
-          Upgrade to Professional or Enterprise to connect your databases
+        <p class="text-gray-600 mb-6">
+          Upgrade to Professional or Enterprise to connect your databases and unlock AI-powered data insights
         </p>
         <button @click="handleUpgrade"
-          class="px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
-          View Plans
+          class="px-6 py-3 bg-[#9E4CFF] text-white rounded-lg hover:bg-purple-700 transition-colors">
+          View Plans & Upgrade
         </button>
       </div>
     </div>
 
-    <!-- Active State - Show Databases -->
-    <div v-else>
-      <!-- Add Database Button -->
-      <div class="mb-6">
-        <button @click="handleAddDatabase" :disabled="subscription.isLimitExceeded('databases')" :class="[
-          'px-4 py-2 rounded-lg font-medium transition-colors',
-          subscription.isLimitExceeded('databases')
-            ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-            : 'bg-purple-600 text-white hover:bg-purple-700'
-        ]">
-          <span v-if="!subscription.isLimitExceeded('databases')">
-            + Add Database
-          </span>
-          <span v-else>
-            Limit Reached - Upgrade to Add More
-          </span>
-        </button>
-      </div>
-
-      <!-- Database List -->
-      <div class="grid gap-4">
-        <DatabaseConnectionCard v-for="db in databases" :key="db.id" :database="db" @edit="handleEdit"
-          @delete="handleDelete" />
+    <!-- Active State - Database List -->
+    <div v-else class="space-y-4 px-6">
+      <!-- Database Connections List -->
+      <div v-if="databaseStore.connections.length > 0" class="space-y-4">
+        <DatabaseConnectionCard v-for="connection in databaseStore.connections" :key="connection._id"
+          :connection="connection" :syncing="databaseStore.syncing === connection.id" @sync="syncConnection"
+          @edit="editConnection" @delete="deleteConnection" @select-tables="selectTables" />
       </div>
 
       <!-- Empty State -->
-      <EmptyState v-if="databases.length === 0" title="No databases connected"
-        description="Add your first database to get started" @action="handleAddDatabase" />
+      <EmptyState v-else-if="!databaseStore.loading" title="No databases connected"
+        description="Get started by connecting your first database to enable AI-powered insights." icon="database"
+        variant="card">
+        <template #action>
+          <button
+            class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-[#9E4CFF] hover:bg-purple-700"
+            @click="handleAddDatabase">
+            Add Your First Database
+          </button>
+        </template>
+      </EmptyState>
+
+      <!-- Loading State -->
+      <div v-else class="text-center py-12">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-[#9E4CFF] mx-auto"></div>
+        <p class="mt-4 text-gray-600">Loading databases...</p>
+      </div>
     </div>
 
-    <!-- Feature Locked Modal -->
+    <!-- Add/Edit Database Modal -->
+    <DatabaseModal :show="showDatabaseModal" :chatbots="chatbotStore.chatbots" :loading="databaseStore.adding"
+      :error="databaseStore.error" :editing="!!selectedDatabase" :initial-data="selectedDatabase" @close="closeModal"
+      @submit="addConnection" />
+
+    <!-- Table Selection Modal -->
+    <BaseModal :show="showTableModal" title="Select Tables" @close="showTableModal = false">
+      <div class="space-y-2 max-h-60 overflow-y-auto">
+        <label v-for="table in selectedConnection?.available_tables" :key="table"
+          class="flex items-center p-2 border border-gray-200 rounded-md hover:bg-gray-50 cursor-pointer">
+          <input v-model="selectedTables" type="checkbox" :value="table"
+            class="mr-3 text-[#9E4CFF] focus:ring-purple-500">
+          <span class="text-sm text-gray-900">{{ table }}</span>
+        </label>
+      </div>
+
+      <div class="flex justify-end space-x-3 pt-4">
+        <button class="px-4 py-2 text-sm text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50"
+          @click="showTableModal = false">
+          Cancel
+        </button>
+        <button :disabled="databaseStore.updating"
+          class="px-4 py-2 text-sm text-white bg-[#9E4CFF] hover:bg-purple-700 rounded-md disabled:opacity-50"
+          @click="updateTables">
+          {{ databaseStore.updating ? 'Updating...' : 'Update Tables' }}
+        </button>
+      </div>
+    </BaseModal>
+
+    <!-- Sync Progress Modal -->
+    <SyncProgressModal :show="showSyncProgress" :connection-id="syncingConnectionId" @close="closeSyncProgress"
+      @retry="retrySyncConnection" @cancel="cancelSyncConnection" />
+
+    <!-- Feature Locked Modal (shown when trying to add beyond feature access) -->
     <FeatureLockedPrompt :show="showFeatureLockedModal" title="Upgrade to Use Database Integration"
       description="Connect your databases to enable AI-powered data analysis and intelligent querying."
       feature-name="database_integration" :current-plan="subscription.currentPlan?.plan_id"
       :required-plan="subscription.getRequiredPlan('database_integration')" :features="[
-        'Connect up to 3 databases (Professional) or unlimited (Enterprise)',
+        'Connect multiple databases (Professional: 3, Enterprise: Unlimited)',
         'AI-powered natural language queries',
         'Real-time data synchronization',
-        'Advanced analytics and reporting'
+        'Advanced analytics and reporting',
+        'Secure encrypted connections'
       ]" @close="showFeatureLockedModal = false" @upgrade="navigateToPricing" />
-
-    <!-- Database Modal -->
-    <DatabaseModal v-if="showDatabaseModal" :database="selectedDatabase" @close="showDatabaseModal = false"
-      @save="handleSaveDatabase" />
   </div>
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { Plus } from 'lucide-vue-next'
 import { useSubscription } from '~/composables/useSubscription'
 import { usePermissions } from '~/composables/usePermissions'
 import { useDatabaseStore } from '~/stores/databaseStore'
-import UsageMeter from '~/components/subscriptions/UsageMeter.vue'
-import FeatureLockedPrompt from '~/components/subscriptions/FeatureLockedPrompt.vue'
+import { useChatbotStore } from '~/stores/chatbotStore'
+import BaseModal from '~/components/BaseModal.vue'
+import SyncProgressModal from '~/components/sync/SyncProgressModal.vue'
 import DatabaseModal from '~/components/DatabaseModal.vue'
 import DatabaseConnectionCard from '~/components/DatabaseConnectionCard.vue'
 import EmptyState from '~/components/EmptyState.vue'
+import UsageMeter from '~/components/subscriptions/UsageMeter.vue'
+import FeatureLockedPrompt from '~/components/subscriptions/FeatureLockedPrompt.vue'
 
 definePageMeta({
   middleware: ['auth'],
@@ -103,95 +150,178 @@ const router = useRouter()
 const subscription = useSubscription()
 const permissions = usePermissions()
 const databaseStore = useDatabaseStore()
+const chatbotStore = useChatbotStore()
 
-const showFeatureLockedModal = ref(false)
+// Modal states
 const showDatabaseModal = ref(false)
+const showTableModal = ref(false)
+const showSyncProgress = ref(false)
+const showFeatureLockedModal = ref(false)
+const selectedConnection = ref(null)
 const selectedDatabase = ref(null)
+const selectedTables = ref([])
+const syncingConnectionId = ref(null)
 
 // Computed
-const databases = computed(() => databaseStore.connections || [])
 const databaseUsage = computed(() => subscription.getUsage('databases'))
 
-// Methods
+// Add Database Handler
 const handleAddDatabase = async () => {
-  // Check feature access
-  const access = subscription.canPerformAction('database_integration', 'databases')
+  console.log('Add Database clicked')
 
-  if (!access.allowed) {
-    if (access.reason === 'feature_locked') {
-      showFeatureLockedModal.value = true
-    } else if (access.reason === 'limit_exceeded') {
-      // Show inline upgrade prompt
-      const shouldUpgrade = confirm(
-        `You've reached your database limit (${databaseUsage.value.limit}). Upgrade to add more?`
-      )
-      if (shouldUpgrade) {
-        handleUpgrade()
-      }
+  // Check if feature is available
+  if (!subscription.hasFeature('database_integration')) {
+    console.log('Feature locked - showing modal')
+    showFeatureLockedModal.value = true
+    return
+  }
+
+  // Check if limit is exceeded
+  if (subscription.isLimitExceeded('databases')) {
+    console.log('Limit exceeded - prompting upgrade')
+    const shouldUpgrade = confirm(
+      `You've reached your database limit (${databaseUsage.value.limit}). Upgrade to add more databases?`
+    )
+    if (shouldUpgrade) {
+      handleUpgrade()
     }
     return
   }
 
   // Check role permission
   if (!permissions.canManageDatabases.value) {
+    console.log('Permission denied')
     alert('You do not have permission to manage databases')
     return
   }
 
   // All checks passed - show modal
+  console.log('Opening database modal')
   selectedDatabase.value = null
   showDatabaseModal.value = true
 }
 
-const handleSaveDatabase = async (databaseData) => {
+// Add/Update Connection
+const addConnection = async (formData) => {
   try {
+    let result
+
     if (selectedDatabase.value) {
-      await databaseStore.updateConnection(selectedDatabase.value.id, databaseData)
+      // Editing existing connection
+      result = await databaseStore.updateConnection(selectedDatabase.value.id, formData)
     } else {
-      await databaseStore.createConnection(databaseData)
+      // Adding new connection
+      result = await databaseStore.addConnection(formData)
 
       // Refresh usage after creation
       await subscription.fetchUsage()
     }
 
-    showDatabaseModal.value = false
-    selectedDatabase.value = null
+    if (result.success) {
+      closeModal()
+    }
   } catch (error) {
-    // Handle error - backend will return 402 if limits exceeded
+    console.error('Error saving database:', error)
+
+    // Handle backend validation errors
     if (error.statusCode === 402) {
       if (error.data?.error_code === 'FEATURE_LOCKED') {
+        closeModal()
         showFeatureLockedModal.value = true
       } else if (error.data?.error_code === 'LIMIT_EXCEEDED') {
+        closeModal()
         handleUpgrade()
       }
     }
   }
 }
 
-const handleEdit = (database) => {
+// Table Selection
+const selectTables = (connection) => {
+  selectedConnection.value = connection
+  selectedTables.value = [...(connection.selected_tables || [])]
+  showTableModal.value = true
+}
+
+const updateTables = async () => {
+  if (!selectedConnection.value) return
+
+  const result = await databaseStore.updateSelectedTables(selectedConnection.value.id, selectedTables.value)
+  if (result.success) {
+    showTableModal.value = false
+  }
+}
+
+// Sync Operations
+const syncConnection = async (connectionId) => {
+  try {
+    // Set the syncing connection and show progress modal
+    syncingConnectionId.value = connectionId
+    showSyncProgress.value = true
+
+    // Start the sync
+    const result = await databaseStore.syncConnection(connectionId)
+
+    if (!result.success) {
+      // If sync failed to start, close the modal and show error
+      showSyncProgress.value = false
+      console.error('Failed to start sync:', result.message)
+    }
+  } catch (error) {
+    showSyncProgress.value = false
+    console.error('Sync error:', error)
+  }
+}
+
+const closeSyncProgress = () => {
+  showSyncProgress.value = false
+  syncingConnectionId.value = null
+  // Refresh connections to get latest status
+  databaseStore.fetchConnections()
+}
+
+const retrySyncConnection = async () => {
+  if (syncingConnectionId.value) {
+    // Close current modal and restart sync
+    showSyncProgress.value = false
+    await syncConnection(syncingConnectionId.value)
+  }
+}
+
+const cancelSyncConnection = () => {
+  // The cancel logic is handled in the modal component
+  // Just refresh connections after cancel
+  databaseStore.fetchConnections()
+}
+
+// Edit/Delete Operations
+const editConnection = (connection) => {
   if (!permissions.canManageDatabases.value) {
     alert('You do not have permission to edit databases')
     return
   }
 
-  selectedDatabase.value = database
+  selectedDatabase.value = connection
   showDatabaseModal.value = true
 }
 
-const handleDelete = async (database) => {
+const deleteConnection = async (connectionId) => {
   if (!permissions.canManageDatabases.value) {
     alert('You do not have permission to delete databases')
     return
   }
 
-  if (confirm('Are you sure you want to delete this database connection?')) {
-    await databaseStore.deleteConnection(database.id)
-
-    // Refresh usage after deletion
-    await subscription.fetchUsage()
+  if (!confirm('Are you sure you want to delete this database connection? This action cannot be undone.')) {
+    return
   }
+
+  await databaseStore.deleteConnection(connectionId)
+
+  // Refresh usage after deletion
+  await subscription.fetchUsage()
 }
 
+// Upgrade Handlers
 const handleUpgrade = () => {
   subscription.navigateToUpgrade('database_integration', 'limit_reached')
 }
@@ -207,10 +337,20 @@ const navigateToPricing = () => {
   showFeatureLockedModal.value = false
 }
 
+// Modal Management
+const closeModal = () => {
+  showDatabaseModal.value = false
+  selectedDatabase.value = null
+  databaseStore.clearError()
+}
+
 // Lifecycle
 onMounted(async () => {
-  // Fetch subscription data
+  // Fetch subscription data first
   await subscription.fetchSubscription()
+
+  // Fetch chatbots (needed for database modal)
+  await chatbotStore.fetchChatbots()
 
   // Only fetch databases if feature is unlocked
   if (subscription.hasFeature('database_integration')) {
