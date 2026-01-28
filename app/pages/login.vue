@@ -1,6 +1,5 @@
 <template>
-  <div
-    class="min-h-screen pt-25 md:pt-30 pb-12 bg-white dark:bg-slate-950 flex items-start justify-center p-6 transition-colors duration-300">
+  <div class="min-h-screen pt-25 md:pt-30 pb-12 bg-white dark:bg-slate-950 flex items-start justify-center p-6 transition-colors duration-300">
     <main class="max-w-md w-full">
 
       <header class="text-center mb-8">

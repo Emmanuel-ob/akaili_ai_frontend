@@ -1,7 +1,9 @@
+<!-- pages/about.vue -->
 <template>
-    <!-- Added dark:bg-slate-950 -->
-    <div class="overflow-hidden bg-white dark:bg-slate-950 transition-colors duration-300 pt-30 md:pt-38 lg:pt-43">
-      <Testimonials />
+    <div class="overflow-hidden bg-white dark:bg-slate-950 transition-colors duration-300 pt-32 md:pt-40 lg:pt-44">
+      
+      
+      <AboutSection />
       <CtaBanner />
       <GradualBlur
         preset="footer"
@@ -13,14 +15,14 @@
 </template>
 
 <script setup>
-import Testimonials from '../components/homepage/Testimonials.vue'
+import AboutSection from '~/components/homepage/AboutSection.vue'
 import GradualBlur from '~/components/homepage/GradualBlur.vue'
 import CtaBanner from '~/components/homepage/CtaBanner.vue'
 
 definePageMeta({ layout: "default" });
 
 useSeoMeta({
-  title: 'Xeli ai - Testimonials',
-  description: "Empower Your Website with 24/7 Smart Customer Support",
+  title: 'About Xeli AI - Our Mission & Team',
+  description: "Building the future of automated customer engagement.",
 })
 </script>

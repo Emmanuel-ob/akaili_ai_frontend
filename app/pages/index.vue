@@ -1,6 +1,3 @@
-
-
-
 <template>
     <div class="overflow-hidden">
       <Hero />
@@ -9,11 +6,11 @@
       <TestimonialCarousel />
       <CtaBanner />
       <GradualBlur
-  preset="footer"
-  target="page"
-  animated="scroll"
-  :z-index="9999"
-/>
+        preset="footer"
+        target="page"
+        animated="scroll"
+        :z-index="9999"
+      />
     </div>
 </template>
 

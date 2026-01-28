@@ -5,7 +5,9 @@ import Footer from '../components/homepage/Footer.vue'
 </script>
 
 <template>
-    <div class="font-sans min-h-screen transition-colors duration-300 bg-white dark:bg-slate-950 text-gray-900 dark:text-white selection:bg-purple-500 selection:text-white">
+    <div 
+    class="flex flex-col min-h-screen font-sans transition-colors duration-300 bg-white dark:bg-slate-950 text-gray-900 dark:text-white selection:bg-purple-500 selection:text-white"
+    >
         <MainNavbar />
 
         <slot />
