@@ -1,6 +1,5 @@
 <!-- pages/products.vue -->
 <template>
-
   <div class="overflow-hidden bg-white dark:bg-slate-950 transition-colors duration-300">
     <div class="relative overflow-hidden w-full"> 
       <div

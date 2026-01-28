@@ -1,5 +1,5 @@
 <template>
-  <!-- Background: Light(White) -> Dark(#0b1020) -->
+
   <section class="min-h-screen pt-30 md:pt-24 lg:pt-28 bg-white dark:bg-[#0b1020] transition-colors duration-300">
     <div class="max-w-7xl pt-19 mx-auto px-6 lg:px-8">
       
@@ -71,11 +71,7 @@
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label class="block text-sm font-medium text-gray-700 dark:text-gray-200">Full name</label>
-              <!-- 
-                 UPDATED INPUT STYLE:
-                 Light: bg-white
-                 Dark: bg-slate-900/50 (semi-transparent dark) + border-white/10
-              -->
+             
               <input v-model="form.name" type="text" required placeholder="Jane Doe" 
                 class="mt-2 w-full rounded-lg p-3 outline-none transition-all
                 bg-white border border-gray-300 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-purple-500
@@ -192,9 +188,9 @@
           </div>
         </div>
       </div>
-
     </div>
   </section>
+  
 </template>
 
 <script setup>

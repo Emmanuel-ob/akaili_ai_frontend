@@ -1,11 +1,13 @@
 <template>
-  <div>
-    <header class="bg-white px-6 py-4">
+  <div class="min-h-screen bg-white md:bg-gray-50 dark:bg-slate-950 transition-colors duration-300">
+    
+    <!-- Sticky Header -->
+    <header class="bg-white dark:bg-slate-900 px-4 md:px-6 py-4 border-b border-gray-200 dark:border-slate-800 transition-colors duration-300 sticky top-0 z-30">
       <div class="flex justify-between items-center">
         <div>
-          <h1 class="text-[#9E4CFF] text-2xl font-bold">Database Connections</h1>
-          <p class="text-sm lg:text-base text-[#6B7280]">
-            Manage your chatbot's data sources and connections
+          <h1 class="text-[#9E4CFF] text-xl md:text-2xl font-bold">Database</h1>
+          <p class="text-xs md:text-sm lg:text-base text-gray-500 dark:text-gray-400 mt-0.5 hidden sm:block">
+            Manage your chatbot's data sources
           </p>
         </div>
 
@@ -85,26 +87,28 @@
 
     <!-- Table Selection Modal -->
     <BaseModal :show="showTableModal" title="Select Tables" @close="showTableModal = false">
-      <div class="space-y-2 max-h-60 overflow-y-auto">
-        <label v-for="table in selectedConnection?.available_tables" :key="table"
-          class="flex items-center p-2 border border-gray-200 rounded-md hover:bg-gray-50 cursor-pointer">
-          <input v-model="selectedTables" type="checkbox" :value="table"
-            class="mr-3 text-[#9E4CFF] focus:ring-purple-500">
-          <span class="text-sm text-gray-900">{{ table }}</span>
-        </label>
-      </div>
+      <template #body>
+          <div class="space-y-2 max-h-60 overflow-y-auto custom-scrollbar p-1">
+            <label v-for="table in selectedConnection?.available_tables" :key="table"
+              class="flex items-center p-3 border border-gray-200 dark:border-slate-700 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-800 cursor-pointer transition-colors bg-white dark:bg-slate-900">
+              <input v-model="selectedTables" type="checkbox" :value="table"
+                class="mr-3 h-4 w-4 text-[#9E4CFF] focus:ring-purple-500 border-gray-300 dark:border-slate-600 rounded">
+              <span class="text-sm font-medium text-gray-900 dark:text-gray-200">{{ table }}</span>
+            </label>
+          </div>
 
-      <div class="flex justify-end space-x-3 pt-4">
-        <button class="px-4 py-2 text-sm text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50"
-          @click="showTableModal = false">
-          Cancel
-        </button>
-        <button :disabled="databaseStore.updating"
-          class="px-4 py-2 text-sm text-white bg-[#9E4CFF] hover:bg-purple-700 rounded-md disabled:opacity-50"
-          @click="updateTables">
-          {{ databaseStore.updating ? 'Updating...' : 'Update Tables' }}
-        </button>
-      </div>
+          <div class="flex justify-end space-x-3 pt-6 border-t border-gray-100 dark:border-slate-800 mt-4">
+            <button class="px-4 py-2 text-sm text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-slate-600 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors"
+              @click="showTableModal = false">
+              Cancel
+            </button>
+            <button :disabled="databaseStore.updating"
+              class="px-4 py-2 text-sm text-white bg-[#9E4CFF] hover:bg-purple-700 rounded-lg shadow-md disabled:opacity-50 transition-all"
+              @click="updateTables">
+              {{ databaseStore.updating ? 'Updating...' : 'Update Tables' }}
+            </button>
+          </div>
+      </template>
     </BaseModal>
 
     <!-- Sync Progress Modal -->
@@ -255,15 +259,12 @@ const updateTables = async () => {
 // Sync Operations
 const syncConnection = async (connectionId) => {
   try {
-    // Set the syncing connection and show progress modal
     syncingConnectionId.value = connectionId
     showSyncProgress.value = true
 
-    // Start the sync
     const result = await databaseStore.syncConnection(connectionId)
 
     if (!result.success) {
-      // If sync failed to start, close the modal and show error
       showSyncProgress.value = false
       console.error('Failed to start sync:', result.message)
     }
@@ -276,21 +277,17 @@ const syncConnection = async (connectionId) => {
 const closeSyncProgress = () => {
   showSyncProgress.value = false
   syncingConnectionId.value = null
-  // Refresh connections to get latest status
   databaseStore.fetchConnections()
 }
 
 const retrySyncConnection = async () => {
   if (syncingConnectionId.value) {
-    // Close current modal and restart sync
     showSyncProgress.value = false
     await syncConnection(syncingConnectionId.value)
   }
 }
 
 const cancelSyncConnection = () => {
-  // The cancel logic is handled in the modal component
-  // Just refresh connections after cancel
   databaseStore.fetchConnections()
 }
 

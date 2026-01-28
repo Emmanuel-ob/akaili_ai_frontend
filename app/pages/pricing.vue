@@ -1,7 +1,6 @@
 <template>
   <section class="relative bg-white dark:bg-slate-950 transition-colors duration-300 min-h-screen overflow-hidden">
     
-    <!-- Navbar Clearance -->
     <div class="pt-32 pb-20 md:pt-40 md:pb-28">
 
       <div class="max-w-7xl mx-auto px-4 sm:px-6">

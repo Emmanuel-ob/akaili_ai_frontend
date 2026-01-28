@@ -152,15 +152,17 @@
 </template>
 
 <script setup>
+    
+    import { ref, computed, onMounted, onUnmounted } from 'vue'
+    import EmailListsTab from '~/components/emailMarketing/EmailListsTab.vue'
+    import EmailContactsTab from '~/components/emailMarketing/EmailContactsTab.vue'
+    import EmailTemplatesTab from '~/components/emailMarketing/EmailTemplatesTab.vue'
+    import EmailCampaignsTab from '~/components/emailMarketing/EmailCampaignsTab.vue'
+    import { useToast } from "vue-toastification/dist/index.mjs" 
+    
 definePageMeta({
     layout: 'dashboard'
 })
-import { ref, computed, onMounted, onUnmounted } from 'vue'
-import EmailListsTab from '~/components/emailMarketing/EmailListsTab.vue'
-import EmailContactsTab from '~/components/emailMarketing/EmailContactsTab.vue'
-import EmailTemplatesTab from '~/components/emailMarketing/EmailTemplatesTab.vue'
-import EmailCampaignsTab from '~/components/emailMarketing/EmailCampaignsTab.vue'
-import { useToast } from 'vue-toastification'
 
 
 const emailStore = useEmailMarketingStore()

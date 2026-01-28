@@ -7,7 +7,7 @@ export default defineNuxtConfig({
 
   devtools: { enabled: true },
 
-    colorMode: {
+  colorMode: {
     classSuffix: '',
     preference: 'system',
     fallback: 'light',
@@ -101,7 +101,12 @@ export default defineNuxtConfig({
     },
   },
 
+  // UPDATED APP CONFIGURATION
   app: {
+    // 1. Enable Page Transitions
+    pageTransition: { name: 'page' },
+    layoutTransition: { name: 'layout' },
+    
     head: {
       title: 'Xeli ai - Intelligent Chatbot Platform',
       meta: [
