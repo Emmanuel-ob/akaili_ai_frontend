@@ -43,8 +43,8 @@ onUnmounted(() => document.removeEventListener('click', handleClickOutside))
 </script>
 
 <template>
-  <nav 
-     class="transition-all duration-300 h-[9vh] md:h-[10vh] lg:h-[12vh] z-[100] fixed w-full 
+   <nav 
+     class="transition-all duration-300 h-16 md:h-20 z-[100] fixed w-full 
            bg-white/90 backdrop-blur-md 
            dark:bg-slate-900/95 dark:border-slate-800 border-b border-transparent"
     role="navigation" 

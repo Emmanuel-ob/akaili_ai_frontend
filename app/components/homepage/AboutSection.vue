@@ -124,23 +124,23 @@ const values = [
 // Team Data (Placeholders - replace with real images/names)
 const team = [
     {
-        name: "Alex Rivera",
+        name: "Me Emmanuel",
         role: "Founder & CEO",
         image: "https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
     },
     {
-        name: "Sarah Chen",
+        name: "Ose",
         role: "Head of Engineering",
         image: "https://images.unsplash.com/photo-1573496359-0cf843d65c98?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
     },
     {
-        name: "Marcus Johnson",
-        role: "Product Design",
+        name: "Daniel",
+        role: "Frontend developer",
         image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
     },
     {
-        name: "Emily Davis",
-        role: "Customer Success",
+        name: "Obute Faith",
+        role: "Social Media Manager",
         image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
     }
 ]

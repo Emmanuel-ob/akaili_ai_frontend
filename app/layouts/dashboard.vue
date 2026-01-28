@@ -2,14 +2,14 @@
 <template>
   <div class="min-h-screen bg-gray-50 dark:bg-slate-950 transition-colors duration-300">
     
+    <!-- Desktop Sidebar (Wider: w-72) -->
     <div
       class="lg:w-72 bg-white dark:bg-slate-900 shadow-sm border-r border-gray-200 dark:border-slate-800 fixed h-full hidden lg:flex flex-col justify-between transition-colors duration-300">
       
       <div class="flex flex-col h-full">
-    
+        <!-- LOGO (Fixed constraints) -->
         <div class="h-20 flex justify-center items-center border-b border-gray-50 dark:border-slate-800/50">
           <NuxtLink to="/" class="flex justify-center items-center w-full px-6" aria-label="Xeli AI Home">
-            <!-- Added object-contain and explicit dimensions to prevent squishing -->
             <NuxtImg 
                 src="/Logo.png" 
                 format="webp" 
@@ -90,7 +90,7 @@
               : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-slate-800 hover:text-gray-900 dark:hover:text-white'">
             <svg class="w-5 h-5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z">
+                d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.906-1.468L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z">
               </path>
             </svg>
             Conversations
@@ -178,9 +178,15 @@
       <!-- User Menu -->
       <div class="flex items-center justify-between space-x-2 px-6 py-4 border-t border-gray-200 dark:border-slate-800">
         <div class="flex items-center gap-2 overflow-hidden">
-            <div class="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 font-bold">
-                {{ authStore.user?.name?.charAt(0).toUpperCase() || 'U' }}
-            </div>
+            <!-- Profile Picture with Fallback -->
+           <div class="w-8 h-8 rounded-full bg-purple-100 dark:bg-purple-900 flex items-center justify-center text-purple-600 dark:text-purple-300 font-bold shrink-0 overflow-hidden border border-gray-200 dark:border-slate-700">
+              <img v-if="authStore.user?.avatar" 
+                  :src="authStore.user.avatar" 
+                  :key="authStore.user.avatar" 
+                  class="w-full h-full object-cover" 
+                  alt="Avatar" />
+              <span v-else>{{ authStore.user?.name?.charAt(0).toUpperCase() || 'U' }}</span>
+          </div>
             <div class="text-sm text-gray-600 dark:text-gray-400 truncate">
                 <span class="font-medium text-gray-900 dark:text-gray-200 block truncate max-w-[100px]">{{ authStore.user?.name || 'User' }}</span>
             </div>
@@ -202,7 +208,7 @@
     <div v-if="mobileSidebarOpen" class="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm lg:hidden transition-opacity"
       @click="closeSidebar"></div>
 
-    <!-- Mobile Sidebar (Width remains standard for mobile) -->
+    <!-- Mobile Sidebar -->
     <aside v-if="mobileSidebarOpen"
       class="fixed top-0 left-0 z-50 h-full w-72 bg-white dark:bg-slate-900 shadow-2xl p-4 lg:hidden flex flex-col transition-colors duration-300">
       
@@ -215,18 +221,13 @@
 
       <div class="h-full flex flex-col justify-between overflow-y-auto custom-scrollbar pb-6">
         <div>
-          <!-- Navigation (Mobile) - Uses same links but adjusted padding -->
+          <!-- Navigation (Mobile) -->
            <nav class="space-y-1">
-             <!-- ... (Copying all links from desktop but keeping them here for mobile structure) ... -->
-             <!-- For brevity, using the same NuxtLinks as above but ensuring they are inside the mobile container -->
-             
-             <NuxtLink to="/dashboard" class="flex items-center px-4 py-3 text-sm font-medium rounded-xl" :class="$route.path === '/dashboard' ? 'bg-purple-50 dark:bg-purple-500/10 text-[#9E4CFF] dark:text-purple-400' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-slate-800'">
+             <!-- Links repeated for mobile -->
+             <NuxtLink to="/dashboard" class="flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200" :class="$route.path === '/dashboard' ? 'bg-purple-50 dark:bg-purple-500/10 text-[#9E4CFF] dark:text-purple-400' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-slate-800'">
                 <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5a2 2 0 012-2h2a2 2 0 012 2v2H8V5z"></path></svg>
                 Dashboard
              </NuxtLink>
-             
-             <!-- ... (Repeat other links: Chatbot Setup, KB, Database, Live Monitoring, Analytics, Test Chat, Team, Email, Agent, Settings) ... -->
-             <!-- You should copy the exact NuxtLinks from the desktop section above into here -->
              
               <NuxtLink to="/dashboard/chatbot-setup" class="flex items-center px-4 py-3 text-sm font-medium rounded-xl" :class="$route.path.startsWith('/dashboard/chatbot-setup') ? 'bg-purple-50 dark:bg-purple-500/10 text-[#9E4CFF] dark:text-purple-400' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-slate-800'">
                 <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
@@ -244,7 +245,7 @@
               </NuxtLink>
 
               <NuxtLink to="/dashboard/live-monitoring" class="flex items-center px-4 py-3 text-sm font-medium rounded-xl" :class="$route.path.startsWith('/dashboard/live-monitoring') ? 'bg-purple-50 dark:bg-purple-500/10 text-[#9E4CFF] dark:text-purple-400' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-slate-800'">
-                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.906-1.468L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
                 Conversations
               </NuxtLink>
 
@@ -294,16 +295,15 @@
       </div>
     </aside>
 
-    <!-- Main Content (Adjusted margin for wider sidebar) -->
-    <div class="flex-1 lg:ml-72">
-      <slot />
+    <!-- Main Content Area (Adjusted margin for wider sidebar) -->
+    <div class="flex-1 flex flex-col min-w-0 overflow-hidden lg:pl-72 pt-16 lg:pt-0">
+       <slot />
     </div>
 
     <!-- Floating Hamburger FAB -->
-    <button
-      class="lg:hidden fixed right-4 bottom-[5%] z-50 bg-[rgba(158,76,255,0.8)] text-white rounded-full p-4 shadow-lg hover:bg-[#6C47B5] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#9E4CFF] transition-transform active:scale-95"
-      @click="toggleSidebar">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+    <button @click="toggleSidebar"
+      class="lg:hidden fixed left-4 bottom-[20%] z-50 bg-[#9E4CFF] text-white rounded-full p-4 shadow-lg hover:bg-[#6C47B5] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#9E4CFF] transition-transform active:scale-95">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"
         stroke-width="2">
         <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
       </svg>

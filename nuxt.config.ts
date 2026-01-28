@@ -104,8 +104,8 @@ export default defineNuxtConfig({
   // UPDATED APP CONFIGURATION
   app: {
     // 1. Enable Page Transitions
-    pageTransition: { name: 'page', mode: 'out-in' },
-    layoutTransition: { name: 'layout', mode: 'out-in' },
+    pageTransition: { name: 'page' },
+    layoutTransition: { name: 'layout' },
     
     head: {
       title: 'Xeli ai - Intelligent Chatbot Platform',
