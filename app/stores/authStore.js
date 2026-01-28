@@ -237,6 +237,23 @@ export const useAuthStore = defineStore('auth', {
 
                 console.log('[AUTH STORE] Business switched:', businessId)
             }
-        }
+        },
+         updateLocalAvatar(base64Image) {
+                if (this.user) {
+                this.user.avatar = base64Image;
+                // Store it in localStorage with a key unique to this user if possible
+                localStorage.setItem(`user_avatar_${this.user.id || 'default'}`, base64Image);
+                }
+            },
+
+            // Call this inside your fetchUser or onMounted to restore the saved image
+            loadLocalAvatar() {
+                const savedAvatar = localStorage.getItem(`user_avatar_${this.user?.id || 'default'}`);
+                if (savedAvatar && this.user) {
+                this.user.avatar = savedAvatar;
+                }
+            }
+
+        
     }
 })

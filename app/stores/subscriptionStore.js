@@ -82,7 +82,8 @@ export const useSubscriptionStore = defineStore('subscription', {
     /**
      * Change subscription plan (upgrade/downgrade)
      */
-    async changePlan(newPlanId, prorate = true) {
+    // subscriptionStore.js - changePlan method
+    async changePlan(payload) {
       const config = useRuntimeConfig()
       const authStore = useAuthStore()
 
@@ -93,22 +94,29 @@ export const useSubscriptionStore = defineStore('subscription', {
         const response = await $fetch(`${config.public.apiBase}/api/subscription/change-plan`, {
           method: 'POST',
           headers: { Authorization: `Bearer ${authStore.token}` },
-          body: { new_plan_id: newPlanId, prorate }
+          body: payload
         })
 
         if (response.success) {
-          // Refresh subscription data
           await this.fetchSubscription()
           return { success: true, data: response.data }
         }
       } catch (error) {
+        // Don't throw on 402 - let modal handle checkout redirect
+        if (error.status === 402 || error.statusCode === 402) {
+          return {
+            success: false,
+            requiresCheckout: true,
+            data: error.data?.data || {}
+          }
+        }
+
         this.error = error.data?.message || 'Failed to change plan'
-        return { success: false, error: this.error }
+        throw error
       } finally {
         this.loading = false
       }
     },
-
     /**
      * Cancel subscription at period end
      */
