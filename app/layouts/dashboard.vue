@@ -295,16 +295,16 @@
       </div>
     </aside>
 
-    <!-- Main Content Area (Adjusted margin for wider sidebar) -->
-    <div class="flex-1 flex flex-col min-w-0 overflow-hidden lg:pl-72 pt-16 lg:pt-0">
+    <!-- Main Content Area -->
+    <div class="flex-1 flex flex-col min-w-0 overflow-hidden lg:pl-72 pt-0">
        <slot />
     </div>
 
     <!-- Floating Hamburger FAB -->
     <button @click="toggleSidebar"
-      class="lg:hidden fixed left-4 bottom-[20%] z-50 bg-[#9E4CFF] text-white rounded-full p-4 shadow-lg hover:bg-[#6C47B5] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#9E4CFF] transition-transform active:scale-95">
+      class="lg:hidden fixed right-4 bottom-8 z-50 bg-[#9E4CFF]/90 backdrop-blur-md text-white rounded-full p-4 shadow-xl hover:bg-[#8A3DFF] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#9E4CFF] transition-all active:scale-95 flex items-center justify-center">
       <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-        stroke-width="2">
+        stroke-width="2.5">
         <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
       </svg>
     </button>
