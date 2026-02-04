@@ -1,8 +1,8 @@
 <!-- components/EmptyState.vue --><template>
   <div class="text-center py-12 px-4 transition-colors duration-300" :class="containerClass">
     <component :is="iconComponent" class="mx-auto h-12 w-12 text-gray-400 dark:text-gray-600" />
-    <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-white">{{ title }}</h3>
-    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ description }}</p>
+    <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-white font-subheading leading-tight">{{ title }}</h3>
+    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400 font-sans">{{ description }}</p>
     <div v-if="$slots.action" class="mt-6">
       <slot name="action" />
     </div>
