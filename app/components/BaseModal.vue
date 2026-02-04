@@ -56,20 +56,13 @@
               d="M6 18L18 6M6 6l12 12"
             />
           </svg>
-            <h3 class="text-lg font-bold text-gray-900 dark:text-white tracking-tight">{{ title }}</h3>
-          </slot>
-        </div>
-        <button 
-          class="p-1.5 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white bg-gray-100/50 dark:bg-white/5 rounded-lg transition-colors"
-          @click="$emit('close')"
-        >
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
         </button>
       </div>
 
       <!-- Body -->
       <div class="text-gray-600 dark:text-slate-300 font-sans">
       <div class="p-5 md:p-6 overflow-y-auto custom-scrollbar text-sm text-gray-600 dark:text-gray-300">
+      <div class="text-gray-600 dark:text-slate-300 font-sans">
         <slot name="body">
           <slot />
         </slot>
@@ -105,6 +98,7 @@ const props = defineProps({
   size: { type: String, default: 'md' }
 })
 
+defineEmits(["close"]);
 defineEmits(["close"]);
 
 const sizeClass = computed(() => {
@@ -154,3 +148,4 @@ onUnmounted(() => document.removeEventListener('keydown', handleEscape))
   background-color: #475569; /* slate-600 */
 }
 </style>
+
