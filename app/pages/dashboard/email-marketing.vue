@@ -93,6 +93,18 @@
               <p class="text-2xl font-bold text-gray-900 dark:text-white mt-1">
                 {{ emailStore.templateStats.my_templates }}
               </p>
+        <div class="bg-white dark:bg-slate-900 rounded-xl shadow-sm dark:shadow-none border border-gray-200 dark:border-slate-800 mb-6 transition-colors overflow-hidden">
+            <div class="border-b border-gray-200 dark:border-slate-800 overflow-x-auto scrollbar-hide">
+                <nav class="flex -mb-px min-w-max">
+                    <button v-for="tab in tabs" :key="tab.id" @click="activeTab = tab.id" :class="[
+                        'px-6 py-4 text-sm font-medium border-b-2 transition-colors whitespace-nowrap',
+                        activeTab === tab.id
+                            ? 'border-purple-600 text-purple-600 dark:text-purple-400'
+                            : 'border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:border-gray-300 dark:hover:border-slate-600'
+                    ]">
+                        {{ tab.label }}
+                    </button>
+                </nav>
             </div>
             <div class="p-4 bg-purple-100 dark:bg-purple-900/30 rounded-xl">
               <svg
