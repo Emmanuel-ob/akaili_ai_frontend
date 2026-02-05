@@ -174,7 +174,7 @@
         <button
           v-if="step === 2"
           :disabled="loading"
-          class="px-6 py-2 bg-[#9E4CFF] text-white rounded-lg hover:bg-purple-700 disabled:opacity-50 transition flex items-center gap-2"
+          class="px-6 py-2 bg-[#9E4CFF] text-white rounded-lg hover:bg-purple-700 disabled:opacity-50 transition flex items-center gap-2 text-sm"
           @click="confirmChange"
         >
           <span
