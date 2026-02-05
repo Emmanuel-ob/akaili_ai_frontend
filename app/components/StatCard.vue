@@ -1,18 +1,14 @@
 <!-- components/StatCard.vue -->
 <template>
-  <div
-    class="bg-white dark:bg-slate-900 overflow-hidden shadow-sm dark:shadow-none border border-gray-200 dark:border-slate-800 rounded-lg transition-all duration-300 hover:shadow-md font-subheading"
-  >
+  <div class="bg-white dark:bg-slate-900 overflow-hidden shadow-sm dark:shadow-none border border-gray-200 dark:border-slate-800 rounded-lg transition-all duration-300 hover:shadow-md font-subheading">
     <div class="p-6">
       <div class="flex items-start justify-between">
         <!-- Icon -->
-        <div class="shrink-0">
-          <div
-            :class="[
-              'rounded-xl p-4 flex items-center justify-center transition-colors',
-              colorClasses[color],
-            ]"
-          >
+        <div class="flex-shrink-0">
+          <div :class="[
+            'rounded-xl p-4 flex items-center justify-center transition-colors',
+            colorClasses[color]
+          ]">
             <!-- Icons (Lucide) -->
             <component
               :is="iconMap[icon] || iconMap['default']"
@@ -57,18 +53,7 @@
 </template>
 
 <script setup>
-import {
-  MessageSquare,
-  CheckCircle,
-  Folder,
-  FileText,
-  Database,
-  Globe,
-  Beaker,
-  Clock,
-  Star,
-  Activity,
-} from "lucide-vue-next";
+import {  MessageSquare, CheckCircle, Folder, FileText, Database, Globe, Beaker, Clock, Star, Activity } from 'lucide-vue-next'
 
 const props = defineProps({
   title: String,
