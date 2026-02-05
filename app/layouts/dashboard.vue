@@ -210,7 +210,6 @@
             "
           >
             <Users class="text-black dark:text-white" :size="20" />
-
             Team Members
           </NuxtLink>
 
@@ -314,7 +313,7 @@
           </div>
           <div class="text-sm text-gray-600 dark:text-gray-400 truncate">
             <span
-              class="font-medium text-gray-900 dark:text-gray-200 block truncate max-w-[100px]"
+              class="font-medium text-gray-900 dark:text-gray-200 block truncate max-w-25"
               >{{ authStore.user?.name || "User" }}</span
             >
           </div>
@@ -325,9 +324,9 @@
           <!-- Desktop Theme Toggle -->
           <ThemeToggle />
           <button
-            @click="handleLogout"
             class="p-2 text-gray-500 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-gray-50 dark:hover:bg-slate-800 rounded-lg transition-colors"
             title="Logout"
+            @click="handleLogout"
           >
             <LogOut class="w-5 h-5" />
           </button>
@@ -340,7 +339,7 @@
       v-if="mobileSidebarOpen"
       class="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm lg:hidden transition-opacity"
       @click="closeSidebar"
-    ></div>
+    />
 
     <!-- Mobile Sidebar (Width remains standard for mobile) -->
     <aside
@@ -350,8 +349,8 @@
       <div class="flex justify-between items-center mb-6 px-2">
         <h2 class="text-xl font-bold text-gray-900 dark:text-white">Menu</h2>
         <button
-          @click="closeSidebar"
           class="p-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-lg"
+          @click="closeSidebar"
         >
           <X class="w-6 h-6" />
         </button>
@@ -537,8 +536,8 @@
             </div>
           </div>
           <button
-            @click="handleLogout"
             class="p-2 text-gray-500 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-400 bg-gray-50 dark:bg-slate-800 rounded-lg"
+            @click="handleLogout"
           >
             <LogOut class="w-5 h-5" />
           </button>
