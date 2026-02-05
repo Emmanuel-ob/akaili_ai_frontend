@@ -2,34 +2,23 @@
 <template>
   <div
     v-if="show"
-    class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/50 dark:bg-black/70 backdrop-blur-sm transition-opacity"
+    class="fixed inset-0 z-[60] flex items-end md:items-center justify-center sm:p-4"
   >
-    <!-- Modal Container -->
-    <div
-      class="relative w-[90%] md:w-[70%] max-h-[90vh] overflow-y-auto p-6 rounded-2xl shadow-2xl transform transition-all"
-      :class="[
-        sizeClass,
-        'bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700',
-      ]"
-  <div v-if="show" class="fixed inset-0 z-[60] flex items-end md:items-center justify-center sm:p-4">
-    
     <!-- Backdrop with subtle blur -->
-    <div 
-      class="absolute inset-0 bg-gray-900/40 dark:bg-black/60 backdrop-blur-sm transition-opacity" 
+    <div
+      class="absolute inset-0 bg-gray-900/40 dark:bg-black/60 backdrop-blur-sm transition-opacity"
       @click="$emit('close')"
     ></div>
 
     <!-- Modal Container (Liquid Glass Effect) -->
-    <div 
-      class="relative w-full md:w-auto md:min-w-[500px] md:max-w-2xl 
-             bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl 
-             border border-white/40 dark:border-white/10 
-             md:rounded-2xl rounded-t-2xl shadow-2xl transform transition-all flex flex-col max-h-[90vh] overflow-hidden"
+    <div
+      class="relative w-full md:w-auto md:min-w-[500px] md:max-w-2xl bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border border-white/40 dark:border-white/10 md:rounded-2xl rounded-t-2xl shadow-2xl transform transition-all flex flex-col max-h-[90vh] overflow-hidden"
       :class="[sizeClass]"
     >
-      
       <!-- Header -->
-      <div class="flex justify-between items-center p-5 md:p-6 border-b border-gray-200/50 dark:border-white/5 shrink-0">
+      <div
+        class="flex justify-between items-center p-5 md:p-6 border-b border-gray-200/50 dark:border-white/5 shrink-0"
+      >
         <div class="flex-1">
           <slot name="header">
             <h3
@@ -60,68 +49,45 @@
       </div>
 
       <!-- Body -->
-      <div class="text-gray-600 dark:text-slate-300 font-sans">
-      <div class="p-5 md:p-6 overflow-y-auto custom-scrollbar text-sm text-gray-600 dark:text-gray-300">
-      <div class="text-gray-600 dark:text-slate-300 font-sans">
-        <slot name="body">
-          <slot />
-        </slot>
+      <div
+        class="p-5 md:p-6 overflow-y-auto custom-scrollbar text-sm text-gray-600 dark:text-gray-300"
+      >
+        <div class="text-gray-600 dark:text-slate-300 font-sans">
+          <slot name="body">
+            <slot />
+          </slot>
+        </div>
       </div>
-
     </div>
   </div>
 </template>
 
 <script setup>
-import { computed } from "vue";
-
-const props = defineProps({
-  show: {
-    type: Boolean,
-    default: false,
-  },
-  title: {
-    type: String,
-    default: "",
-  },
-  size: {
-    type: String,
-    default: "md",
-    validator: (value) => ["sm", "md", "lg", "xl"].includes(value),
-  },
-});
-import { computed, onMounted, onUnmounted } from 'vue'
+import { computed, onMounted, onUnmounted } from "vue";
 
 const props = defineProps({
   show: { type: Boolean, default: false },
-  title: { type: String, default: '' },
-  size: { type: String, default: 'md' }
-})
+  title: { type: String, default: "" },
+  size: { type: String, default: "md" },
+});
 
-defineEmits(["close"]);
 defineEmits(["close"]);
 
 const sizeClass = computed(() => {
   const sizes = {
-    sm: "max-w-md",
-    md: "max-w-2xl",
-    lg: "max-w-4xl",
-    xl: "max-w-6xl",
+    sm: "md:max-w-md",
+    md: "md:max-w-2xl",
+    lg: "md:max-w-4xl",
+    xl: "md:max-w-6xl",
   };
   return sizes[props.size] || sizes.md;
 });
-</script>
-    sm: 'md:max-w-md',
-    md: 'md:max-w-2xl',
-    lg: 'md:max-w-4xl',
-    xl: 'md:max-w-6xl'
-  }
-  return sizes[props.size] || sizes.md
-})
 
-const handleEscape = (e) => { if (e.key === 'Escape' && props.show) emit('close') }
-onMounted(() => document.addEventListener('keydown', handleEscape))
-onUnmounted(() => document.removeEventListener('keydown', handleEscape))
+const handleEscape = (e) => {
+  if (e.key === "Escape" && props.show) emit("close");
+};
+onMounted(() => document.addEventListener("keydown", handleEscape));
+onUnmounted(() => document.removeEventListener("keydown", handleEscape));
 </script>
 
 <style scoped>
