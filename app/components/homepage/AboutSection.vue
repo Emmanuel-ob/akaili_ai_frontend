@@ -139,7 +139,7 @@ const team = [
         image: "https://media.istockphoto.com/id/1142192548/vector/man-avatar-profile-male-face-silhouette-or-icon-isolated-on-white-background-vector.jpg?s=1024x1024&w=is&k=20&c=ISYAkNv_k8SCN_pHkYWqlWdGSbirhx_yCigo7QC8NAw=", 
     },
     {
-        name: "Obute Faith",
+        name: "Faith Stanley-Mike",
         role: "Social Media Manager",
         image: "https://media.istockphoto.com/id/1142192666/vector/avatar-profile-female-face-silhouette-or-icon-isolated-on-white-background-vector.jpg?s=1024x1024&w=is&k=20&c=3a3bOZJIYs3258xReif85FwZ0MlGkQIXaVse_dhFSP4=", 
     }
