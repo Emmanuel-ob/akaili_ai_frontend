@@ -1,9 +1,8 @@
 <template>
   <div class="min-h-screen bg-white md:bg-gray-50 dark:bg-slate-950 transition-colors duration-300">
-
+    
     <!-- Sticky Header -->
-    <header
-      class="bg-white dark:bg-slate-900 px-4 md:px-6 py-4 border-b border-gray-200 dark:border-slate-800 transition-colors duration-300 sticky top-0 z-30">
+    <header class="bg-white dark:bg-slate-900 px-4 md:px-6 py-4 border-b border-gray-200 dark:border-slate-800 transition-colors duration-300 sticky top-0 z-30">
       <div class="flex justify-between items-center">
         <div>
           <h1 class="text-[#9E4CFF] text-xl md:text-2xl font-bold">Database</h1>
@@ -56,10 +55,9 @@
     <div v-else class="space-y-4 px-6">
       <!-- Database Connections List -->
       <div v-if="databaseStore.connections.length > 0" class="space-y-4">
-        <!-- ✅ Keep old event names for compatibility -->
-        <DatabaseConnectionCard v-for="connection in databaseStore.connections" :key="connection._id || connection.id"
-          :connection="connection" :syncing="databaseStore.syncing" @sync="syncConnection" @edit="editConnection"
-          @delete="confirmDelete" @select-tables="selectTables" />
+        <DatabaseConnectionCard v-for="connection in databaseStore.connections" :key="connection._id"
+          :connection="connection" :syncing="databaseStore.syncing === connection.id" @sync="syncConnection"
+          @edit="editConnection" @delete="deleteConnection" @select-tables="selectTables" />
       </div>
 
       <!-- Empty State -->
@@ -90,35 +88,34 @@
     <!-- Table Selection Modal -->
     <BaseModal :show="showTableModal" title="Select Tables" @close="showTableModal = false">
       <template #body>
-        <div class="space-y-2 max-h-60 overflow-y-auto custom-scrollbar p-1">
-          <label v-for="table in selectedConnection?.available_tables" :key="table"
-            class="flex items-center p-3 border border-gray-200 dark:border-slate-700 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-800 cursor-pointer transition-colors bg-white dark:bg-slate-900">
-            <input v-model="selectedTables" type="checkbox" :value="table"
-              class="mr-3 h-4 w-4 text-[#9E4CFF] focus:ring-purple-500 border-gray-300 dark:border-slate-600 rounded">
-            <span class="text-sm font-medium text-gray-900 dark:text-gray-200">{{ table }}</span>
-          </label>
-        </div>
+          <div class="space-y-2 max-h-60 overflow-y-auto custom-scrollbar p-1">
+            <label v-for="table in selectedConnection?.available_tables" :key="table"
+              class="flex items-center p-3 border border-gray-200 dark:border-slate-700 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-800 cursor-pointer transition-colors bg-white dark:bg-slate-900">
+              <input v-model="selectedTables" type="checkbox" :value="table"
+                class="mr-3 h-4 w-4 text-[#9E4CFF] focus:ring-purple-500 border-gray-300 dark:border-slate-600 rounded">
+              <span class="text-sm font-medium text-gray-900 dark:text-gray-200">{{ table }}</span>
+            </label>
+          </div>
 
-        <div class="flex justify-end space-x-3 pt-6 border-t border-gray-100 dark:border-slate-800 mt-4">
-          <button
-            class="px-4 py-2 text-sm text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-slate-600 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors"
-            @click="showTableModal = false">
-            Cancel
-          </button>
-          <button :disabled="databaseStore.updating"
-            class="px-4 py-2 text-sm text-white bg-[#9E4CFF] hover:bg-purple-700 rounded-lg shadow-md disabled:opacity-50 transition-all"
-            @click="updateTables">
-            {{ databaseStore.updating ? 'Updating...' : 'Update Tables' }}
-          </button>
-        </div>
+          <div class="flex justify-end space-x-3 pt-6 border-t border-gray-100 dark:border-slate-800 mt-4">
+            <button class="px-4 py-2 text-sm text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-slate-600 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors"
+              @click="showTableModal = false">
+              Cancel
+            </button>
+            <button :disabled="databaseStore.updating"
+              class="px-4 py-2 text-sm text-white bg-[#9E4CFF] hover:bg-purple-700 rounded-lg shadow-md disabled:opacity-50 transition-all"
+              @click="updateTables">
+              {{ databaseStore.updating ? 'Updating...' : 'Update Tables' }}
+            </button>
+          </div>
       </template>
     </BaseModal>
 
-    <!-- ✅ Sync Progress Modal with WebSocket support -->
-    <SyncProgressModal :show="showSyncProgress" :connection="syncingConnection" @close="closeSyncProgress"
-      @sync-complete="handleSyncComplete" />
+    <!-- Sync Progress Modal -->
+    <SyncProgressModal :show="showSyncProgress" :connection-id="syncingConnectionId" @close="closeSyncProgress"
+      @retry="retrySyncConnection" @cancel="cancelSyncConnection" />
 
-    <!-- Feature Locked Modal -->
+    <!-- Feature Locked Modal (shown when trying to add beyond feature access) -->
     <FeatureLockedPrompt :show="showFeatureLockedModal" title="Upgrade to Use Database Integration"
       description="Connect your databases to enable AI-powered data analysis and intelligent querying."
       feature-name="database_integration" :current-plan="subscription.currentPlan?.plan_id"
@@ -167,7 +164,7 @@ const showFeatureLockedModal = ref(false)
 const selectedConnection = ref(null)
 const selectedDatabase = ref(null)
 const selectedTables = ref([])
-const syncingConnection = ref(null)
+const syncingConnectionId = ref(null)
 
 // Computed
 const databaseUsage = computed(() => subscription.getUsage('databases'))
@@ -176,12 +173,14 @@ const databaseUsage = computed(() => subscription.getUsage('databases'))
 const handleAddDatabase = async () => {
   console.log('Add Database clicked')
 
+  // Check if feature is available
   if (!subscription.hasFeature('database_integration')) {
     console.log('Feature locked - showing modal')
     showFeatureLockedModal.value = true
     return
   }
 
+  // Check if limit is exceeded
   if (subscription.isLimitExceeded('databases')) {
     console.log('Limit exceeded - prompting upgrade')
     const shouldUpgrade = confirm(
@@ -193,12 +192,14 @@ const handleAddDatabase = async () => {
     return
   }
 
+  // Check role permission
   if (!permissions.canManageDatabases.value) {
     console.log('Permission denied')
     alert('You do not have permission to manage databases')
     return
   }
 
+  // All checks passed - show modal
   console.log('Opening database modal')
   selectedDatabase.value = null
   showDatabaseModal.value = true
@@ -210,9 +211,13 @@ const addConnection = async (formData) => {
     let result
 
     if (selectedDatabase.value) {
-      result = await databaseStore.updateConnection(selectedDatabase.value._id || selectedDatabase.value.id, formData)
+      // Editing existing connection
+      result = await databaseStore.updateConnection(selectedDatabase.value.id, formData)
     } else {
+      // Adding new connection
       result = await databaseStore.addConnection(formData)
+
+      // Refresh usage after creation
       await subscription.fetchUsage()
     }
 
@@ -222,6 +227,7 @@ const addConnection = async (formData) => {
   } catch (error) {
     console.error('Error saving database:', error)
 
+    // Handle backend validation errors
     if (error.statusCode === 402) {
       if (error.data?.error_code === 'FEATURE_LOCKED') {
         closeModal()
@@ -244,94 +250,72 @@ const selectTables = (connection) => {
 const updateTables = async () => {
   if (!selectedConnection.value) return
 
-  const connId = selectedConnection.value._id || selectedConnection.value.id
-  const result = await databaseStore.updateSelectedTables(connId, selectedTables.value)
+  const result = await databaseStore.updateSelectedTables(selectedConnection.value.id, selectedTables.value)
   if (result.success) {
     showTableModal.value = false
   }
 }
 
-// ✅ Sync Operations with WebSocket
+// Sync Operations
 const syncConnection = async (connectionId) => {
-  console.log('🔄 Starting sync for connection:', connectionId)
-
   try {
-    const connection = databaseStore.getConnectionById(connectionId)
-    if (!connection) {
-      console.error('Connection not found:', connectionId)
-      return
-    }
-
-    // Set syncing connection and show progress modal
-    syncingConnection.value = connection
+    syncingConnectionId.value = connectionId
     showSyncProgress.value = true
 
-    // Start the sync (WebSocket will handle progress updates)
     const result = await databaseStore.syncConnection(connectionId)
 
     if (!result.success) {
       showSyncProgress.value = false
-      syncingConnection.value = null
       console.error('Failed to start sync:', result.message)
-      alert(`Failed to start sync: ${result.message}`)
     }
   } catch (error) {
     showSyncProgress.value = false
-    syncingConnection.value = null
     console.error('Sync error:', error)
-    alert('An error occurred while starting the sync')
   }
 }
 
 const closeSyncProgress = () => {
   showSyncProgress.value = false
-  syncingConnection.value = null
+  syncingConnectionId.value = null
   databaseStore.fetchConnections()
 }
 
-const handleSyncComplete = async (connection) => {
-  console.log('✅ Sync completed for:', connection.name)
-  await databaseStore.fetchConnections()
+const retrySyncConnection = async () => {
+  if (syncingConnectionId.value) {
+    showSyncProgress.value = false
+    await syncConnection(syncingConnectionId.value)
+  }
+}
+
+const cancelSyncConnection = () => {
+  databaseStore.fetchConnections()
 }
 
 // Edit/Delete Operations
-const editConnection = (connectionId) => {
-  console.log('📝 Editing connection:', connectionId)
-
+const editConnection = (connection) => {
   if (!permissions.canManageDatabases.value) {
     alert('You do not have permission to edit databases')
     return
   }
 
-  const connection = databaseStore.getConnectionById(connectionId)
-  if (connection) {
-    selectedDatabase.value = connection
-    showDatabaseModal.value = true
-  }
+  selectedDatabase.value = connection
+  showDatabaseModal.value = true
 }
 
-const confirmDelete = async (connectionId) => {
-  console.log('🗑️ Delete requested for:', connectionId)
-
+const deleteConnection = async (connectionId) => {
   if (!permissions.canManageDatabases.value) {
     alert('You do not have permission to delete databases')
     return
   }
 
-  const connection = databaseStore.getConnectionById(connectionId)
-  if (!connection) return
-
-  if (!confirm(`Are you sure you want to delete "${connection.name}"? This action cannot be undone.`)) {
+  if (!confirm('Are you sure you want to delete this database connection? This action cannot be undone.')) {
     return
   }
 
-  const result = await databaseStore.deleteConnection(connectionId)
+  await databaseStore.deleteConnection(connectionId)
 
-  if (result.success) {
-    await subscription.fetchUsage()
-  } else {
-    alert(`Failed to delete connection: ${result.message}`)
-  }
+  // Refresh usage after deletion
+  await subscription.fetchUsage()
 }
 
 // Upgrade Handlers
@@ -359,11 +343,13 @@ const closeModal = () => {
 
 // Lifecycle
 onMounted(async () => {
-  console.log('📦 Database page mounted')
-
+  // Fetch subscription data first
   await subscription.fetchSubscription()
+
+  // Fetch chatbots (needed for database modal)
   await chatbotStore.fetchChatbots()
 
+  // Only fetch databases if feature is unlocked
   if (subscription.hasFeature('database_integration')) {
     await databaseStore.fetchConnections()
   }

@@ -55,20 +55,6 @@ export const useWebSocketStore = defineStore('websocket', {
         _setupGlobalListeners() {
             console.log('🎧 Setting up global WebSocket listeners...')
 
-            // ✅ NEW: Database Sync Events
-            this.businessChannel.listen('.sync.progress.updated', (event) => {
-                console.log('📊 [WebSocket] Sync Progress Updated:', event)
-                this._handleEvent('sync.progress.updated', event)
-
-                // Auto-update database store if available
-                try {
-                    const databaseStore = useDatabaseStore()
-                    databaseStore.handleSyncProgress(event)
-                } catch (error) {
-                    console.warn('Database store not available:', error)
-                }
-            })
-
             // FAQ Processing Events
             this.businessChannel.listen('.faq.processing.completed', (event) => {
                 this._handleEvent('faq.processing.completed', event)
@@ -90,6 +76,7 @@ export const useWebSocketStore = defineStore('websocket', {
                 this._handleEvent('faq.deletion.completed', event)
             })
 
+            // ✅ NEW: Listen for deletion failures
             this.businessChannel.listen('.faq.deletion.failed', (event) => {
                 this._handleEvent('faq.deletion.failed', event)
             })
@@ -114,41 +101,29 @@ export const useWebSocketStore = defineStore('websocket', {
                 this._handleEvent('handover.rejected', event)
             })
 
-            // Email Marketing Events
             this.businessChannel.listen('.email.stats.updated', (event) => {
                 console.log('📊 [WebSocket] Email Stats Updated:', event)
                 this._handleEvent('email.stats.updated', event)
 
-                try {
-                    const emailStore = useEmailMarketingStore()
-                    emailStore.handleEmailStatsUpdate(event)
-                } catch (error) {
-                    console.warn('Email marketing store not available:', error)
-                }
+                // Auto-update email marketing store
+                const emailStore = useEmailMarketingStore()
+                emailStore.handleEmailStatsUpdate(event)
             })
 
             this.businessChannel.listen('.email.campaign.sending', (event) => {
                 console.log('📤 [WebSocket] Campaign Started Sending:', event)
                 this._handleEvent('email.campaign.sending', event)
 
-                try {
-                    const emailStore = useEmailMarketingStore()
-                    emailStore.handleCampaignStarted(event)
-                } catch (error) {
-                    console.warn('Email marketing store not available:', error)
-                }
+                const emailStore = useEmailMarketingStore()
+                emailStore.handleCampaignStarted(event)
             })
 
             this.businessChannel.listen('.email.campaign.sent', (event) => {
                 console.log('✅ [WebSocket] Campaign Completed:', event)
                 this._handleEvent('email.campaign.sent', event)
 
-                try {
-                    const emailStore = useEmailMarketingStore()
-                    emailStore.handleCampaignCompleted(event)
-                } catch (error) {
-                    console.warn('Email marketing store not available:', error)
-                }
+                const emailStore = useEmailMarketingStore()
+                emailStore.handleCampaignCompleted(event)
             })
 
             // User channel listeners (if needed)
