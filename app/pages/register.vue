@@ -107,17 +107,23 @@
           <div class="relative">
             <input
               v-model="form.referral_code"
+              @blur="handleReferralBlur"
+              @input="referralValidationError = ''"
               type="text"
               class="w-full px-3 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors bg-white border-gray-300 text-gray-900 placeholder-gray-400 dark:bg-slate-900 dark:border-slate-700 dark:text-white dark:placeholder-gray-500 font-mono uppercase"
+              :class="{ 'border-red-500': referralValidationError }"
               placeholder="e.g. AMAKA-X7K2"
             />
           </div>
           <Transition name="ref-success">
             <p v-if="referralApplied" class="mt-1.5 flex items-center gap-1.5 text-sm text-green-600 dark:text-green-400">
               <Check class="w-4 h-4" />
-              Referral code applied. You and your referrer will both earn rewards.
+              Referral code applied{{ referralReferrerName ? ` — referred by ${referralReferrerName}` : '' }}. You and your referrer will both earn rewards.
             </p>
           </Transition>
+          <p v-if="referralValidationError" class="mt-1.5 text-sm text-red-600 dark:text-red-400">
+            {{ referralValidationError }}
+          </p>
         </div>
 
         <button type="submit" :disabled="loading"
@@ -159,6 +165,7 @@ definePageMeta({
 })
 
 const authStore = useAuthStore()
+const referralStore = useReferralStore()
 const router = useRouter()
 const route = useRoute()
 
@@ -170,6 +177,32 @@ const form = ref({
 })
 
 const referralApplied = ref(false)
+const referralReferrerName = ref(null)
+const referralValidationError = ref('')
+
+async function validateReferralCode() {
+  const raw = (form.value.referral_code || '').trim()
+  referralApplied.value = false
+  referralReferrerName.value = null
+  referralValidationError.value = ''
+
+  if (!raw) return
+
+  const result = await referralStore.applyReferralCode(raw)
+  if (result?.valid) {
+    referralApplied.value = true
+    referralReferrerName.value = result.referrer_name ?? null
+  } else if (result?.reason === 'network') {
+    // Network errors are not the user's fault — stay neutral.
+    referralValidationError.value = ''
+  } else {
+    referralValidationError.value = "We don't recognise that referral code. You can still continue without one."
+  }
+}
+
+function handleReferralBlur() {
+  validateReferralCode()
+}
 
 const loading = ref(false)
 const error = ref('')
@@ -286,13 +319,13 @@ const handleSocialAuth = async (provider) => {
 }
 
 // UPDATED: Store plan in localStorage on mount if present in URL
-onMounted(() => {
+onMounted(async () => {
   if (route.query.plan) {
     localStorage.setItem('pendingPlan', route.query.plan)
   }
   if (route.query.ref) {
     form.value.referral_code = route.query.ref
-    referralApplied.value = true
+    await validateReferralCode()
   }
 })
 </script>

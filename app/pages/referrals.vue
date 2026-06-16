@@ -53,6 +53,11 @@ onMounted(async () => {
     </div>
 
     <!-- Section 3: Token earning rates table -->
+    <!-- TODO(phase5): these rates (+2/+5/+10 XPT, ₦400 per XPT) are hardcoded because
+         this page is unauthenticated and has no hydrated referralStore. Once a public
+         economy endpoint exists (e.g. GET /api/referral/economy returning the same
+         `economy` block the authed dashboard uses), bind these cells to it so they
+         cannot drift from the in-app dashboard or from config/referral.php. -->
     <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm p-6 mb-12">
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Token Earning Rates</h3>
       <table class="min-w-full text-sm">

@@ -40,22 +40,39 @@
       <div class="flex items-baseline gap-1 mb-8">
         <div class="text-4xl md:text-5xl font-extrabold leading-none tracking-tight">
           <span v-if="priceText" class="inline-block">{{ priceText }}</span>
+          <!-- Skeleton bar: shown while the parent has no priceText yet
+               (i.e. /api/plans hasn't returned). Prevents the USD-literal
+               flicker before the NGN value arrives. -->
+          <span
+            v-else
+            class="inline-block h-10 md:h-12 w-32 rounded bg-slate-200 dark:bg-slate-700 animate-pulse align-middle"
+            aria-hidden="true"
+          ></span>
         </div>
-        <span v-if="priceSuffix" :class="(featured && !isCurrent) ? 'text-purple-100' : 'text-slate-500 dark:text-gray-400'" class="text-lg font-medium opacity-80">{{ priceSuffix }}</span>  
-      </div>  
+        <span v-if="priceSuffix && priceText" :class="(featured && !isCurrent) ? 'text-purple-100' : 'text-slate-500 dark:text-gray-400'" class="text-lg font-medium opacity-80">{{ priceSuffix }}</span>
+      </div>
 
       <div class="w-full h-px mb-6" :class="(featured && !isCurrent) ? 'bg-purple-400/30' : 'bg-gray-100 dark:bg-slate-800'"></div>
 
       <ul class="flex-1 space-y-4 text-sm mb-8">
-        <li v-for="(f, i) in features" :key="i" class="flex gap-3 items-start">  
-          <svg :class="(featured && !isCurrent) ? 'text-white' : 'text-[#9E4CFF]'" class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-          </svg>
-          <span :class="(featured && !isCurrent) ? 'text-white' : 'text-slate-700 dark:text-slate-300'" class="text-sm font-medium leading-tight transition-colors">
-            {{ f }}
-          </span>  
-        </li>  
-      </ul>  
+        <template v-if="Array.isArray(features) && features.length">
+          <li v-for="(f, i) in features" :key="i" class="flex gap-3 items-start">
+            <svg :class="(featured && !isCurrent) ? 'text-white' : 'text-[#9E4CFF]'" class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+            </svg>
+            <span :class="(featured && !isCurrent) ? 'text-white' : 'text-slate-700 dark:text-slate-300'" class="text-sm font-medium leading-tight transition-colors">
+              {{ f }}
+            </span>
+          </li>
+        </template>
+        <!-- Features skeleton: 4 placeholder rows while plans data loads. -->
+        <template v-else>
+          <li v-for="i in 4" :key="`sk-${i}`" class="flex gap-3 items-start">
+            <span class="w-5 h-5 rounded bg-slate-200 dark:bg-slate-700 animate-pulse shrink-0" aria-hidden="true"></span>
+            <span class="h-4 w-full max-w-[180px] rounded bg-slate-200 dark:bg-slate-700 animate-pulse" aria-hidden="true"></span>
+          </li>
+        </template>
+      </ul>
 
       <div class="mt-auto">
         <button
@@ -82,9 +99,12 @@ defineProps({
   planId: { type: String, required: true },
   title: { type: String, required: true },
   subtitle: { type: String, default: '' },
-  priceText: { type: String, default: 'Free' },
+  // priceText/features accept null to signal "still loading from /api/plans"
+  // — the card renders skeleton bars in that case instead of falling back
+  // to a hardcoded literal that would flicker on first paint.
+  priceText: { type: [String, null], default: null },
   priceSuffix: { type: String, default: '' },
-  features: { type: Array, default: () => [] },
+  features: { type: [Array, null], default: null },
   cta: { type: String, default: 'Get Started' },
   featured: { type: Boolean, default: false },
   isCurrent: { type: Boolean, default: false }

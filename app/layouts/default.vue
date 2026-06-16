@@ -2,16 +2,18 @@
 <script setup>
 import MainNavbar from '../components/homepage/MainNavbar.vue'
 import Footer from '../components/homepage/Footer.vue'
+import ImpersonationBanner from '../components/ImpersonationBanner.vue'
 </script>
 
 <template>
-    <div 
+    <div
     class="flex flex-col min-h-screen font-sans transition-colors duration-300 bg-white dark:bg-slate-950 text-gray-900 dark:text-white selection:bg-purple-500 selection:text-white"
     >
+        <ImpersonationBanner />
         <MainNavbar />
 
         <slot />
-        
+
         <Footer />
-    </div> 
+    </div>
 </template>

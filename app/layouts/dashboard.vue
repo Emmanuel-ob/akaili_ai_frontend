@@ -1,7 +1,8 @@
 <!-- layouts/dashboard.vue -->
 <template>
   <div class="min-h-screen bg-gray-50 dark:bg-slate-950 transition-colors duration-300">
-    
+    <ImpersonationBanner />
+
     <!-- Desktop Sidebar (Wider: w-72) -->
     <div
       class="lg:w-72 bg-white dark:bg-slate-900 shadow-sm border-r border-gray-200 dark:border-slate-800 fixed h-full hidden lg:flex flex-col justify-between transition-colors duration-300">
@@ -346,6 +347,7 @@ import { useAuthStore } from '~/stores/authStore'
 import { LogOut, X } from 'lucide-vue-next'
 import ThemeToggle from '~/components/ui/ThemeToggle.vue'
 import OnboardingTour from '~/components/OnboardingTour.vue'
+import ImpersonationBanner from '~/components/ImpersonationBanner.vue'
 
 const authStore = useAuthStore()
 const router = useRouter()
