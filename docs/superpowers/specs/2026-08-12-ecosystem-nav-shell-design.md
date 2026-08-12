@@ -93,7 +93,7 @@ export const products = [
   {
     id: 'trivia',
     name: 'XeliAI Trivia',
-    tagline: 'Adaptive exam prep — JAMB, WAEC and more',
+    tagline: 'Turn any study material into adaptive practice',
     href: TRIVIA_URL,
     loginHref: `${TRIVIA_URL}/auth/login`,
     external: true,
