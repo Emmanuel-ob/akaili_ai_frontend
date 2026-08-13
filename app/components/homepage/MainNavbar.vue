@@ -2,7 +2,7 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { navLinks } from "../../utils/data"
-import { Menu, X, User, LogOut, LayoutDashboard } from 'lucide-vue-next'
+import { Menu, X, User, LogOut, LayoutDashboard, ChevronDown } from 'lucide-vue-next'
 import { useAuthStore } from '~/stores/authStore'
 import { useEcosystem } from '~/composables/useEcosystem'
 import { useDropdown } from '~/composables/useDropdown'
@@ -43,6 +43,13 @@ const siblingItems = products.filter(p => p.external).map(p => ({
   external: true,
 }))
 
+// The mobile drawer's three accordion sections.
+const drawerSections = [
+  { key: 'products', label: 'Products', items: productItems },
+  { key: 'business', label: 'Business', items: menus.business },
+  { key: 'company', label: 'Company', items: menus.company },
+]
+
 const openNav = () => (navOpen.value = true)
 const closeNav = () => (navOpen.value = false)
 
@@ -71,6 +78,31 @@ const goToDashboard = () => {
 // Mobile accordion state.
 const openSection = ref(null)
 const toggleSection = (key) => (openSection.value = openSection.value === key ? null : key)
+
+const drawerRef = ref(null)
+
+// aria-modal is a promise to keyboard users. Without a trap, focus walks
+// straight out of the drawer into the page behind it.
+const onDrawerKeydown = (event) => {
+  if (event.key === 'Escape') { closeNav(); return }
+  if (event.key !== 'Tab') return
+
+  const focusables = drawerRef.value?.querySelectorAll(
+    'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
+  )
+  if (!focusables?.length) return
+
+  const first = focusables[0]
+  const last = focusables[focusables.length - 1]
+
+  if (event.shiftKey && document.activeElement === first) {
+    event.preventDefault()
+    last.focus()
+  } else if (!event.shiftKey && document.activeElement === last) {
+    event.preventDefault()
+    first.focus()
+  }
+}
 </script>
 
 <template>
@@ -119,6 +151,7 @@ const toggleSection = (key) => (openSection.value = openSection.value === key ? 
               <User class="w-5 h-5 text-purple-600" aria-hidden="true" />
             </div>
             <span class="text-sm font-medium text-gray-700 dark:text-gray-200">{{ user?.name || 'User' }}</span>
+            <ChevronDown class="w-4 h-4 text-gray-600 dark:text-gray-400" :class="{ 'rotate-180': profileOpen }" aria-hidden="true" />
           </button>
 
           <!-- Dropdown Menu -->
@@ -189,9 +222,10 @@ const toggleSection = (key) => (openSection.value = openSection.value === key ? 
 
     <!-- Mobile Nav Drawer -->
     <aside
+      ref="drawerRef"
       class="fixed top-0 left-0 h-screen w-[80%] sm:w-[60%] bg-[#9E4CFF] text-white flex flex-col z-[1050] shadow-2xl transition-transform duration-300"
       :class="navOpen ? 'translate-x-0' : '-translate-x-full'" role="dialog" aria-modal="true"
-      aria-label="Mobile navigation">
+      aria-label="Mobile navigation" @keydown="onDrawerKeydown">
 
       <!-- Close Button (Absolute to stay fixed while content scrolls) -->
       <div class="absolute top-6 right-6 z-20">
@@ -205,11 +239,46 @@ const toggleSection = (key) => (openSection.value = openSection.value === key ? 
 
         <!-- Navigation Links -->
         <!-- Reduced text size: text-lg sm:text-2xl -->
-        <div class="flex flex-col space-y-6">
-          <NuxtLink v-for="link in navLinks" :key="link.id" :to="link.url"
-            class="text-lg sm:text-2xl font-semibold border-b border-white/20 pb-2 hover:border-white transition-all w-fit"
-            @click="closeNav">
-            {{ link.label }}
+        <div class="flex flex-col space-y-2">
+          <div v-for="section in drawerSections" :key="section.key" class="border-b border-white/20 pb-2">
+            <button
+              type="button"
+              data-drawer-section
+              class="w-full flex items-center justify-between text-lg sm:text-2xl font-semibold py-2"
+              :aria-expanded="openSection === section.key ? 'true' : 'false'"
+              :aria-controls="`drawer-panel-${section.key}`"
+              @click="toggleSection(section.key)"
+            >
+              {{ section.label }}
+              <ChevronDown
+                class="w-5 h-5 transition-transform"
+                :class="{ 'rotate-180': openSection === section.key }"
+                aria-hidden="true"
+              />
+            </button>
+            <div
+              v-show="openSection === section.key"
+              :id="`drawer-panel-${section.key}`"
+              class="flex flex-col space-y-3 pb-3 pl-2"
+            >
+              <EcoLink
+                v-for="item in section.items"
+                :key="item.label"
+                :item="item"
+                class="text-base text-white/80 hover:text-white transition-colors"
+                @click="closeNav"
+              >
+                {{ item.label }}
+              </EcoLink>
+            </div>
+          </div>
+
+          <NuxtLink
+            to="/pricing"
+            class="text-lg sm:text-2xl font-semibold border-b border-white/20 py-2 hover:border-white transition-all"
+            @click="closeNav"
+          >
+            Pricing
           </NuxtLink>
         </div>
 
@@ -228,13 +297,29 @@ const toggleSection = (key) => (openSection.value = openSection.value === key ? 
             </button>
           </div>
 
-          <NuxtLink v-else to="/get-started" @click="closeNav" class="block">
-            <!-- White button with Purple text for high contrast -->
-            <button
-              class="w-full px-8 py-3 bg-white text-[#9E4CFF] font-bold text-base sm:text-lg rounded-xl shadow-lg hover:bg-gray-50 transition-colors">
-              Get Started
-            </button>
-          </NuxtLink>
+          <div v-else>
+            <div data-drawer-logins class="mb-4 space-y-2">
+              <p class="text-xs font-semibold uppercase tracking-wide text-white/60">Log in to</p>
+              <EcoLink
+                v-for="item in loginItems"
+                :key="item.label"
+                :item="item"
+                class="block text-base text-white/90 hover:text-white transition-colors"
+                @click="closeNav"
+              >
+                {{ item.label }}
+              </EcoLink>
+            </div>
+
+            <NuxtLink to="/get-started" class="block" @click="closeNav">
+              <!-- White button with Purple text for high contrast -->
+              <button
+                class="w-full px-8 py-3 bg-white text-[#9E4CFF] font-bold text-base sm:text-lg rounded-xl shadow-lg hover:bg-gray-50 transition-colors"
+              >
+                Get Started
+              </button>
+            </NuxtLink>
+          </div>
         </div>
       </div>
     </aside>
