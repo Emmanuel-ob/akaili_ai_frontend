@@ -87,6 +87,10 @@ export default defineNuxtConfig({
 
       stripePublishableKey: process.env.STRIPE_KEY,
       paystackPublicKey: process.env.PAYSTACK_PUBLIC_KEY,
+
+      triviaUrl: process.env.NUXT_PUBLIC_TRIVIA_URL || "https://trivia.xeliai.com",
+      labsUrl: process.env.NUXT_PUBLIC_LABS_URL || "https://labs.xeliai.com",
+      blogUrl: process.env.NUXT_PUBLIC_BLOG_URL || "https://blog.xeliai.com",
     },
   },
 
