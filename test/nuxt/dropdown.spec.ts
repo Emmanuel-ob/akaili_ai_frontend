@@ -1,7 +1,19 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, beforeEach } from 'vitest'
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { defineComponent, h } from 'vue'
 import { useDropdown } from '~/composables/useDropdown'
+
+// Component that resets the shared useState state by calling useState
+// and setting it to null. Must be mounted before each test to ensure
+// clean state, then immediately unmounted.
+const StateResetter = defineComponent({
+  setup() {
+    const openId = useState('nav:openDropdown', () => null)
+    openId.value = null
+    return {}
+  },
+  template: '<div></div>',
+})
 
 // The returned object is flattened deliberately. Vue only unwraps refs
 // returned at the top level of setup, so `this.a.isOpen` would stay a
@@ -28,6 +40,14 @@ const Harness = defineComponent({
 })
 
 describe('useDropdown', () => {
+  beforeEach(async () => {
+    // Reset the shared useState state before each test by mounting and
+    // unmounting a component that explicitly sets it to null. This ensures
+    // each test starts with a clean state, even when tests are run in suite.
+    const resetter = await mountSuspended(StateResetter)
+    await resetter.unmount()
+  })
+
   it('starts closed', async () => {
     const w = await mountSuspended(Harness)
     expect(w.find('#pa').exists()).toBe(false)
