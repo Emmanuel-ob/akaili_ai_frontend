@@ -83,7 +83,13 @@ const drawerRef = ref(null)
 
 // aria-modal is a promise to keyboard users. Without a trap, focus walks
 // straight out of the drawer into the page behind it.
+//
+// The drawer is hidden by a CSS transform, not display/visibility/inert,
+// so its contents stay in the tab order even while closed. Without this
+// guard the wrap logic below fires on a closed, invisible drawer and
+// traps focus inside it before the user ever opens it.
 const onDrawerKeydown = (event) => {
+  if (!navOpen.value) return
   if (event.key === 'Escape') { closeNav(); return }
   if (event.key !== 'Tab') return
 
