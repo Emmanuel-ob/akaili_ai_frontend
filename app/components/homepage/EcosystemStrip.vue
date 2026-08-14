@@ -2,6 +2,7 @@
 <script setup>
 import { ArrowUpRight } from 'lucide-vue-next'
 import { useEcosystem } from '~/composables/useEcosystem'
+import EcoLink from '~/components/homepage/EcoLink.vue'
 
 const { products } = useEcosystem()
 
@@ -20,13 +21,21 @@ const siblings = products.filter(p => p.external)
       </p>
 
       <div class="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <a
+        <!--
+          show-external-icon is off here because this card already has its
+          own designed external-link affordance: the large ArrowUpRight in
+          the top-right corner below, with the group-hover treatment. Without
+          the opt-out, EcoLink would add a second, smaller arrow trailing the
+          tagline, which reads as a stray mark rather than a link affordance.
+          The visually-hidden "opens in a new tab" text still renders either
+          way, so screen readers get the same context-switch warning.
+        -->
+        <EcoLink
           v-for="product in siblings"
           :key="product.id"
           data-ecosystem-card
-          :href="product.href"
-          target="_blank"
-          rel="noopener noreferrer"
+          :item="{ label: product.name, to: product.href, external: product.external }"
+          :show-external-icon="false"
           class="group block p-6 rounded-2xl border border-gray-200 dark:border-slate-800 bg-gray-50 dark:bg-slate-950 hover:border-purple-400 dark:hover:border-purple-500 hover:-translate-y-1 transition-all duration-300"
         >
           <div class="flex items-start justify-between gap-3">
@@ -39,7 +48,7 @@ const siblings = products.filter(p => p.external)
           <p class="mt-2 text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
             {{ product.tagline }}
           </p>
-        </a>
+        </EcoLink>
       </div>
     </div>
   </section>

@@ -34,4 +34,47 @@ describe('EcoLink', () => {
     })
     expect(w.text()).toContain('Slot content here')
   })
+
+  it('renders the external-link glyph and hidden text by default', async () => {
+    const w = await mountSuspended(EcoLink, {
+      props: { item: { label: 'External', to: 'https://example.com', external: true } },
+      slots: { default: () => 'External' },
+    })
+    expect(w.find('svg').exists()).toBe(true)
+    expect(w.text()).toContain('opens in a new tab')
+  })
+
+  // A caller with its own designed external-link treatment (the
+  // ecosystem strip's large corner arrow) can suppress EcoLink's own
+  // glyph so a single link does not render two arrows. The
+  // visually-hidden text must survive the opt-out: it is the
+  // accessibility contract, not a decoration, so screen-reader users
+  // still get the context-switch warning even with the glyph hidden.
+  it('suppresses only the visual glyph when show-external-icon is false, keeping the hidden text', async () => {
+    const w = await mountSuspended(EcoLink, {
+      props: {
+        item: { label: 'External', to: 'https://example.com', external: true },
+        showExternalIcon: false,
+      },
+      slots: { default: () => 'External' },
+    })
+    expect(w.find('svg').exists()).toBe(false)
+    expect(w.text()).toContain('opens in a new tab')
+    // Still a fully-formed external link otherwise.
+    const a = w.find('a')
+    expect(a.attributes('target')).toBe('_blank')
+    expect(a.attributes('rel')).toBe('noopener noreferrer')
+  })
+
+  it('does not add a glyph or hidden text to internal links regardless of show-external-icon', async () => {
+    const w = await mountSuspended(EcoLink, {
+      props: {
+        item: { label: 'Internal', to: '/pricing' },
+        showExternalIcon: false,
+      },
+      slots: { default: () => 'Internal' },
+    })
+    expect(w.find('svg').exists()).toBe(false)
+    expect(w.text()).not.toContain('opens in a new tab')
+  })
 })

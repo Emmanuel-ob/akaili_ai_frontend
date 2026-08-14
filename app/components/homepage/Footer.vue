@@ -43,22 +43,6 @@
                   :class="{ 'nav-link--external': item.external }"
                 >
                   {{ item.label }}
-                  <svg
-                    v-if="item.external"
-                    class="ext-icon"
-                    viewBox="0 0 12 12"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                    aria-hidden="true"
-                  >
-                    <path
-                      d="M2.5 9.5L9.5 2.5M9.5 2.5H5M9.5 2.5V7"
-                      stroke="currentColor"
-                      stroke-width="1.2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
                 </EcoLink>
               </nav>
             </div>
@@ -230,15 +214,6 @@ const columns = [
   display: inline-flex;
   align-items: center;
   gap: 5px;
-}
-.ext-icon {
-  width: 10px;
-  height: 10px;
-  opacity: 0.5;
-  flex-shrink: 0;
-}
-.nav-link--external:hover .ext-icon {
-  opacity: 1;
 }
 
 /* Legal bar */
