@@ -1,5 +1,6 @@
 <!-- components/homepage/NavDropdown.vue -->
 <script setup>
+import { nextTick, watch } from 'vue'
 import { ChevronDown } from 'lucide-vue-next'
 import { useDropdown } from '~/composables/useDropdown'
 import EcoLink from '~/components/homepage/EcoLink.vue'
@@ -12,6 +13,18 @@ const props = defineProps({
 })
 
 const { isOpen, toggle, close, closeAndRefocus, triggerRef, panelRef } = useDropdown(props.id)
+
+// FIX 2: arrow-key roving focus only works once focus is actually inside
+// the panel. The trigger and the panel are siblings, so clicking the
+// trigger leaves focus on the trigger and keydown never reaches
+// onPanelKeydown below. Move focus to the first menu item once the panel
+// has rendered (it is behind v-if inside a Transition, so wait a tick).
+watch(isOpen, async (open) => {
+  if (!open) return
+  await nextTick()
+  const first = panelRef.value?.querySelector('[role="menuitem"]')
+  first?.focus()
+})
 
 // Roving focus through the menu with the arrow keys.
 const onPanelKeydown = (event) => {
@@ -32,7 +45,30 @@ const onPanelKeydown = (event) => {
     event.preventDefault()
     focusables[focusables.length - 1].focus()
   } else if (event.key === 'Tab') {
-    close()
+    // FIX 1: closing on every Tab used to strand focus. Tab between two
+    // items inside the menu is native browser behaviour (these are real
+    // anchors, not a roving-tabindex set) and must be left alone, or the
+    // item that focus lands on gets ripped out from under it the instant
+    // we close. Only the boundary case needs handling: Tab off the last
+    // item (or Shift+Tab off the first) is about to carry focus out of
+    // the panel entirely, so it is safe to close there.
+    const leavingForward = !event.shiftKey && current === focusables.length - 1
+    const leavingBackward = event.shiftKey && current === 0
+    if (leavingForward || leavingBackward) {
+      // Do not close synchronously: the browser has not yet performed
+      // its default Tab focus-move (that happens right after this
+      // handler returns, still before the next animation frame). If we
+      // close now, we delete the currently-focused element before the
+      // browser gets a chance to move focus off it, so it falls back to
+      // <body> and sequential navigation restarts from the top of the
+      // page -- the exact bug this fix removes. Deferring to the next
+      // frame lets the native Tab motion land on whatever comes after
+      // this menu first; only then do we tear the panel down, and focus
+      // is already safely outside it.
+      requestAnimationFrame(() => close())
+    }
+    // Any other Tab moves between items and is left entirely to the
+    // browser's native focus order; the menu stays open.
   }
 }
 </script>
