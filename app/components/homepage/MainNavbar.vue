@@ -1,7 +1,6 @@
 <!-- components/homepage/MainNavbar.vue -->
 <script setup>
 import { ref, computed } from 'vue'
-import { navLinks } from "../../utils/data"
 import { Menu, X, User, LogOut, LayoutDashboard, ChevronDown } from 'lucide-vue-next'
 import { useAuthStore } from '~/stores/authStore'
 import { useEcosystem } from '~/composables/useEcosystem'
