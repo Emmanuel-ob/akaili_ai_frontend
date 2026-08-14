@@ -83,10 +83,14 @@ const drawerRef = ref(null)
 // aria-modal is a promise to keyboard users. Without a trap, focus walks
 // straight out of the drawer into the page behind it.
 //
-// The drawer is hidden by a CSS transform, not display/visibility/inert,
-// so its contents stay in the tab order even while closed. Without this
-// guard the wrap logic below fires on a closed, invisible drawer and
-// traps focus inside it before the user ever opens it.
+// The drawer is hidden by a CSS transform, so its contents are still
+// visually removed but the :inert binding on the <aside> below now
+// honours the aria-modal promise: while closed, the browser excludes the
+// drawer from the tab order and the accessibility tree on its own. This
+// guard is kept as a redundant safety net (older engines without inert
+// support, or any future change that drops the binding) so the wrap
+// logic below never fires on a closed, invisible drawer and traps focus
+// inside it before the user ever opens it.
 const onDrawerKeydown = (event) => {
   if (!navOpen.value) return
   if (event.key === 'Escape') { closeNav(); return }
@@ -151,7 +155,7 @@ const onDrawerKeydown = (event) => {
         <div v-if="isAuthenticated" class="hidden lg:block relative">
           <button @click.stop="toggleProfile" ref="profileTriggerRef"
             class="flex items-center space-x-2 px-4 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors"
-            aria-label="User menu" :aria-expanded="profileOpen ? 'true' : 'false'">
+            aria-label="User menu" aria-haspopup="menu" :aria-expanded="profileOpen ? 'true' : 'false'">
             <div class="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center border border-purple-200">
               <User class="w-5 h-5 text-purple-600" aria-hidden="true" />
             </div>
@@ -190,6 +194,7 @@ const onDrawerKeydown = (event) => {
                   :item="item"
                   class="w-full flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-purple-50 dark:hover:bg-slate-700 hover:text-purple-600 rounded-md transition-colors"
                   role="menuitem"
+                  @click="closeProfile"
                 >
                   {{ item.label }}
                 </EcoLink>
@@ -228,6 +233,7 @@ const onDrawerKeydown = (event) => {
     <!-- Mobile Nav Drawer -->
     <aside
       ref="drawerRef"
+      :inert="!navOpen"
       class="fixed top-0 left-0 h-screen w-[80%] sm:w-[60%] bg-[#9E4CFF] text-white flex flex-col z-[1050] shadow-2xl transition-transform duration-300"
       :class="navOpen ? 'translate-x-0' : '-translate-x-full'" role="dialog" aria-modal="true"
       aria-label="Mobile navigation" @keydown="onDrawerKeydown">
