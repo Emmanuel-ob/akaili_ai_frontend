@@ -22,15 +22,32 @@ describe('Footer', () => {
     expect(text).toContain('XeliAI Blog')
   })
 
-  it('credits LiteSigma as plain text while the domain is down', async () => {
+  it('credits LiteSigma as a live link to the .com.ng site', async () => {
     const w = await mountSuspended(Footer)
-    expect(w.text()).toContain('Powered by LiteSigma')
-    expect(w.find('[data-parent-company]').element.tagName).not.toBe('A')
+    expect(w.text()).toContain('Powered by LiteSigma Tech')
+
+    const credit = w.find('[data-parent-company]')
+    expect(credit.element.tagName).toBe('A')
+    expect(credit.attributes('href')).toBe('https://www.litesigma.com.ng/')
+    // It leaves the site, so it must carry the same protections as any
+    // other external link.
+    expect(credit.attributes('target')).toBe('_blank')
+    expect(credit.attributes('rel')).toBe('noopener noreferrer')
   })
 
-  it('mentions LiteSigma exactly once', async () => {
+  it('shows LiteSigma in both the Company column and the credit', async () => {
     const w = await mountSuspended(Footer)
-    expect(w.text().match(/LiteSigma/g)).toHaveLength(1)
+    // Two deliberate occurrences: the Company column entry and the
+    // "Powered by" credit. Any other count means one of them was lost or
+    // something started rendering it a third time.
+    expect(w.text().match(/LiteSigma/g) ?? []).toHaveLength(2)
+
+    const companyLink = w
+      .findAll('a')
+      .find(a => a.attributes('href') === 'https://www.litesigma.com.ng/' && !a.attributes('data-parent-company'))
+    expect(companyLink).toBeDefined()
+    expect(companyLink.attributes('target')).toBe('_blank')
+    expect(companyLink.attributes('rel')).toBe('noopener noreferrer')
   })
 
   it('gives every external link target and rel', async () => {

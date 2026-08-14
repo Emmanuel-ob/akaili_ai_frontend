@@ -16,7 +16,9 @@ Three explicit requirements from the request:
 
 1. A Products menu on the landing page listing the other apps, reachable from `xeliai.com`.
 2. A login control offering "log in to Trivia / XeliAI / Labs".
-3. `Powered by LiteSigma` in the footer — **the only place LiteSigma appears anywhere on the site.**
+3. `Powered by LiteSigma` in the footer, linking to the company site, plus a LiteSigma entry in the
+   Company menu. (Amended 2026-08-14 by the owner; the original brief said the footer credit was the
+   only place LiteSigma appears.)
 
 ## 2. What the family actually is
 
@@ -26,7 +28,7 @@ Three explicit requirements from the request:
 | XeliAI Trivia | `trivia.xeliai.com` | FastAPI + Postgres · Nuxt 3 | Own JWT + Google OAuth + guest accounts |
 | XeliAI Labs | `labs.xeliai.com` | Nuxt 4, mock data | **None.** `composables/useAuth.js` is empty, `middleware/auth.js` is a no-op, `pages/auth/Login.vue:222` calls `navigateTo("/dashboard")` |
 | XeliAI Blog | `blog.xeliai.com` | — | No login |
-| LiteSigma | `litesigma.com` | — | Parent company. Labs' git remote is `LiteSigma-Tech/xeliai_lab` |
+| LiteSigma | `www.litesigma.com.ng` | — | Parent company. Labs' git remote is `LiteSigma-Tech/xeliai_lab` |
 
 All four XeliAI domains returned HTTP 200 on 2026-08-12. `litesigma.com` did **not** resolve
 (SERVFAIL against 8.8.8.8; `xeliai.com` resolved from the same query, so this is a real result and
@@ -64,7 +66,7 @@ already on.
 | D4 | **Menus link only to pages that exist.** | No `coming soon` stubs, no 404s. Items get added as pages are written. |
 | D5 | **Registry-driven, hand-rolled Tailwind.** | The product list appears in four places (desktop nav, mobile drawer, login menu, footer). Nuxt UI is installed but used in exactly one dashboard file, so its design system would clash on the most visible page of the site. |
 | D6 | **Labs links to its home page, not its login.** | Labs has no working auth. Linking "Log in → Labs" would send users to a form that authenticates nobody. Revisit when Labs has real auth. |
-| D7 | **`Powered by LiteSigma` is plain text, not a link.** | `litesigma.com` does not resolve. The URL stays in the registry so enabling the link later is a one-line change. |
+| D7 | ~~`Powered by LiteSigma` is plain text, not a link.~~ **SUPERSEDED 2026-08-14:** the credit links to `https://www.litesigma.com.ng/`, and LiteSigma also appears in the Company menu. | The original ruling assumed `litesigma.com`, which does not resolve. The owner supplied the real domain, a `.com.ng`, which is live. `linkEnabled` is now `true`. |
 
 ### Non-goals
 
@@ -124,17 +126,19 @@ export const menus = {
     { label: 'Get started',      to: '/get-started' },
   ],
   company: [
-    { label: 'About',   to: '/about' },
-    { label: 'Contact', to: '/contact' },
-    { label: 'Terms',   to: '/terms' },
-    { label: 'Privacy', to: '/privacy' },
+    { label: 'About',     to: '/about' },
+    { label: 'Contact',   to: '/contact' },
+    { label: parentCompany.name, to: parentCompany.url, external: true },
+    { label: 'Terms',     to: '/terms' },
+    { label: 'Privacy',   to: '/privacy' },
   ],
 }
 
+// Declared BEFORE menus so the Company entry reuses this exact URL.
 export const parentCompany = {
-  name: 'LiteSigma',
-  url: 'https://litesigma.com',
-  linkEnabled: false,             // D7 — domain does not resolve
+  name: 'LiteSigma Tech',
+  url: 'https://www.litesigma.com.ng/',
+  linkEnabled: true,
 }
 ```
 
@@ -251,11 +255,14 @@ no help centre. Its real links (Contact, Privacy, Terms) survive under Company a
 Legal bar:
 
 ```
-© 2026 XeliAI · All rights reserved      Powered by LiteSigma      Terms · Privacy
+© 2026 XeliAI · All rights reserved      Powered by LiteSigma Tech      Terms · Privacy
 ```
 
-`Powered by LiteSigma` renders as plain text while `parentCompany.linkEnabled === false` (D7). This
-is the only occurrence of LiteSigma on the site; it is simultaneously **removed** from the old
+`Powered by LiteSigma Tech` links to `parentCompany.url` while `linkEnabled === true` (D7,
+superseded). The name renders from `parentCompany.name`, and the Company menu entry reuses that same
+constant, so the two can never disagree.
+LiteSigma now appears twice in the footer, once in the Company column and once in the credit, and
+once more in the Company nav menu. It is simultaneously **removed** from the old
 Ecosystem column, where it currently links to a domain that does not resolve.
 
 ## 8. Landing page
@@ -331,7 +338,8 @@ These are all in code the new work directly touches. Each is a real, verified de
 
 ## 13. Open items requiring human action
 
-1. **`litesigma.com` does not resolve.** Until it does, `Powered by LiteSigma` is plain text. Flip
+1. ~~**`litesigma.com` does not resolve.**~~ **RESOLVED 2026-08-14:** the real domain is
+   `https://www.litesigma.com.ng/`, which is live. The credit is now a link. Superseded text: Flip
    `parentCompany.linkEnabled` to `true` when the domain is live.
 2. **Labs has no auth.** `Log in → Labs` points at the Labs home page (D6). Repoint at
    `labs.xeliai.com/auth/Login` once Labs has real authentication.

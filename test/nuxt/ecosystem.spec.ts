@@ -57,8 +57,18 @@ describe('ecosystem registry', () => {
     for (const to of internal) expect(realPages).toContain(to)
   })
 
-  it('keeps the LiteSigma link disabled while the domain is down', () => {
-    expect(parentCompany.name).toBe('LiteSigma')
-    expect(parentCompany.linkEnabled).toBe(false)
+  it('points LiteSigma at the live .com.ng domain, linked', () => {
+    expect(parentCompany.name).toBe('LiteSigma Tech')
+    // The .com does not resolve; the real site is the .com.ng.
+    expect(parentCompany.url).toBe('https://www.litesigma.com.ng/')
+    expect(parentCompany.linkEnabled).toBe(true)
+  })
+
+  it('lists LiteSigma in the Company menu as an external link', () => {
+    const liteSigma = menus.company.find(i => i.label === 'LiteSigma Tech')
+    expect(liteSigma).toBeDefined()
+    expect(liteSigma.external).toBe(true)
+    // Same URL as the footer credit, from the same constant.
+    expect(liteSigma.to).toBe(parentCompany.url)
   })
 })

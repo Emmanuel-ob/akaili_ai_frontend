@@ -41,6 +41,14 @@ export function buildProducts({ triviaUrl, labsUrl, blogUrl }) {
   ]
 }
 
+// Declared before `menus` so the Company menu can point at the same URL
+// rather than repeating it. One string, one place to change it.
+export const parentCompany = {
+  name: 'LiteSigma Tech',
+  url: 'https://www.litesigma.com.ng/',
+  linkEnabled: true,
+}
+
 export const menus = {
   business: [
     { label: 'Pricing', to: '/pricing' },
@@ -51,14 +59,10 @@ export const menus = {
   company: [
     { label: 'About', to: '/about' },
     { label: 'Contact', to: '/contact' },
+    // Label and URL both come from parentCompany so the menu entry and the
+    // footer credit can never disagree about the company's name.
+    { label: parentCompany.name, to: parentCompany.url, external: true },
     { label: 'Terms', to: '/terms' },
     { label: 'Privacy', to: '/privacy' },
   ],
-}
-
-export const parentCompany = {
-  name: 'LiteSigma',
-  url: 'https://litesigma.com',
-  // litesigma.com does not resolve as of 2026-08-12. Flip to true when it does.
-  linkEnabled: false,
 }
