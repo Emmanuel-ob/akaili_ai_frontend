@@ -30,79 +30,22 @@
             </div>
           </div>
 
-      <!-- 2: Company links -->
-      <div class="space-y-5">
-        <h3 class=" text-white text-xl font-bold">Product</h3>
-        <nav class="flex flex-col space-y-2 text-sm">
-          <NuxtLink to="/features" class="text-[#9CA3AF] hover:text-gray-200">Features</NuxtLink>
-          <NuxtLink to="/pricing" class="text-[#9CA3AF] hover:text-gray-200">Pricing</NuxtLink>
-          <NuxtLink to="/referrals" class="text-[#9CA3AF] hover:text-gray-200">Referral Program</NuxtLink>
-
-        </nav>
-      </div>
           <!-- Right: Nav Columns -->
           <div class="nav-columns">
-
-            <!-- Platform -->
-            <div class="nav-col">
-              <h3 class="nav-heading">Platform</h3>
+            <div v-for="column in columns" :key="column.heading" class="nav-col">
+              <h3 class="nav-heading">{{ column.heading }}</h3>
               <nav class="nav-links">
-                <NuxtLink to="/dashboard" class="nav-link">Dashboard</NuxtLink>
-                <NuxtLink to="/dashboard/chatbot-setup" class="nav-link">Chatbot Setup</NuxtLink>
-                <NuxtLink to="/dashboard/knowledge-base" class="nav-link">Knowledge Base</NuxtLink>
-                <NuxtLink to="/dashboard/analytics" class="nav-link">Analytics</NuxtLink>
-                <NuxtLink to="/dashboard/live-monitoring" class="nav-link">Conversations</NuxtLink>
+                <EcoLink
+                  v-for="item in column.items"
+                  :key="item.label"
+                  :item="item"
+                  class="nav-link"
+                  :class="{ 'nav-link--external': item.external }"
+                >
+                  {{ item.label }}
+                </EcoLink>
               </nav>
             </div>
-
-            <!-- Company -->
-            <div class="nav-col">
-              <h3 class="nav-heading">Company</h3>
-              <nav class="nav-links">
-                <NuxtLink to="/about" class="nav-link">About Us</NuxtLink>
-                <NuxtLink to="/register" class="nav-link">Get Started</NuxtLink>
-                <NuxtLink to="/login" class="nav-link">Sign In</NuxtLink>
-                <NuxtLink to="/terms" class="nav-link">Terms</NuxtLink>
-                <NuxtLink to="/contact" class="nav-link">Contact</NuxtLink>
-              </nav>
-            </div>
-
-            <!-- Support -->
-            <div class="nav-col">
-              <h3 class="nav-heading">Support</h3>
-              <nav class="nav-links">
-                <NuxtLink to="/contact" class="nav-link">Help Center</NuxtLink>
-                <NuxtLink to="/contact" class="nav-link">Contact</NuxtLink>
-                <NuxtLink to="/privacy" class="nav-link">Privacy Policy</NuxtLink>
-                <NuxtLink to="/terms" class="nav-link">Terms of Service</NuxtLink>
-              </nav>
-            </div>
-
-            <!-- Xeliai Ecosystem -->
-            <div class="nav-col">
-              <h3 class="nav-heading">Xeliai Ecosystem</h3>
-              <nav class="nav-links">
-                <a href="https://labs.xeliai.com" target="_blank" rel="noopener noreferrer" class="nav-link nav-link--external">
-                  Xeliai Labs
-                  <svg class="ext-icon" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                    <path d="M2.5 9.5L9.5 2.5M9.5 2.5H5M9.5 2.5V7" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                </a>
-                <a href="https://blog.xeliai.com" target="_blank" rel="noopener noreferrer" class="nav-link nav-link--external">
-                  Xeliai Blog
-                  <svg class="ext-icon" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                    <path d="M2.5 9.5L9.5 2.5M9.5 2.5H5M9.5 2.5V7" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                </a>
-                <a href="https://litesigma.com" target="_blank" rel="noopener noreferrer" class="nav-link nav-link--external">
-                  Litesigma
-                  <svg class="ext-icon" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                    <path d="M2.5 9.5L9.5 2.5M9.5 2.5H5M9.5 2.5V7" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                </a>
-              </nav>
-            </div>
-
           </div>
         </div>
 
@@ -111,6 +54,21 @@
           <hr class="footer-rule" />
           <div class="legal-bar">
             <span class="copyright">© {{ new Date().getFullYear() }} XELI AI · ALL RIGHTS RESERVED</span>
+
+            <a
+              v-if="parentCompany.linkEnabled"
+              data-parent-company
+              :href="parentCompany.url"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="powered-by"
+            >
+              Powered by {{ parentCompany.name }}
+            </a>
+            <span v-else data-parent-company class="powered-by">
+              Powered by {{ parentCompany.name }}
+            </span>
+
             <div class="legal-links">
               <NuxtLink to="/terms" class="legal-link">Terms &amp; Conditions</NuxtLink>
               <NuxtLink to="/about" class="legal-link">About</NuxtLink>
@@ -125,6 +83,20 @@
 
 <script setup>
 import { Facebook, Instagram, Linkedin } from 'lucide-vue-next'
+import EcoLink from './EcoLink.vue'
+import { useEcosystem } from '~/composables/useEcosystem'
+
+const { products, menus, parentCompany } = useEcosystem()
+
+const columns = [
+  {
+    heading: 'Products',
+    items: products.map(p => ({ label: p.name, to: p.href, external: p.external })),
+  },
+  { heading: 'Business', items: menus.business },
+  { heading: 'Company', items: menus.company.filter(i => !['Terms', 'Privacy'].includes(i.label)) },
+  { heading: 'Legal', items: menus.company.filter(i => ['Terms', 'Privacy'].includes(i.label)) },
+]
 </script>
 
 <style scoped>
@@ -243,15 +215,6 @@ import { Facebook, Instagram, Linkedin } from 'lucide-vue-next'
   align-items: center;
   gap: 5px;
 }
-.ext-icon {
-  width: 10px;
-  height: 10px;
-  opacity: 0.5;
-  flex-shrink: 0;
-}
-.nav-link--external:hover .ext-icon {
-  opacity: 1;
-}
 
 /* Legal bar */
 .footer-bottom {
@@ -271,6 +234,15 @@ import { Facebook, Instagram, Linkedin } from 'lucide-vue-next'
 .copyright {
   font-size: 12px;
   color: #4B5563;
+}
+.powered-by {
+  font-size: 12px;
+  color: #6B7280;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+}
+a.powered-by:hover {
+  color: #9CA3AF;
 }
 .legal-links {
   display: flex;

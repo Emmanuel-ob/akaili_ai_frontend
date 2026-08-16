@@ -37,8 +37,13 @@
         </p>  
       </header>  
 
-      <div class="flex items-baseline gap-1 mb-8">
-        <div class="text-4xl md:text-5xl font-extrabold leading-none tracking-tight">
+      <!-- flex-wrap + min-w-0 are load-bearing: the price is a preformatted
+           string from the API and can be far wider than a USD literal
+           (compare "$99" with "NGN 450,000.00"). Without them the suffix is
+           pushed outside the card, where the featured variant lets it bleed
+           (it needs overflow-visible for the ribbon) and the others clip it. -->
+      <div class="flex flex-wrap items-baseline gap-x-1 mb-8 min-w-0">
+        <div data-price :class="priceSizeClass" class="font-extrabold leading-none tracking-tight tabular-nums min-w-0 max-w-full break-words">
           <span v-if="priceText" class="inline-block">{{ priceText }}</span>
           <!-- Skeleton bar: shown while the parent has no priceText yet
                (i.e. /api/plans hasn't returned). Prevents the USD-literal
@@ -95,7 +100,9 @@
 </template>
 
 <script setup>
-defineProps({
+import { computed } from 'vue'
+
+const props = defineProps({
   planId: { type: String, required: true },
   title: { type: String, required: true },
   subtitle: { type: String, default: '' },
@@ -111,4 +118,18 @@ defineProps({
 })
 
 defineEmits(['select-plan'])
+
+// The price is a preformatted string from the API, so its width is not
+// something this component controls: "Free" is 4 characters, "NGN
+// 450,000.00" is 11, and a larger currency could be longer still. A card
+// column is about 314px of content at the md breakpoint, which a fixed
+// text-5xl cannot hold past roughly 7 characters. Step the size down by
+// length so long values stay inside the card, and let flex-wrap catch
+// anything longer than these tiers anticipate.
+const priceSizeClass = computed(() => {
+  const length = (props.priceText ?? '').length
+  if (length <= 6) return 'text-4xl md:text-5xl'
+  if (length <= 12) return 'text-3xl md:text-4xl'
+  return 'text-2xl md:text-3xl'
+})
 </script>

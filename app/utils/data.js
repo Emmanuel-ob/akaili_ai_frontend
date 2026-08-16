@@ -1,14 +1,3 @@
-// ~/utils/data.js (or wherever you export navLinks)
-export const navLinks = [
-  { id: 1, url: '/',           more: '',                  label: 'Home' },
-  { id: 2, url: '/about',   more:'',   label: 'About' },
-  { id: 3, url: '/products',more: '',                  label: 'Products' },
-  { id: 4, url: '/pricing',    more: '',                  label: 'Pricing' },
-  { id: 5, url: '/referrals', more: '',                  label: 'Referral Program' },
-  { id: 6, url: 'https://blog.xeliai.com',       more: '',                  label: 'Blog' },
-  { id: 7, url: '/contact',    more: '',                  label: 'Contact' },
-]
-
 // ~/data/homepage/content.js
 export const features = [
   {

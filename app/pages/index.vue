@@ -2,7 +2,8 @@
     <div class="overflow-hidden">
       <Hero />
       <ProductSuite />
-      <Features />    
+      <EcosystemStrip />
+      <Features />
       <TestimonialCarousel />
       <CtaBanner />
       <GradualBlur
@@ -19,6 +20,7 @@
 <script setup>
 import  Hero from '../components/homepage/Hero.vue'
 import ProductSuite from '../components/homepage/ProductSuite.vue'
+import EcosystemStrip from '../components/homepage/EcosystemStrip.vue'
 import Features from '../components/homepage/Features.vue'
 import TestimonialCarousel from '~/components/homepage/TestimonialCarousel.vue'
 import CtaBanner from '../components/homepage/CtaBanner.vue'
