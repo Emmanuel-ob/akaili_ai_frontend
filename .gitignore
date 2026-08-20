@@ -24,3 +24,7 @@ logs
 project-tree.txt
 !.env.example
 .amplify-hosting
+# Claude Code working files — never committed
+.superpowers/
+.claude/
+docs/superpowers/
